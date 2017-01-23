@@ -1,0 +1,68 @@
+#alias {anaconda} {#var {target}{anaconda}} {default}
+#alias {bat} {#var {target}{bat}} {default}
+#alias {bear} {#var {target}{bear}} {default}
+#alias {beast} {#var {target}{beast}} {default}
+#alias {bitch} {#var {target}{bitch}} {default}
+#alias {black} {#var {target}{black}} {default}
+#alias {bulky} {#var {target}{bulky}} {default}
+#alias {chieftain} {#var {target}{chieftain}} {default}
+#alias {cold} {#var {target}{cold}} {default}
+#alias {cowled} {#var {target}{cowled} } {default}
+#alias {croc} {#var {target}{croc}} {default}
+#alias {cure} {cast 'cure self'} {default}
+#alias {demon} {#var {target}{demon}} {default}
+#alias {demonic} {#var {target}{demonic}} {default}
+#alias {dragon} {#var {target}{dragon}} {default}
+#alias {drake} {#var {target}{drake}} {default}
+#alias {draugluin} {#var {target}{draugluin}} {default}
+#alias {dwarf} {#var {target}{dwarf} } {default}
+#alias {eel} {#var {target}{eel} } {default}
+#alias {fell} {#var {target}{fell}} {default}
+#alias {figure} {#var {target}{figure} } {default}
+#alias {fungal} {#var {target}{fungal}} {default}
+#alias {garvin} {#var {target}{garvin}} {default}
+#alias {goblin} {#var {target}{goblin}} {default}
+#alias {golem} {#var {target}{golem} } {default}
+#alias {great} {#var {target}{great}} {default}
+#alias {human} {#var {target}{human}} {default}
+#alias {hunter} {#var {target}{hunter}} {default}
+#alias {interloper} {#var {target}{interloper} } {default}
+#alias {kabaal} {#var {target}{kabaal} } {default}
+#alias {kraken} {#var {target}{kraken}} {default}
+#alias {lazora} {#var {target}{lazora}} {default}
+#alias {lion} {#var {target}{lion} } {default}
+#alias {lunaron} {#var {target}{lunaron}} {default}
+#alias {lunk} {#var {target}{lunk}} {default}
+#alias {mage} {#var {target}{mage} } {default}
+#alias {magi} {#var {target}{magi}} {default}
+#alias {man} {#var {target}{man}} {default}
+#alias {marble} {#var {target}{marble}} {default}
+#alias {master} {#var {target}{master}} {default}
+#alias {mauglir} {#var {target}{mauglir}} {default}
+#alias {mumak} {#var {target}{mumak}} {default}
+#alias {naurig} {#var {target}{naurig} } {default}
+#alias {nomad} {#var {target}{nomad} } {default}
+#alias {omarr} {#var {target}{omarr}} {default}
+#alias {orc} {#var {target}{orc}} {default}
+#alias {pale} {#var {target}{pale}} {default}
+#alias {pool} {#var {target}{pool} } {default}
+#alias {serpent} {#var {target}{serpent} } {default}
+#alias {shaman} {#var {target}{shaman}} {default}
+#alias {skeleton} {#var {target}{skeleton} } {default}
+#alias {spider} {#var {target}{spider}} {default}
+#alias {statue} {#var {target}{statue} } {default}
+#alias {tentacle} {#var {target}{tentacle}} {default}
+#alias {tree} {#var {target}{tree}} {default}
+#alias {troll} {#var {target}{troll}} {default}
+#alias {turtle} {#var {target}{turtle} } {default}
+#alias {ungambar} {#var {target}{ungambar}} {default}
+#alias {uruk} {#var {target}{uruk}} {default}
+#alias {vampire} {#var {target}{vampire}} {default}
+#alias {vaz} {#var {target}{vaz}} {default}
+#alias {warlock} {#var {target}{warlock}} {default}
+#alias {werewolf} {#var {target}{werewolf}} {default}
+#alias {wight} {#var {target}{wight}} {default}
+#alias {wolf} {#var {target}{wolf}} {default}
+#alias {woman} {#var {target}{woman}} {default}
+#alias {worm} {#var {target}{worm} } {default}
+#alias {wraith} {#var {target}{wraith} } {default}

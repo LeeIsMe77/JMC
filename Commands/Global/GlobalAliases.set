@@ -1,0 +1,7 @@
+#var {statSum}{0}
+#alias {ef} {enter ferry} {default}
+#alias {c} {cast} {default}
+#alias {of} {order followers} {default}
+#alias {vit} {cast 'vitalize self'} {default}
+#alias {setColor} {colour say magenta;colour tell magenta;colour chat cyan;colour hit bright blue;colour damage bright red;colour char green;colour room blue;colour object blue} {default}
+#alias {statsum} {#action {^Str: %0/%0, Int: %1/%1, Wil: %2/%2, Dex: %3/%3, Con: %4/%4, Lea: %5/%5.}{#math {statSum}{%%0 + %%1 + %%2 + %%3 + %%4 + %%5};#unaction {^Str: %0/%0, Int: %1/%1, Wil: %2/%2, Dex: %3/%3, Con: %4/%4, Lea: %5/%5.};#showme {red}{Stat Sum: $statSum}; #var {statSum}{0} }; stat} {default}

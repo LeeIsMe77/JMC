@@ -1,0 +1,16 @@
+#message uses OFF
+#multiaction ON
+#multihighlight ON
+#presub on
+#echo off
+#ignore off
+#speedwalk on
+#togglesubs off
+#verbat off
+#colon leave
+#comment #
+#race format %0
+#hot {F1} {#connect rotsmud.dyndns.org 3791} {default}
+#group local default
+#ticksize 30
+#read {Commands/Main.set}

@@ -1,0 +1,9 @@
+#read {Commands/Global/GlobalActions.set}
+#read {Commands/Global/GlobalAliases.set}
+#read {Commands/Global/GlobalChat.set}
+#read {Commands/Global/GlobalCounters.set}
+#read {Commands/Global/GlobalGroup.set}
+#read {Commands/Global/GlobalHighlights.set}
+#read {Commands/Global/GlobalHotkeys.set}
+#read {Commands/Global/GlobalTargets.set}
+#read {Commands/Global/GlobalSubstitions.set}
