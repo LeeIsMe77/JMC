@@ -1,0 +1,2 @@
+#var {autoRescueOn}{0}
+#alias {autorescue}{#if { $autoRescueOn==0} { #action {%0 turns to fight %1!} {rescue %1};#var {autoRescueOn}{1};}{ #unaction {%0 turns to fight %1!} {rescue %1};#var {autoRescueOn}{0};};}

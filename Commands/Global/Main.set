@@ -7,3 +7,4 @@
 #read {Commands/Global/GlobalHotkeys.set}
 #read {Commands/Global/GlobalTargets.set}
 #read {Commands/Global/GlobalSubstitions.set}
+#read {Commands/Global/Toggles/Main.set}

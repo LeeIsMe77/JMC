@@ -1,5 +1,3 @@
-#hot {F4} {#action {%0 turns to fight %1!}{rescue %1}} {default}
-#hot {F6} {#unaction {%0 turns to fight %1!}} {default}
 #hot {F7} {#action {^PANIC!  You couldn't escape!}{flee}} {default}
 #hot {F9} {#unaction {^PANIC!  You couldn't escape!}} {default}
 #hot {F1} {#connect rotsmud.dyndns.org 3791} {default}

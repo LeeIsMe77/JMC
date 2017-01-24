@@ -1,0 +1,2 @@
+#var {autoBashOn}{0}
+#alias {autobash}{#if { $autoBashOn==0} { #action {%0 has recovered from a bash!} {bash};#var {autoBashOn}{1};}{ #unaction {%0 has recovered from a bash!} {bash}; #var {autoBashOn}{0} };}
