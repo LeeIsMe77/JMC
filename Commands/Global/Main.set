@@ -1,3 +1,4 @@
+#read {Commands/Global/ArmorAliases.set}
 #read {Commands/Global/GlobalActions.set}
 #read {Commands/Global/GlobalAliases.set}
 #read {Commands/Global/GlobalChat.set}

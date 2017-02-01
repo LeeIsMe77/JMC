@@ -1,5 +1,5 @@
-#hot {F7} {#action {^PANIC!  You couldn't escape!}{flee}} {default}
-#hot {F9} {#unaction {^PANIC!  You couldn't escape!}} {default}
+#hot {F7} {#action {PANIC!  You couldn't escape!}{flee}} {default}
+#hot {F9} {#unaction {PANIC!  You couldn't escape!}} {default}
 #hot {F1} {#connect rotsmud.dyndns.org 3791} {default}
 #hot {Ctrl+B} {bash} {default}
 #hot {Ctrl+D} {dismount} {default}

@@ -1,4 +1,5 @@
 #substitute {A Bleached Skeleton} {A Bleached Skeleton: wsnnsnnnswsen}
+#substitute {A Break in the Forest}{A Break in the Forest: nnnnww}
 #substitute {A Clear Spring} {A Clear Spring: weswsen}
 #substitute {A Frightening Warning} {A Frightening Warning: wsnssen}
 #substitute {A Gushing Spring} {A Gushing Spring: nssssen}
@@ -139,6 +140,7 @@
 #substitute {Jagged Rocks} {Jagged Rocks: wessnssen M:nwwwnwnnn}
 #substitute {Kill Site} {Kill Site: nnnswsen}
 #substitute {Layers of Leaves} {Layers of Leaves: nnssssswsen}
+#substitute {Leaving the Hidden Vale} {Leaving the Hidden Vale: wnnnnww}
 #substitute {Leaving the River} {Leaving the River: wewen}
 #substitute {Leaving the swamp : sesew} {Leaving the swamp : sesew}
 #substitute {Looming Trees} {Looming Trees: een}

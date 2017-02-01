@@ -1,0 +1,101 @@
+#sub {^A Rotting windfall    Exits are:%1} {%0: sennsenenw}
+#sub {^A Turn    Exits are:%1} {%0: eeewennw}
+#sub {^A small Knoll    Exits are:%1} {%0: swnnsnww}
+#sub {^A small spring    Exits are:%1} {%0: nnnw}
+#sub {^A stagnant Odor    Exits are:%1} {%0: nsnsnww}
+#sub {^A strange Barrow    Exits are:%1} {%0: wnsssnesw}
+#sub {^A strange Vapour    Exits are:%1} {%0: esw}
+#sub {^An Inverted Forest    Exits are:%1} {%0: wsew}
+#sub {^An Old Camp    Exits are:%1} {%0: wnesnesw}
+#sub {^Ash Pit    Exits are:%1} {%0: nnw}
+#sub {^Bearded Old Man    Exits are:%1} {%0: snewennw}
+#sub {^Black Ferns    Exits are:%1} {%0: ennnnnww}
+#sub {^Black Vines    Exits are:%1} {%0: snnww}
+#sub {^Black wood    Exits are:%1} {%0: nwesew}
+#sub {^Bleeding Trees    Exits are:%1} {%0: sewenw}
+#sub {^Bog of Darkness    Exits are:%1} {%0: nnsenenw}
+#sub {^Broken Land    Exits are:%1} {%0: snnnww}
+#sub {^Broken Rocks    Exits are:%1} {%0: wesew}
+#sub {^Brothel of Trees    Exits are:%1} {%0: nnww}
+#sub {^Charred Trees    Exits are:%1} {%0: esew}
+#sub {^Choked Path    Exits are:%1} {%0: nsnww}
+#sub {^Churning Trees    Exits are:%1} {%0: wweesnesw}
+#sub {^Circle of Trees    Exits are:%1} {%0: sew}
+#sub {^Cluster of Oaks    Exits are:%1} {%0: snesw}
+#sub {^Crowded Forest Floor    Exits are:%1} {%0: wwnesnesw}
+#sub {^Cul De sac    Exits are:%1} {%0: wennw}
+#sub {^Dark Forest Path    Exits are:%1} {%0: snsnww}
+#sub {^Dark Green Moss    Exits are:%1} {%0: nww}
+#sub {^Dark Halls    Exits are:%1} {%0: nsesew}
+#sub {^Dark Hollow    Exits are:%1} {%0: nnsewenw}
+#sub {^Dark Track    Exits are:%1} {%0: wnesew}
+#sub {^Dark Valley Forest    Exits are:%1} {%0: nenw}
+#sub {^Darkling Path    Exits are:%1} {%0: wenw}
+#sub {^Dead Trees    Exits are:%1} {%0: nsssnesw}
+#sub {^Dense Dark Forest    Exits are:%1} {%0: ennsewenw}
+#sub {^Dense Dark woodland    Exits are:%1} {%0: nesew}
+#sub {^Dense Underbrush    Exits are:%1} {%0: wnnsnww}
+#sub {^Disturbing Undergrowth    Exits are:%1} {%0: nnsssnesw}
+#sub {^Disturbing noises    Exits are:%1} {%0: ssnesw}
+#sub {^Dusky wood    Exits are:%1} {%0: snsnsnww}
+#sub {^Dusty Hollow    Exits are:%1} {%0: ennw}
+#sub {^Eerie Marsh    Exits are:%1} {%0: wsnewnnw}
+#sub {^Endless Path    Exits are:%1} {%0: ennw}
+#sub {^Eryn Lome    Exits are:%1} {%0: snennw}
+#sub {^Eryn wethrin    Exits are:%1} {%0: ssw}
+#sub {^Fallen Trees    Exits are:%1} {%0: snww}
+#sub {^False Hope    Exits are:%1} {%0: nnnww}
+#sub {^Forest Guardians    Exits are:%1} {%0: nsewenw}
+#sub {^Forest of endless night    Exits are:%1} {%0: ewenw}
+#sub {^Ghastly Trees    Exits are:%1} {%0: nesw}
+#sub {^Grasping Thorns    Exits are:%1} {%0: nnnnnww}
+#sub {^Hairy Trees    Exits are:%1} {%0: esew}
+#sub {^Heartless Trees    Exits are:%1} {%0: snewenw}
+#sub {^Into the swamp    Exits are:%1} {%0: nwsnewnnw}
+#sub {^Leaving the swamp    Exits are:%1} {%0: sesew}
+#sub {^Malevolent Pines    Exits are:%1} {%0: ensnsnww}
+#sub {^Massive Oak    Exits are:%1} {%0: enw}
+#sub {^Mat of Death    Exits are:%1} {%0: enwesew}
+#sub {^Mist Covered Bog    Exits are:%1} {%0: newennw}
+#sub {^Mist    Exits are:%1} {%0: nesnesw}
+#sub {^Moist Breeze    Exits are:%1} {%0: eewennw}
+#sub {^Moody Trees    Exits are:%1} {%0: nwenw}
+#sub {^Muddy Path    Exits are:%1} {%0: wwww}
+#sub {^Obsidian wood    Exits are:%1} {%0: enenw}
+#sub {^Old Forest    Exits are:%1} {%0: ewennw}
+#sub {^Opressive Feeling    Exits are:%1} {%0: www}
+#sub {^Outside a Cave    Exits are:%1} {%0: ennsenenw}
+#sub {^Pale Mists    Exits are:%1} {%0: ew}
+#sub {^Pale shroud    Exits are:%1} {%0: weesnesw}
+#sub {^Pressing Darkness    Exits are:%1} {%0: nweesnesw}
+#sub {^Random stones    Exits are:%1} {%0: newenw}
+#sub {^Reaching Branches    Exits are:%1} {%0: wssw}
+#sub {^Returning to the Forest    Exits are:%1} {%0: wenw}
+#sub {^Ring of stones    Exits are:%1} {%0: ssnww}
+#sub {^Rising Forest    Exits are:%1} {%0: newennw}
+#sub {^Rockey Forest Floor    Exits are:%1} {%0: esnnww}
+#sub {^Row of elms    Exits are:%1} {%0: ww}
+#sub {^Sea of Trees    Exits are:%1} {%0: sesw}
+#sub {^Shifting Trees    Exits are:%1} {%0: nnnnww}
+#sub {^Sickly Forest    Exits are:%1} {%0: nnsnww}
+#sub {^Silent Trees    Exits are:%1} {%0: snnnw}
+#sub {^Sleeping Forest    Exits are:%1} {%0: eesnesw}
+#sub {^Smell of Decay    Exits are:%1} {%0: eewenw}
+#sub {^Solid Ground Once Again    Exits are:%1} {%0: nnewennw}
+#sub {^Split Path    Exits are:%1} {%0: wnnww}
+#sub {^Strange Lights    Exits are:%1} {%0: enewennw}
+#sub {^Sunken Path    Exits are:%1} {%0: sssewsswwnwnsnnsnnw}
+#sub {^Sureal Forest    Exits are:%1} {%0: swenw}
+#sub {^Taur nu Fuin    Exits are:%1} {%0: ssewsswwnwnsnnsnnw}
+#sub {^Taur nu Morna    Exits are:%1} {%0: sw}
+#sub {^The Barrier    Exits are:%1} {%0: sssnww}
+#sub {^The Ground Grows soft    Exits are:%1} {%0: nsnnnnww}
+#sub {^Thick Underbrush    Exits are:%1} {%0: snnnnww}
+#sub {^Timeless Trees    Exits are:%1} {%0: snenw}
+#sub {^Twisted Pines    Exits are:%1} {%0: sssnesw}
+#sub {^Unclimable Cliff    Exits are:%1} {%0: esnesw}
+#sub {^Unkempt Forest    Exits are:%1} {%0: nw}
+#sub {^Weaving Mists    Exits are:%1} {%0: nsssnesw}
+#sub {A Strange Vapour    Exits are: N E S W} {A Strange Vapour    Exits are: N E S W - Entrance: esw}
+#sub {Taur-nu-Morna    Exits are: N S W} {Taur-nu-Morna    Exits are: N S W - Entrance: sw}
+#sub {Thin Trail On Hill    Exits are: N E S W}{Thin Trail On Hill    Exits are: N E S W - Entrance: w}

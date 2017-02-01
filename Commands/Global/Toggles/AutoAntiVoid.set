@@ -1,0 +1,2 @@
+#var {autoAntiVoid}{0}
+#alias {autoantivoid}{#if { $autoAntiVoid==0} { #tickon;#ticksize 300;#action {You feel the time passing by.} {score};#var {autoAntiVoid}{1};}{ #tickoff;#unaction {You feel the time passing by.} {score}; #var {autoAntiVoid}{0} };}

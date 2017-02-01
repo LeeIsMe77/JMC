@@ -51,6 +51,8 @@
 #alias {skeleton} {#var {target}{skeleton} } {default}
 #alias {spider} {#var {target}{spider}} {default}
 #alias {statue} {#var {target}{statue} } {default}
+#alias {task} {#var {target}{task} } {default}
+#alias {taskmaster} {#var {target}{taskmaster} } {default}
 #alias {tentacle} {#var {target}{tentacle}} {default}
 #alias {tree} {#var {target}{tree}} {default}
 #alias {troll} {#var {target}{troll}} {default}
@@ -59,6 +61,7 @@
 #alias {uruk} {#var {target}{uruk}} {default}
 #alias {vampire} {#var {target}{vampire}} {default}
 #alias {vaz} {#var {target}{vaz}} {default}
+#alias {warg} {#var {target}{warg}} {default}
 #alias {warlock} {#var {target}{warlock}} {default}
 #alias {werewolf} {#var {target}{werewolf}} {default}
 #alias {wight} {#var {target}{wight}} {default}
@@ -66,3 +69,4 @@
 #alias {woman} {#var {target}{woman}} {default}
 #alias {worm} {#var {target}{worm} } {default}
 #alias {wraith} {#var {target}{wraith} } {default}
+#alias {vine} {#var {target}{vine}} {default}
