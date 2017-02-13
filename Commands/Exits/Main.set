@@ -1,1 +1,1 @@
-#read {Commands/Exits/Faroth.set}
+#spit {Commands/Exits/ValeExits.set} {%0} {ns}

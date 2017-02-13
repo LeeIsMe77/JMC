@@ -1,4 +1,3 @@
-#message uses OFF
 #multiaction ON
 #multihighlight ON
 #presub on
@@ -10,7 +9,7 @@
 #colon leave
 #comment #
 #race format %0
-#hot {F1} {#connect rotsmud.dyndns.org 3791} {default}
 #group local default
 #ticksize 30
-#read {Commands/Main.set}
+#spit {Commands/Main.set} {%0} {ns}
+#hot {F12}{#killall;#spit {Default.set} {%0} {ns};}

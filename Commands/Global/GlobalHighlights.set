@@ -1,3 +1,3 @@
 #highlight {light red,b black} {%1 appears to be confused!} {default}
-#highlight {red} {^A huge boulder looks as though it could fall at any moment.} {default}
-#highlight {light magenta} {^%0 has recovered from a bash!} {default}
+#highlight {red} {A huge boulder looks as though it could fall at any moment.} {default}
+#highlight {light magenta} {%0 has recovered from a bash!} {default}

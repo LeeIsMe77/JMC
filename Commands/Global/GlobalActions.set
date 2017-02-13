@@ -1,5 +1,3 @@
-#action {You are hungry.} {get way all;eat way} {5} {default}
-#action {You are thirsty.} {#2 drink skin} {5} {default}
 #action {PANIC!  You couldn't escape!} {flee} {5} {default}
 #action {%1 prays to you, hoping for your good will.} {pray %1} {5} {default}
 #action {The %1 seems to be closed.} {open %1} {5} {default}

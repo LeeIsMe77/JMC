@@ -5,4 +5,4 @@
 #hot {Ctrl+F} {cast curse $target} {default}
 #hot {Ctrl+J} {cast curse $target} {default}
 #hot {Ctrl+L} {cast fear $target} {default}
-#alias {SpiritOn}{ #read Profiles/SpiritTriggers.set}
+#alias {SpiritOn}{ #spit {Profiles/SpiritTriggers.set} {%0} {ns};}

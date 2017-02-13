@@ -2,5 +2,5 @@
 #action {^Reconnecting.} {post_login}
 #action {%0 stores your belongings and helps you into your private chamber.}{#woutput {1}{blue}{$TIME: Logout.};#woutput {1}{blue}{ } }
 
-#alias {load_profile} { #unaction {You are %1 %2, a %3 (%4) %5 %6.};#read {Profiles/%%0.set}}
-#alias {post_login} { #action {You are %1 %2, a %3 (%4) %5 %6.} {load_profile %1};blow eye;info }
+#alias {load_profile} { #unaction {You are %1 %2, %3 %4 (%5) %6 %7.};#spit {Profiles/%%1.set} {%0} {ns};}
+#alias {post_login} { #action {You are %1 %2, %3 %4 (%5) %6 %7.} {load_profile %1};blow eye;info }

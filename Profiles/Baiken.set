@@ -1,0 +1,3 @@
+#var {watersource}{flask}
+#alias {mail-cotton} {rem all.mail;rem all.elven;wea all.cotton;wea horns;wea shiny;wea padded;wea circlet}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem circlet;rem boots;rem horns;wea all.mail;wea all.elven} {default}
