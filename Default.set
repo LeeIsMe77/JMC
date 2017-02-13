@@ -1,3 +1,6 @@
+#message action OFF
+#message variable OFF
+#message uses OFF
 #multiaction ON
 #multihighlight ON
 #presub on
