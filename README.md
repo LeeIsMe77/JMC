@@ -1,2 +1,0 @@
-# JMC
-JMC Profile Management
