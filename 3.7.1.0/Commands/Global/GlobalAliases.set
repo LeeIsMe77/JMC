@@ -1,0 +1,9 @@
+#var {statSum}{0}
+#alias {ef} {enter ferry} {default}
+#alias {c} {cast} {default}
+#alias {of} {order followers} {default}
+#alias {vit} {cast 'vitalize self'} {default}
+#alias {setcolor} {colour say magenta;colour tell magenta;colour chat cyan;colour hit bright blue;colour damage bright red;colour char green;colour room blue;colour object blue} {default}
+#alias {howmany}{#var {itemCount}{0};#action {%%1}{#math {itemCount}{$itemCount + 1}};#action {(%9) :}{#highlight {green}{%%%1};#action {>}{#highlight {normal}{%%%1};#unaction {%%%1};#unaction {(%9) :};#unaction {>};#showme {green}{There are $itemCount %%1s in your %%2.};#var {itemCount}{0}};};exa %2;}
+#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea soft}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem boots;wea all.mail} {default}

@@ -1,0 +1,71 @@
+BODY
+{
+    FONT-FAMILY: courier;
+    BACKGROUND-COLOR: black
+}
+PRE
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 12pt;
+    FONT-FAMILY: courier
+}
+.dr
+{
+    COLOR: red
+}
+.dg
+{
+    COLOR: lawngreen
+}
+.dy
+{
+    COLOR: brown
+}
+.db
+{
+    COLOR: blue
+}
+.dm
+{
+    COLOR: magenta
+}
+.dc
+{
+    COLOR: aqua
+}
+.dw
+{
+    COLOR: lightgrey
+}
+.b
+{
+    COLOR: black
+}
+.lr
+{
+    COLOR: #ff0000
+}
+.lg
+{
+    COLOR: #00ff00
+}
+.ly
+{
+    COLOR: yellow
+}
+.lb
+{
+    COLOR: #0000ff
+}
+.lm
+{
+    COLOR: magenta
+}
+.lc
+{
+    COLOR: cyan
+}
+.lw
+{
+    COLOR: white
+}

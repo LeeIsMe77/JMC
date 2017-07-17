@@ -1,0 +1,9 @@
+#alias {leather-cotton} {rem all.fine;wea all.cotton;wea shiny;wea soft}
+#alias {cotton-leather} {rem all.cotton;rem shiny;rem soft;wea all.fine} {default}
+#var {waterSource}{waterskin}
+#hotkey {Ctrl+P}{cast light}
+#hotkey {Ctrl+O}{cast chill}
+#hotkey {Ctrl+Q}{cast fire}
+#hotkey {Ctrl+I}{cast 'lightning strike'}
+#hotkey {Ctrl+H}{cast flash}
+#hotkey {Ctrl+J}{cast cone}

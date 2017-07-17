@@ -1,6 +1,0 @@
-#var {statSum}{0}
-#alias {ef} {enter ferry} {default}
-#alias {c} {cast} {default}
-#alias {of} {order followers} {default}
-#alias {vit} {cast 'vitalize self'} {default}
-#alias {setColor} {colour say magenta;colour tell magenta;colour chat cyan;colour hit bright blue;colour damage bright red;colour char green;colour room blue;colour object blue} {default}

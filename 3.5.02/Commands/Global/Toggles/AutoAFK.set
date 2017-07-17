@@ -1,0 +1,2 @@
+#var {autoAFK}{0}
+#alias {autoafk}{#if { $autoAFK==0} { #tickon;#ticksize 150;#action {You feel the time passing by.} {afk};#var {autoAFK}{1};#showme {green}{Auto-AFK Enabled};}{ #tickoff;#unaction {You feel the time passing by.} {afk}; #var {autoAFK}{0};#showme {red}{Auto-AFK Disabled};};}

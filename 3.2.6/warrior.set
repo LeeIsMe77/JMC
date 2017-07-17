@@ -1,0 +1,88 @@
+/alias {_load} {/read warrior.set}
+/alias {_save} {/write warrior.set}
+/alias {arctic} {/connect mud.arctic.org 2700}
+/alias {b2p} {rem shield;rem lantern;hold axe}
+/alias {bg-ns} {s4ws7wnw2n2wn6w}
+/alias {bg-ts} {s2e10s4w2s8se2sw4swsws10w}
+/alias {bleg} {buy 5*leg; put all.leg $chest}
+/alias {blu} {c 'blu' }
+/alias {bng-tree} {n;e;n;n;n;n;w;n;w;n;w;w;w;w;w;w;w;w;w;w;w;s;w;s;s;s;w;s;w}
+/alias {bw} {rem Sword;wear shield}
+/alias {ca} {c 'acid'}
+/alias {cha} {c 'cha p'}
+/alias {cl} {c 'l b' }
+/alias {cm} {c 'm m'}
+/alias {cr} {c 'ray'}
+/alias {cs} {c 'sho' }
+/alias {cw} {c 'wild'}
+/alias {detect} {c 'detect'}
+/alias {docont} {c 'cont';mem stop 'cont';mem 'sho'}
+/alias {dw} {rem shield;hold sword}
+/alias {fc} {fill all.canteen fountain}
+/alias {fcc} {fill all.canteen well}
+/alias {fl} {c 'fly'}
+/alias {fsg-tree} {s;s;s;s;w;s;w;w;w;s;s;s;s;s;s;s;e;s;s;w;s;s;s;s;s;w;w;w;w;w;w;w;w;w;w;w;s;w;s;s;s;w;s;w;}
+/alias {fw} {drink from fountain;fill all.waterskin fountain}
+/alias {fww} {fw drink from well}
+/alias {gafc} {get all corpse}
+/alias {gc} {get all.coins $rchest}
+/alias {gcfc} {get coins corpse}
+/alias {gfr} {get %0 from robes}
+/alias {gx-kx} {n;n;n;w;w;n;n;n;w;n;n;w;w;n;w;n;n;n}
+/alias {ho} {c 'ho p'}
+/alias {invis} {c 'inv'}
+/alias {k} {kill}
+/alias {kf-kx} {2n4ws2w3s}
+/alias {ksg-ns} {3s2e2se3sue2se6s}
+/alias {kx-gx} {s;s;s;e;s;e;e;s;s;e;s;s;s;e;e;s;s;s}
+/alias {kx-kf} {3n2en4e2s}
+/alias {kx-px} {3wsws3ws3wn3w}
+/alias {memcont} {forg 'sho';mem 'cont'}
+/alias {milky} {get milky $chest;qua milky}
+/alias {name} {/hotkey {ctrl+l} {%0;goout}}
+/alias {ns-ksg} {6nw2nwd3nw2n2w3n}
+/alias {ns-tree} {s;s;s;s;s;s;s;e;e;e;s;s;e;e;e;s;s;s;s;e;s;u;s;e;e;s;s;e;s;e}
+/alias {nsg-tree} {s;s;s;e;e;e;s;e;s;e;e;s;s;s;s;d;e;s;u;s;e;d;e;s;s;e;d;s;e;}
+/alias {or} {order all}
+/alias {ork} {or kill }
+/alias {pc} {put %0 coins $rchest}
+/alias {px-kx} {3es3en3enen3e}
+/alias {px-ss} {se5sw9sws2w16s}
+/alias {rr} {recite recall}
+/alias {rrr} {get recall robes}
+/alias {si} {c 'sil'}
+/alias {sl} {learn 'magic missile';learn bludgeons}
+/alias {ss-px} {16n2ene9ne5nwn}
+/alias {str} {c 'str'}
+/alias {teg-tree} {e;e;e;e;e;s;e;e;e;s;d;n;d;s;e;e;e;e;n;e;e;s;e;e;e;e;u;e;e;e;e;n;e;e;e;e;e;n;e;n;e;e;n;n;e;u;e;u;n;n;d;d;n;n;n;n;n;}
+/alias {tele} {c 'tele'}
+/alias {tree-bng} {e;n;e;n;n;n;e;n;e;e;e;e;e;e;e;e;e;e;e;s;e;s;e;s;s;s;s;w;s}
+/alias {tree-fsg} {e;n;e;n;n;n;e;n;e;e;e;e;e;e;e;e;e;e;e;n;n;n;n;n;e;n;n;w;n;n;n;n;n;n;n;e;e;e;n;e;n;n;n;n}
+/alias {tree-nsg} {w;n;u;w;n;n;w;u;w;n;d;n;w;u;n;n;n;n;w;w;n;w;n;w;w;w;n;n;n}
+/alias {tree-teg} {s;s;s;s;s;u;u;s;s;d;w;d;w;s;s;w;w;s;w;s;w;w;w;w;w;s;w;w;w;w;d;w;w;w;w;n;w;w;s;w;w;w;w;n;u;s;u;n;w;w;w;n;w;w;w;w;w}
+/action {SEEK SHELTER AT ONCE! %0 has begun to sing.} {resc %0} {5}
+/action {The momentum of your kick} {sta} {5}
+/action {The momentum of your kick brings you crashing to the ground.} {sta} {5}
+/action {You try to bash} {sta} {5}
+/action {are hungry} {get $food $chest;eat $food} {5}
+/action {are thirsty} {drink water} {5}
+/action {crashes into you} {sta} {5}
+/action {disarms your weapon} {get axe} {5}
+/action {manta} {bash manta;/unac manta} {5}
+/action {you close your spellbook} {/tickset} {5}
+/substitute {%0 tells you %1} {%0 >>> %1}
+/substitute {%0 tells your group %1} {%0 *** %1}
+/variable {chest} {chest}
+/variable {food} {leg}
+/variable {rchest} {robes}
+/highlight {cyan} {%0 *** %1}
+/highlight {cyan} {%0 >>> %1}
+/highlight {red} {%0crashes into you%1}
+/highlight {red} {%0decays %1}
+/highlight {red} {%0disarms your weapon%1}
+/highlight {blue} {%0stands up%1}
+/highlight {red} {A Palanthas guard has arrived from the %0}
+/highlight {red} {The momentum of your kick brings you crashing to the ground.}
+/highlight {blue} {You crash into%0}
+/highlight {red} {You try to bash%0}
+/ticksize 63

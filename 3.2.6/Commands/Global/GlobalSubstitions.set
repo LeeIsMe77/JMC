@@ -1,0 +1,5 @@
+#substitute {#TICK} {You feel the time passing by.}
+#gag {You feel the time passing by.}
+#gag {#10 seconds till TICK}
+#gag {HP:  %0,     S:%1, MV:%2 -- someone}
+#gag {HP:  %0,     S:%1, MV:%2 -- a white and grey cat}

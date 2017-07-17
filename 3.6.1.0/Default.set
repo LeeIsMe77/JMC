@@ -1,0 +1,20 @@
+#message action OFF
+#message variable OFF
+#message uses OFF
+#multiaction ON
+#multihighlight ON
+#presub on
+#echo off
+#ignore off
+#speedwalk on
+#togglesubs off
+#verbat off
+#colon leave
+#comment #
+#race format %0
+#group local default
+#ticksize 30
+#hotkey {Ctrl+F11}{ #spit {Commands/Mystic/Triggers/SpiritTriggers.set} {%0} {ns};}
+#hotkey {Ctrl+F12}{ #spit {Commands/Mystic/Triggers/ArkenTriggers.set} {%0} {ns};}
+#hot {F12}{#killall;#spit {Default.set} {%0} {ns};post_login}
+#spit {Commands/Main.set} {%0} {ns}

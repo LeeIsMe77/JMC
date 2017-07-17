@@ -1,0 +1,7 @@
+#variable {spiritReceived} {0}
+#variable {xpReceived} {0}
+
+#action {Your spirit increases by %0.} {#math {spiritReceived}{$spiritReceived + %%0};#status {5}{Spirit: $spiritReceived}{light blue}} {5} {default}
+#action {You receive your share of experience -- %0 points.} {#math {xpReceived}{$xpReceived + %%0};#status {4}{XP Gained: $xpReceived}{light blue}} {5} {default}
+#action {You force your Will against %0's concentration!} {#math {spiritReceived}{$spiritReceived + 2};#status {5}{Spirit: $spiritReceived}{light blue}} {5} {default}
+#action {You have %0/%1 hit, %2/%3 stamina, %4/%5 moves, %6 spirit.}{#status {1}{HP: %%0/%%1}{light blue};#status {2}{MP: %%2/%%3}{light blue};#status {3}{MV: %%4/%%5}{light blue}; }

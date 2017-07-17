@@ -1,0 +1,17 @@
+#action {%1 tells you '%2} { #woutput {1}{magenta}{$TIME: %%1 tells you '%%2} ;#woutput {1}{magenta}{ } } {5} {default}
+#action {%1 chats '%2} { #woutput {1}{blue}{$TIME: %%1 chats '%%2} ;#woutput {1}{blue}{ } } {5} {default}
+#action {%1 narrates '%2} { #woutput {1}{yellow}{$TIME: %%1 narrates '%%2} ;#woutput {1}{yellow}{ } } {5} {default}
+#action {%1 sings '%2} { #woutput {1}{blue}{$TIME: %%1 sings '%%2} ;#woutput {1}{blue}{ } } {5} {default}
+#action {%1 says '%2} { #woutput {1}{magenta}{$TIME: %%1 says '%%2};#woutput {1}{magenta}{ } } {5} {default}
+#action {%1 group-says '%2} { #woutput {1}{red}{$TIME: %%1 group-says '%%2};#woutput {1}{red}{ } } {5} {default}
+#action {%1 yells '%2} { #woutput {1}{red}{$TIME: %%1 yells '%%2};#woutput {1}{red}{ } } {5} {default}
+#action {%1 whispers to you, '%2} { #woutput {1}{red}{$TIME: %%1 whispers to you, '%%2};#woutput {1}{red}{ } } {5} {default}
+#action {%1 petitions %2} { #woutput {1}{red}{$TIME: %%1 petitions '%%2};#woutput {1}{red}{ } } {5} {default}
+#action {%1 wiznets %2} { #woutput {1}{red}{$TIME: %%1 wiznets '%%2};#woutput {1}{red}{ } } {5} {default}
+#action {You tell %1 '%2} { #woutput {1}{magenta}{$TIME: You tell %%1 '%%2} ;#woutput {1}{magenta}{ } } {5} {default}
+#action {You chat '%1} { #woutput {1}{blue}{$TIME: You chat '%%1} ;#woutput {1}{blue}{ } } {5} {default}
+#action {You narrate '%1} { #woutput {1}{yellow}{$TIME: You narrate '%%1} ;#woutput {1}{yellow}{ } } {5} {default}
+#action {You sing '%1} { #woutput {1}{blue}{$TIME: You sing '%%1} ;#woutput {1}{blue}{ } } {5} {default}
+#action {You say '%1} { #woutput {1}{magenta}{$TIME: You say '%%1};#woutput {1}{magenta}{ } } {5} {default}
+#action {You group-say '%1} { #woutput {1}{red}{$TIME: You group-say '%%1};#woutput {1}{red}{ } } {5} {default}
+#action {You yell '%1} { #woutput {1}{red}{$TIME: You yell '%%1};#woutput {1}{red}{ } } {5} {default}

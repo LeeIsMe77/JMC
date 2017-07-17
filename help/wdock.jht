@@ -1,3 +1,0 @@
-#wdock {wnd} [disable]
-  allows disabling output windows docking to frame sides and docked bars.
-  if this window never was target of wpos then it will be in free fly.

@@ -1,0 +1,4 @@
+/alias {aaa} {/showme {%1}} {default}
+/variable {aaa} {b}
+/ticksize 60
+/message action OFF

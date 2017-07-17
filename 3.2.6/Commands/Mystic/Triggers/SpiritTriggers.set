@@ -1,0 +1,53 @@
+#multiaction on
+#multihighlight on
+#ignore off
+#echo on
+#alias {lookRoom} {#tickoff;targetMe;look;#wait 10;kill $target} {default}
+#alias {reviveMe} {#action {You try to revive $me.}{cast 'revive' $me};#action {Your spell does no good to %1.}{#tickon;#unaction {You try to revive $me.};#unaction {Your spell does no good to %1.}};cast 'revive' $me} {default}
+#alias {buffMe} {cast 'infravision';cast slow $me;cast insight $me} {default}
+#alias {targetMe} {#var {target}{$me}} {default}
+#alias {whoAmI} {#action {You are %1 %2, a %3 (%4) %5 %6.}{#var {me}{%%1};#unaction {You are %1 %2, a %3 (%4) %5 %6.}};info;} {default}
+#action {   Ghostly chills and wails can be heard constantly here, filling the tunnels} {w} {5} {default}
+#action {   Long ago, this place used to lie at the entrance to a very prosperous metal} {open cavein;w} {5} {default}
+#action {   Many sticky cobwebs crisscross the walls here, forming a large wall of} {w} {5} {default}
+#action {   Piles upon piles of stones lie to the east, filling in the large archway} {w} {5} {default}
+#action {   Strange occurrences constantly happen in this place.  The temperature of} {e} {5} {default}
+#action {   The continuation of these mines to the west is blocked off by a large} {e} {5} {default}
+#action {   The mines have sloped downward here from the north, making breathing just a} {s} {5} {default}
+#action {   The mines take a bend to the north here.  Large iron carts line the walls.} {n} {5} {default}
+#action {   The tunnel bends extremely sharply to the west and south here.  The walls} {w} {5} {default}
+#action {   The tunnel comes to a halt here.  There are several large iron carts} {ss} {5} {default}
+#action {   The tunnel forks into two different directions here, north and south.} {n} {5} {default}
+#action {   The tunnel of the minds comes to a fork here, to the north, east, and} {n} {5} {default}
+#action {   The tunnel of the mines takes a steep downward slope to the south here.} {s} {5} {default}
+#action {   The tunnel of this mine bends to the north and west here.  Many large iron} {w} {5} {default}
+#action {   The tunnels of this mine are constantly filled with echoes and cries for} {n} {5} {default}
+#action {   This end of the mines has come to be due to the massive barricade of} {#tickoff;neeessww;open brokenhatch;unnennee;buffMe;reviveMe;whoAmI} {5} {default}
+#action {   This mine seems to be utterly old.  The wooden support beams that line the} {w} {5} {default}
+#action {   This part of the mines comes to a complete halt, due to the large mass of} {ss} {5} {default}
+#action {   This part of the mines comes to a dead end.  Large piles of earth lie} {open brokenhatch;d} {5} {default}
+#action {   This place is filled with the sounds of screaming and crying.  Large heaps} {s} {5} {default}
+#action {You are thirsty.} {drink waterskin} {5} {default}
+#action {It's empty.}{get waterskin all} {5} {default}
+#action {You are hungry.} {get waybread all;eat waybread} {5} {default}
+#action {You feel the time passing by.} {lookRoom} {5} {default}
+#action {You contemplate yourself for a little while.} {#tickon;examine} {5} {default}
+#action {Whom do you want to press?} {#tickon} {5} {default}
+#action {%1 pokes you in the ribs.} {group %1} {5} {default}
+#action {You force your Will against %0's %1!} {#tickoff} {5} {default}
+#action {^A flickering ball of pale flame dances through the air. (shadow)} {#var {target} {flame}} {5} {default}
+#action {^A grey spirit gazes upon you. (shadow)} {#var {target}{spirit}} {5} {default}
+#action {^A hazy figure glides above the ground. (shadow)} {#var {target}{wraith}} {5} {default}
+#action {^A phantom, a spirit of discontent, moans as it floats here. (shadow)} {#var {target}{phantom}} {5} {default}
+#action {^The ghost of a miner is hovering here over a pile of rocks. (shadow)} {#var {target}{ghost}} {5} {default}
+#action {^Your spirit increases by %0.} {#tickon} {5} {default}
+#action {Your mind is not ready yet.} {#WAIT 30;!} {5} {default}
+#action {You hit yourself...OUCH!.} {set mental on;lookRoom} {5} {default}
+#action {You lost your concentration!} {!} {5} {default}
+#variable {me} {Nina}
+#variable {target} {Nina}
+#gag {You feel the time passing by.}
+#substitute {#10 seconds till TICK} { }
+#substitute {#TICK} {You feel the time passing by.}
+#ticksize 11
+#tickon
