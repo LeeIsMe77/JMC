@@ -1,2 +1,0 @@
-jmc.Parse("#use {Utility.js}");
-jmc.Parse("#use {Rescue.js}");

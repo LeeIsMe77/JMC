@@ -1,4 +1,10 @@
-#use Utility.js
+#use {Utility.js}
+#use {GroupMember.js}
+#use {GroupMemberCollection.js}
+#use {LineParser.js}
+#use {Map.js}
+#use {MapCollection.js}
+
 #message action OFF
 #message variable OFF
 #message uses OFF
