@@ -9,8 +9,11 @@
 #alias {cotton-mail} {rem all.cotton;rem shiny;rem boots;wea all.mail} {default}
 
 #comment MAPPING
-#alias {addMap}{#script {AddMap("%0", "%1")}};
+#alias {addMap}{#script {AddMap("%%1", "%%2")}};
+#alias {clearMaps}{#script {ClearMaps()}};
 #alias {showMaps}{#script {ShowMaps()}};
-#alias {showMap}{#script {ShowMap("%0")}};
+#alias {showMap}{#script {ShowMap("%%1")}};
+#alias {showMapIndex}{#script {ShowMapByIndex("%%1")}};
+
 #alias {showPracs}{#script {ShowPracs()}};
-#alias {deleteMap}{#script {DeleteMap("%%0")}};
+#alias {deleteMap}{#script {DeleteMap("%%1")}};

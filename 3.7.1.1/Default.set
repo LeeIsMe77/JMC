@@ -1,3 +1,12 @@
+#use {Utility.js}
+#use {GroupMember.js}
+#use {GroupMemberCollection.js}
+#use {LineParser.js}
+#use {Map.js}
+#use {MapCollection.js}
+#use {Skill.js}
+#use {SkillCollection.js}
+
 #message action OFF
 #message variable OFF
 #message uses OFF
@@ -14,7 +23,9 @@
 #race format %0
 #group local default
 #ticksize 30
-#hotkey {Ctrl+F11}{ #spit {Commands/Mystic/Triggers/SpiritTriggers.set} {%0} {ns};}
-#hotkey {Ctrl+F12}{ #spit {Commands/Mystic/Triggers/ArkenTriggers.set} {%0} {ns};}
-#hot {F12}{#killall;#spit {Default.set} {%0} {ns};post_login}
+#tickoff
+#hotkey {Ctrl+F11}{ #read {Commands/Mystic/Triggers/SpiritTriggers.set};}
+#hotkey {Ctrl+F12}{ #read {Commands/Mystic/Triggers/ArkenTriggers.set};}
+#hotkey {F12}{reset_login}
+#alias {reset_login}{#killall;#spit {Default.set} {%0} {ns};post_login};
 #spit {Commands/Main.set} {%0} {ns}

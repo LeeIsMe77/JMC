@@ -23,6 +23,7 @@
 #alias {5.orc} {#var {target} {5.orc} } {default}
 #alias {5.uruk} {#var {target} {5.uruk} } {default}
 #alias {acolyte} {#var {target} {acolyte} } {default}
+#alias {addMap} {#script {AddMap("%%1", "%%2")}} {default}
 #alias {amoeba} {#var {target} {amoeba} } {default}
 #alias {anaconda} {#var {target} {anaconda} } {default}
 #alias {ar} {#var {target} {ar} } {default}
@@ -31,9 +32,9 @@
 #alias {autocurse} {#if { $autoCurseOn==0}{ #action {You lost your concentration!}{!};#action {You couldn't reach %0 mind.}{cast curse};#var {autoCurseOn}{1};#showme {green}{Auto-Curse Enabled};}{ #unaction {You lost your concentration!};#unaction {You couldn't reach %0 mind.}; #var {autoCurseOn}{0};#showme {red}{Auto-Curse Disabled};};} {default}
 #alias {autodefSum} {#if { $autoDefSumOn==0} { #action {^OB: %0, DB: %1, PB: %2, Speed: %3, Gold: %4, XP Needed: %5.} {#math {defSum}{%%1 + %%2};#showme {green}{Defense Sum: $defSum};};#var {autoDefSumOn}{1};#showme {green}{Auto-DefSum Enabled};}{#unaction {^OB: %0, DB: %1, PB: %2, Speed: %3, Gold: %4, XP Needed: %5.} {#math {defSum}{%%1 + %%2};#showme {green}{Defense Sum: $defSum};};#var {autoDefSumOn}{0};#showme {red}{Auto-DefSum Disabled};};} {default}
 #alias {autoflee} {#if { $autoFleeOn==0} { #action {PANIC!  You couldn't escape!} {flee};#var {autoFleeOn}{1};#showme {green}{Auto-Flee Enabled} }{ #unaction {PANIC!  You couldn't escape!} {flee};#var {autoFleeOn}{0};#showme {red}{Auto-Flee Disabled} };} {default}
-#alias {autonotifytells} {#if { $autoNotifyTells==0} { #action {%0 tells you '%1}{ #systemexec {emailMessage.bat 4436225407@vtext.com "%%0" "'%%1" } };#showme {green}{Auto-Notify-Tells Enabled};#var {autoNotifyTells}{1} }{#unaction {%0 tells you '%1}{ #systemexec {emailMessage.bat 4436225407@vtext.com "%%0" "'%%1" } };#showme {red}{Auto-Notify-Tells Disabled}; #var {autoNotifyTells}{0} }} {default}
+#alias {autonotifytells} {#if {$autoNotifyTells==0}{#action {%0 tells you '%1}{ #systemexec {emailMessage.bat 4436225407@vtext.com "%%0" "'%%1" } };#showme {green}{Auto-Notify-Tells Enabled};#var {autoNotifyTells}{1} }{#unaction {%0 tells you '%1}{ #systemexec {emailMessage.bat 4436225407@vtext.com "%%0" "'%%1" } };#showme {red}{Auto-Notify-Tells Disabled}; #var {autoNotifyTells}{0}}} {default}
 #alias {autorescue} {#if { $autoRescueOn==0} { #action {%0 turns to fight %1!} {rescue %1};#var {autoRescueOn}{1};#showme {green}{Auto-Rescue Enabled};}{ #unaction {%0 turns to fight %1!} {rescue %1};#var {autoRescueOn}{0};#showme {red}{Auto-Rescue Disabled};};} {default}
-#alias {autostatsum} {#if { $autoStatSumOn==0} { #action {^Str: %0/%0, Int: %1/%1, Wil: %2/%2, Dex: %3/%3, Con: %4/%4, Lea: %5/%5.} {#math {statSum}{%%0 + %%1 + %%2 + %%3 + %%4 + %%5};#showme {red}{Stat Sum: $statSum};};#var {autoStatSumOn}{1};#showme {green}{Auto-StatSum Enabled};}{#unaction {^Str: %0/%0, Int: %1/%1, Wil: %2/%2, Dex: %3/%3, Con: %4/%4, Lea: %5/%5.} {#math {statSum}{%%0 + %%1 + %%2 + %%3 + %%4 + %%5};#showme {red}{Stat Sum: $statSum};};#var {autoStatSumOn}{0};#showme {red}{Auto-StatSum Disabled};};} {default}
+#alias {autostatsum} {#if {$autoStatSumOn==0} {#action {^Str: %0/%0, Int: %1/%1, Wil: %2/%2, Dex: %3/%3, Con: %4/%4, Lea: %5/%5.}{#math {statSum}{%%0 + %%1 + %%2 + %%3 + %%4 + %%5};#showme {red}{Stat Sum: $statSum};};#var {autoStatSumOn}{1};#showme {green}{Auto-StatSum Enabled};}{#unaction {^Str: %0/%0, Int: %1/%1, Wil: %2/%2, Dex: %3/%3, Con: %4/%4, Lea: %5/%5.}{#math {statSum}{%%0 + %%1 + %%2 + %%3 + %%4 + %%5};#showme {red}{Stat Sum: $statSum};};#var {autoStatSumOn}{0};#showme {red}{Auto-StatSum Disabled};};} {default}
 #alias {bandit} {#var {target} {bandit} } {default}
 #alias {bat} {#var {target} {bat} } {default}
 #alias {bear} {#var {target} {bear} } {default}
@@ -44,12 +45,16 @@
 #alias {bulky} {#var {target} {bulky} } {default}
 #alias {c} {cast} {default}
 #alias {chieftain} {#var {target} {chieftain} } {default}
+#alias {clearMaps} {#script {ClearMaps()}} {default}
 #alias {cold} {#var {target} {cold} } {default}
 #alias {cotton-mail} {rem all.cotton;rem shiny;rem boots;wea all.mail} {default}
 #alias {cowled} {#var {target} {cowled} } {default}
 #alias {croc} {#var {target} {croc} } {default}
 #alias {cure} {cast 'cure self'} {default}
+#alias {curing-group} {#script {HealGroup(["curing"], false)}} {default}
+#alias {curing-leader} {#script {HealGroup(["curing"], true)}} {default}
 #alias {dark} {#var {target} {dark} } {default}
+#alias {deleteMap} {#script {DeleteMap("%%1")}} {default}
 #alias {demon} {#var {target} {demon} } {default}
 #alias {demonic} {#var {target} {demonic} } {default}
 #alias {dragon} {#var {target} {dragon} } {default}
@@ -73,7 +78,8 @@
 #alias {group-report} {#action {You have %0 hit, %1 stamina, %2 moves, %3 spirit.}{gt Group Report: You have %0 hit, %1 stamina, %2 moves, %3 spirit.;#unaction {You have %0 hit, %1 stamina, %2 moves, %3 spirit.}};sc} {default}
 #alias {group-stat} {#action {Str: %0, Int: %1, Wil: %2, Dex: %3, Con: %4, Lea: %5.}{gt Group Stat: Str: %0, Int: %1, Wil: %2, Dex: %3, Con: %4, Lea: %5.;#unaction {Str: %0, Int: %1, Wil: %2, Dex: %3, Con: %4, Lea: %5.}};stat} {default}
 #alias {guard} {#var {target} {guard} } {default}
-#alias {heal-leader} {cast 'regen' $leader;cast 'curing' $leader; cast 'vit' $leader} {default}
+#alias {heal-group} {#script {HealGroup(["regen", "vitality", "insight", "curing"], false)}} {default}
+#alias {heal-leader} {#script {HealGroup(["regen", "vitality", "insight", "curing"], true)}} {default}
 #alias {heal-mounts} {#loop {1,8}{cast insight %0.mule;cast vit %0.mule;cast rest %0.mule;cast insight %0.horse;cast vit %0.horse;cast rest %0.horse}} {default}
 #alias {hobbit} {#var {target} {hobbit} } {default}
 #alias {howmany} {#var {itemCount}{0};#action {%%1}{#math {itemCount}{$itemCount + 1}};#action {(%9) :}{#highlight {green}{%%%1};#action {>}{#highlight {normal}{%%%1};#unaction {%%%1};#unaction {(%9) :};#unaction {>};#showme {green}{There are $itemCount %%1s in your %%2.};#var {itemCount}{0}};};exa %2;} {default}
@@ -82,14 +88,16 @@
 #alias {huorn} {#var {target} {huorn} } {default}
 #alias {ice} {#var {target} {ice} } {default}
 #alias {icy} {#var {target} {icy} } {default}
+#alias {initialize-group} {#script {InitializeGroup()} } {default}
 #alias {insight-group} {#action {HP:%0,%1S:%2,%3MV:%4 -- %5}{cast in %5};#action {You start to concentrate.}{#unaction {HP:%0,%1S:%2,%3MV:%4 -- %5};#unaction {You start to concentrate.}};group;} {default}
+#alias {insight-leader} {#script {HealGroup(["insight"], true)}} {default}
 #alias {interloper} {#var {target} {interloper} } {default}
 #alias {kabaal} {#var {target} {kabaal} } {default}
 #alias {karvok} {#var {target} {karvok} } {default}
 #alias {kraken} {#var {target} {kraken} } {default}
 #alias {lazora} {#var {target} {lazora} } {default}
 #alias {lion} {#var {target} {lion} } {default}
-#alias {load_profile} { #unaction {You are %1 %2, %3 %4 (%5) %6 %7.};#spit {Commands/Profiles/%%1.set} {%0} {ns};} {default}
+#alias {load_profile} { #unaction {You are %1 the %2, %3 %4 (%5) %6 %7.};#read {Commands/Profiles/%%1.set};} {default}
 #alias {loyal} {#var {target} {loyal} } {default}
 #alias {lunaron} {#var {target} {lunaron} } {default}
 #alias {lunk} {#var {target} {lunk} } {default}
@@ -112,21 +120,29 @@
 #alias {orc} {#var {target} {1.orc} } {default}
 #alias {pale} {#var {target} {pale} } {default}
 #alias {pool} {#var {target} {pool} } {default}
-#alias {post_login} { #action {You are %1 %2, %3 %4 (%5) %6 %7.} {load_profile %1};blow eye;info } {default}
+#alias {post_login} { #action {You are %1 the %2, %3 %4 (%5) %6 %7.} {load_profile %1;#var {me}{%%1}};blow eye;info } {default}
 #alias {pray-all} {#action {[%0] %1 %2}{pray %1};#action {%0 %1 displayed.}{#unaction {%0 %1 displayed.};#unaction {[%0] %1 %2} };who} {default}
 #alias {priest} {#var {target} {priest} } {default}
 #alias {priestess} {#var {target} {priestess} } {default}
 #alias {queen} {#var {target} {queen} } {default}
 #alias {regen-group} {#action {HP:%0,%1S:%2,%3MV:%4 -- %5}{cast regen %5};#action {You start to concentrate.}{#unaction {HP:%0,%1S:%2,%3MV:%4 -- %5};#unaction {You start to concentrate.}};group;} {default}
+#alias {regen-leader} {#script {HealGroup(["regen"], true)}} {default}
+#alias {reset_login} {#killall;#spit {Default.set} {%0} {ns};post_login} {default}
 #alias {rest-group} {#action {HP:%0,%1S:%2,%3MV:%4 -- %5}{cast rest %5};#action {You start to concentrate.}{#unaction {HP:%0,%1S:%2,%3MV:%4 -- %5};#unaction {You start to concentrate.}};group;} {default}
+#alias {rest-leader} {#script {HealGroup(["rest"], true)}} {default}
 #alias {royal} {#var {target} {royal} } {default}
 #alias {serpent} {#var {target} {serpent} } {default}
 #alias {set_leader} { #var leader {%%0};#action {$leader mounts} {ride};#action {$leader stops riding} {dism} } {default}
 #alias {setcolor} {colour say magenta;colour tell magenta;colour chat cyan;colour hit bright blue;colour damage bright red;colour char green;colour room blue;colour object blue} {default}
 #alias {shadowy} {#var {target} {shadowy} } {default}
 #alias {shaman} {#var {target} {shaman} } {default}
+#alias {showMap} {#script {ShowMap("%%1")}} {default}
+#alias {showMapIndex} {#script {ShowMapByIndex("%%1")}} {default}
+#alias {showMaps} {#script {ShowMaps()}} {default}
+#alias {showPracs} {#script {ShowPracs()}} {default}
 #alias {skeleton} {#var {target} {skeleton} } {default}
 #alias {slow-group} {#action {HP:%0,%1S:%2,%3MV:%4 -- %5}{cast slow %5};#action {You start to concentrate.}{#unaction {HP:%0,%1S:%2,%3MV:%4 -- %5};#unaction {You start to concentrate.}};group;} {default}
+#alias {slow-leader} {#script {HealGroup(["slow"], true)}} {default}
 #alias {slug} {#var {target} {slug} } {default}
 #alias {spectral} {#var {target} {spectral} } {default}
 #alias {spider} {#var {target} {spider} } {default}
@@ -150,6 +166,7 @@
 #alias {vine} {#var {target} {vine} } {default}
 #alias {vit} {cast 'vitalize self'} {default}
 #alias {vit-group} {#action {HP:%0,%1S:%2,%3MV:%4 -- %5}{cast vit %5};#action {You start to concentrate.}{#unaction {HP:%0,%1S:%2,%3MV:%4 -- %5};#unaction {You start to concentrate.}};group;} {default}
+#alias {vit-leader} {#script {HealGroup(["vitality"], true)}} {default}
 #alias {warg} {#var {target} {warg} } {default}
 #alias {warlock} {#var {target} {warlock} } {default}
 #alias {werewolf} {#var {target} {werewolf} } {default}
@@ -183,7 +200,6 @@
 #action {Your spirit increases by %0.} {#math {spiritReceived}{$spiritReceived + %%0};#status {5}{Spirit: $spiritReceived}{light blue}} {5} {default}
 #action {You receive your share of experience -- %0 points.} {#math {xpReceived}{$xpReceived + %%0};#status {4}{XP Gained: $xpReceived}{light blue}} {5} {default}
 #action {You force your Will against %0's concentration!} {#math {spiritReceived}{$spiritReceived + 2};#status {5}{Spirit: $spiritReceived}{light blue}} {5} {default}
-#action {You have %0/%1 hit, %2/%3 stamina, %4/%5 moves, %6 spirit.} {#status {1}{HP: %%0/%%1}{light blue};#status {2}{MP: %%2/%%3}{light blue};#status {3}{MV: %%4/%%5}{light blue}; } {5} {default}
 #action {You are hungry.} {get $foodsource all;eat $foodsource} {5} {default}
 #action {You are thirsty.} {#2 drink $watersource} {5} {default}
 #action {^You now follow %1.} {set_leader %1} {5} {default}
@@ -519,8 +535,6 @@
 #substitute {Gleaming Eyes%0Exits are: N E S} {Gleaming Eyes -  Room Exits: N E S  Front: snenw  Back: ene}
 #substitute {Gloomy Trees%0Exits are: E S} {Gloomy Trees -  Room Exits: E S  Front: esnnnww  Back: None}
 #substitute {Grasping Thorns%0Exits are: N W} {Grasping Thorns -  Room Exits: N W  Front: wwnnww  Back: None}
-#substitute {HP:  %0,     S:%1, MV:%2 -- a white and grey cat} {.}
-#substitute {HP:  %0,     S:%1, MV:%2 -- someone} {.}
 #substitute {Hairy Trees%0Exits are: N E S} {Hairy Trees -  Room Exits: N E S  Front: esew  Back: None}
 #substitute {Heartless Trees%0Exits are: S W} {Heartless Trees -  Room Exits: S W  Front: wnnwenw  Back: None}
 #substitute {Hedge of Thorns%0Exits are: N E S W} {Hedge of Thorns -  Room Exits: N E S W  Front: sessesw  Back: None}
@@ -616,12 +630,20 @@
 #hot {F1} {#connect rotsmud.dyndns.org 3791} {default}
 #hot {F7} {#action {PANIC!  You couldn't escape!}{flee}} {default}
 #hot {F9} {#unaction {PANIC!  You couldn't escape!}} {default}
-#hot {F12} {#killall;#spit {Default.set} {%0} {ns};post_login} {default}
+#hot {F12} {reset_login} {default}
 #hot {Ctrl+R} {ride} {default}
 #hot {Ctrl+A} {assist $leader} {default}
 #hot {Ctrl+D} {dismount} {default}
 #hot {Ctrl+B} {bash} {default}
-#hot {Ctrl+F11} { #spit {Commands/Mystic/Triggers/SpiritTriggers.set} {%0} {ns};} {default}
-#hot {Ctrl+F12} { #spit {Commands/Mystic/Triggers/ArkenTriggers.set} {%0} {ns};} {default}
+#hot {Ctrl+F11} { #read {Commands/Mystic/Triggers/SpiritTriggers.set};} {default}
+#hot {Ctrl+F12} { #read {Commands/Mystic/Triggers/ArkenTriggers.set};} {default}
+#use {Utility.js}
+#use {GroupMember.js}
+#use {GroupMemberCollection.js}
+#use {LineParser.js}
+#use {Map.js}
+#use {MapCollection.js}
+#use {Skill.js}
+#use {SkillCollection.js}
 #group local default
 #ticksize 30

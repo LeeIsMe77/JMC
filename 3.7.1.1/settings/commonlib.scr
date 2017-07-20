@@ -1,3 +1,0 @@
-Sub Jmc_Incoming (line)
-    Jmc.Output "We got line from mud: " + line, "red"
-End sub

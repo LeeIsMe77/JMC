@@ -3,22 +3,19 @@
 #message uses OFF
 #multiaction on
 #multihighlight on
-#presub on
+#presub off
 #echo off
 #ignore off
-#speedwalk on
+#speedwalk off
 #togglesubs off
 #verbat off
-#colon leave
+#colon replace
 #comment #
 #race format %0
 #proxy {disable}
 #secure {disable}
 #codepage {iso-8859-1}
 #telnet {debug} {off}
-#oob {GMCP} {disable}
-#oob {MSDP} {disable}
-#oob {MSSP} {disable}
 #broadcast {filterip} {on}
 #broadcast {filterport} {on}
 #broadcast {port} {8136}
@@ -35,6 +32,7 @@
 #alias {5.orc} {#var {target} {5.orc} } {default}
 #alias {5.uruk} {#var {target} {5.uruk} } {default}
 #alias {acolyte} {#var {target} {acolyte} } {default}
+#alias {addMap} {#script {AddMap("%%1", "%%2")}} {default}
 #alias {amoeba} {#var {target} {amoeba} } {default}
 #alias {anaconda} {#var {target} {anaconda} } {default}
 #alias {ar} {#var {target} {ar} } {default}
@@ -56,14 +54,16 @@
 #alias {bulky} {#var {target} {bulky} } {default}
 #alias {c} {cast} {default}
 #alias {chieftain} {#var {target} {chieftain} } {default}
+#alias {clearMaps} {#script {ClearMaps()}} {default}
 #alias {cold} {#var {target} {cold} } {default}
-#alias {cotton-mail} {rem all.cotton;rem shiny;rem soft;wea all.mail;wea all.chain} {default}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem boots;wea all.mail} {default}
 #alias {cowled} {#var {target} {cowled} } {default}
 #alias {croc} {#var {target} {croc} } {default}
 #alias {cure} {cast 'cure self'} {default}
 #alias {curing-group} {#script {HealGroup(["curing"], false)}} {default}
 #alias {curing-leader} {#script {HealGroup(["curing"], true)}} {default}
 #alias {dark} {#var {target} {dark} } {default}
+#alias {deleteMap} {#script {DeleteMap("%%1")}} {default}
 #alias {demon} {#var {target} {demon} } {default}
 #alias {demonic} {#var {target} {demonic} } {default}
 #alias {dragon} {#var {target} {dragon} } {default}
@@ -106,14 +106,14 @@
 #alias {kraken} {#var {target} {kraken} } {default}
 #alias {lazora} {#var {target} {lazora} } {default}
 #alias {lion} {#var {target} {lion} } {default}
-#alias {load_profile} { #unaction {You are %1 %2, %3 %4 (%5) %6 %7.};#read {Commands/Profiles/%%1.set};} {default}
+#alias {load_profile} { #unaction {You are %1 the %2, %3 %4 (%5) %6 %7.};#read {Commands/Profiles/%%1.set};} {default}
 #alias {loyal} {#var {target} {loyal} } {default}
 #alias {lunaron} {#var {target} {lunaron} } {default}
 #alias {lunk} {#var {target} {lunk} } {default}
 #alias {mage} {#var {target} {mage} } {default}
 #alias {magi} {#var {target} {magi} } {default}
 #alias {magus} {#var {target} {magus} } {default}
-#alias {mail-cotton} {rem all.mail;rem all.chain;wea shiny;wea soft;wea all.cotton} {default}
+#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea soft} {default}
 #alias {man} {#var {target} {man} } {default}
 #alias {marble} {#var {target} {marble} } {default}
 #alias {master} {#var {target} {master} } {default}
@@ -127,10 +127,9 @@
 #alias {olog} {#var {target} {olog} } {default}
 #alias {omarr} {#var {target} {omarr} } {default}
 #alias {orc} {#var {target} {1.orc} } {default}
-#alias {p} {cast chill} {default}
 #alias {pale} {#var {target} {pale} } {default}
 #alias {pool} {#var {target} {pool} } {default}
-#alias {post_login} { #action {You are %1 %2, %3 %4 (%5) %6 %7.} {load_profile %1};blow eye;info } {default}
+#alias {post_login} { #action {You are %1 the %2, %3 %4 (%5) %6 %7.} {load_profile %1;#var {me}{%%1}};blow eye;info } {default}
 #alias {pray-all} {#action {[%0] %1 %2}{pray %1};#action {%0 %1 displayed.}{#unaction {%0 %1 displayed.};#unaction {[%0] %1 %2} };who} {default}
 #alias {priest} {#var {target} {priest} } {default}
 #alias {priestess} {#var {target} {priestess} } {default}
@@ -146,6 +145,10 @@
 #alias {setcolor} {colour say magenta;colour tell magenta;colour chat cyan;colour hit bright blue;colour damage bright red;colour char green;colour room blue;colour object blue} {default}
 #alias {shadowy} {#var {target} {shadowy} } {default}
 #alias {shaman} {#var {target} {shaman} } {default}
+#alias {showMap} {#script {ShowMap("%%1")}} {default}
+#alias {showMapIndex} {#script {ShowMapByIndex("%%1")}} {default}
+#alias {showMaps} {#script {ShowMaps()}} {default}
+#alias {showPracs} {#script {ShowPracs()}} {default}
 #alias {skeleton} {#var {target} {skeleton} } {default}
 #alias {slow-group} {#action {HP:%0,%1S:%2,%3MV:%4 -- %5}{cast slow %5};#action {You start to concentrate.}{#unaction {HP:%0,%1S:%2,%3MV:%4 -- %5};#unaction {You start to concentrate.}};group;} {default}
 #alias {slow-leader} {#script {HealGroup(["slow"], true)}} {default}
@@ -225,15 +228,13 @@
 #variable {autoNotifyTells} {0}
 #variable {autoRescueOn} {0}
 #variable {autoStatSumOn} {1}
-#variable {defSum} {86}
-#variable {foodsource} {flesh}
-#variable {isWearingArmor} {0}
-#variable {isWieldingStaff} {1}
+#variable {defSum} {0}
+#variable {foodsource} {waybread}
 #variable {leader} {self}
 #variable {spiritReceived} {0}
-#variable {statSum} {80}
-#variable {watersource} {flask}
-#variable {xpReceived} {71180}
+#variable {statSum} {0}
+#variable {watersource} {waterskin}
+#variable {xpReceived} {0}
 #highlight {light magenta} {%0 has recovered from a bash!} {default}
 #highlight {light red,b black} {%1 appears to be confused!} {default}
 #highlight {red} {A huge boulder looks as though it could fall at any moment.} {default}
@@ -636,26 +637,22 @@
 #substitute {Whispering Pines%0Exits are: S W} {Whispering Pines -  Room Exits: S W  Front: wewnesew  Back: None}
 #substitute {You feel the time passing by.} {.}
 #hot {F1} {#connect rotsmud.dyndns.org 3791} {default}
-#hot {F7} {rem staff;wie sword;butch;rem sword;wie staff} {default}
-#hot {F9} { #if {$isWieldingStaff==0}{ #var {isWieldingStaff}{1};rem sword;wield staff}{ #var {isWieldingStaff}{0};rem staff;wield sword} } {default}
-#hot {F10} { #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } } {default}
+#hot {F7} {#action {PANIC!  You couldn't escape!}{flee}} {default}
+#hot {F9} {#unaction {PANIC!  You couldn't escape!}} {default}
 #hot {F12} {reset_login} {default}
-#hot {Ctrl+Q} {cast magic} {default}
 #hot {Ctrl+R} {ride} {default}
-#hot {Ctrl+I} {cast searing} {default}
-#hot {Ctrl+O} {cast chill} {default}
-#hot {Ctrl+P} {cast dark} {default}
 #hot {Ctrl+A} {assist $leader} {default}
 #hot {Ctrl+D} {dismount} {default}
-#hot {Ctrl+H} {cast flash} {default}
-#hot {Ctrl+J} {cast cone} {default}
 #hot {Ctrl+B} {bash} {default}
 #hot {Ctrl+F11} { #read {Commands/Mystic/Triggers/SpiritTriggers.set};} {default}
 #hot {Ctrl+F12} { #read {Commands/Mystic/Triggers/ArkenTriggers.set};} {default}
 #use {Utility.js}
-#use {Rescue.js}
-#use {AfkTimer.js}
-#use {ArkenTimer.js}
-#use {GroupManagement.js}
+#use {GroupMember.js}
+#use {GroupMemberCollection.js}
+#use {LineParser.js}
+#use {Map.js}
+#use {MapCollection.js}
+#use {Skill.js}
+#use {SkillCollection.js}
 #group local default
 #ticksize 30
