@@ -1,11 +1,7 @@
-#use {Utility.js}
-#use {GroupMember.js}
-#use {GroupMemberCollection.js}
-#use {LineParser.js}
-#use {Map.js}
-#use {MapCollection.js}
-#use {Skill.js}
-#use {SkillCollection.js}
+#use {Classes.js}
+#use {JMCUtility.js}
+#use {CascadeEvents.js}
+#use {JMCEvents.js}
 
 #message action OFF
 #message variable OFF

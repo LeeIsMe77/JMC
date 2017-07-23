@@ -1,7 +1,7 @@
+
 //*********************************************************************************************************************
 //"Enums", or as close as we can get in javascript...
 //*********************************************************************************************************************
-
 ExitTypes = {
     Cave: "Cave",
     Entrance: "Entrance",
@@ -14,7 +14,6 @@ ZoneTypes = {
     Faroth: "Faroth",
     Vale: "Vale"
 }
-
 //*********************************************************************************************************************
 //End Enums
 //*********************************************************************************************************************
@@ -22,164 +21,8 @@ ZoneTypes = {
 
 
 //*********************************************************************************************************************
-//Fields
-//*********************************************************************************************************************
-
-var _farothExits = CreateFarothExits();
-var _currentRoomName = "";
-var _currentZone = ZoneTypes.None;
-var _exitOutputWindow = 3;
-
-//*********************************************************************************************************************
-//End Fields
-//*********************************************************************************************************************
-
-
-
-//*********************************************************************************************************************
-//Event Registering
-//*********************************************************************************************************************
-
-jmc.RegisterHandler("Incoming", "OnIncoming()")
-
-//*********************************************************************************************************************
-//End Event Registering
-//*********************************************************************************************************************
-
-
-
-//*********************************************************************************************************************
-//Events
-//*********************************************************************************************************************
-
-function OnIncoming() {
-	var incomingLine = jmc.Event;
-	ParseForExitLine(incomingLine);
-}
-
-//*********************************************************************************************************************
-//End Events
-//*********************************************************************************************************************
-
-
-
-//*********************************************************************************************************************
-//Exit Commands
-//*********************************************************************************************************************
-
-function AutoExits(zoneType){
-    if (_currentZone === zoneType) return;
-
-    var previousZone = _currentZone;
-    
-    jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{ }");
-    if (previousZone !== ZoneTypes.None){
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{red}{" + previousZone + " exits disabled.}");
-    }
-    _currentZone = zoneType;
-    switch (zoneType){
-        case ZoneTypes.None:        
-            break;
-        case ZoneTypes.Faroth:
-        case ZoneTypes.Vale:
-            jmc.Parse("#woutput {" + _exitOutputWindow + "}{green}{" + _currentZone + " exits enabled.}");
-            break;        
-    }
-    jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{ }");
-}
-
-function ListExits(){
-    try{
-        if (_currentRoomName === "") return;
-        var room = _farothExits.GetRoom(_currentRoomName);
-        if (room === null) throw "Unable to load room \"" + _currentRoomName + "\"";
-        //jmc.Parse("#wclear {" + _exitOutputWindow + "}");
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{ }");
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{blue}{" + _currentRoomName + "}");
-        for (var index = 0;index < room.Exits.length;index++){
-            var exit = room.Exits[index];
-            jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{" + exit.ExitType + ": " + exit.ExitDirections + "}");
-        }
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{ }");
-    }
-    catch (exception){
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{ }");
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{red}{Failure listing exits:}");
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{red}{" + exception + "}");
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{ }");
-    }
-}
-
-function NavigateToExit(exitType){
-    try{
-        if (_currentRoomName === "") return;
-        
-        var room = _farothExits.GetRoom(_currentRoomName);
-        if (room === null) throw "Unable to load room " + _currentRoomName;
-        
-        var exit = room.GetExit(exitType);
-        if (exit === null) throw "The exit \"" + exitType + "\" doesn't exist for room \"" + _currentRoomName + "\".";
-
-        if (exit.ExitDirections === "") throw "No exits exist.  Are you at the " + exitType + "?";
-    
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{ }");
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{green}{Navigating to \"" + exitType + "\"... }")
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{ }");
-        jmc.Parse(exit.ExitDirections);
-
-    }
-    catch (exception){
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{ }");
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{red}{Failure navigating to " + exitType + ":}");
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{red}{" + exception + "}");
-        jmc.Parse("#woutput {" + _exitOutputWindow + "}{normal}{ }");
-    }
-}
-
-//*********************************************************************************************************************
-//End Exit Commands
-//*********************************************************************************************************************
-
-
-
-//*********************************************************************************************************************
-//Line Parsing
-//*********************************************************************************************************************
-
-function ParseForExitLine(incomingLine){
-    try{
-        if (_currentZone === ZoneTypes.None) return;
-        var ansiRegex = new RegExp("[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]?", "g");
-        var cleanLine = incomingLine.replace(ansiRegex, "");        
-        var roomNameReg = new RegExp("(?:.*>)?([a-zA-Z\- ]+)    Exits are: (.+)")
-        var matches = cleanLine.match(roomNameReg);
-        if (matches !== null && matches.length >= 2){
-            _currentRoomName = matches[1];
-            var room = null;
-            switch (_currentZone){
-                case ZoneTypes.Faroth:
-                    room = _farothExits.GetRoom(_currentRoomName);
-                    break;
-            }
-            if (room === null) return;
-            jmc.Event = jmc.Event + " | " + room.GetExitString();
-        }
-    }
-    catch (exception){
-        jmc.Parse("#woutput {" + _exceptionWindow + "}{red}{Failure parsing exit line: " + exception + "}");
-    }
-}
-
-//*********************************************************************************************************************
-//End Line Parsing
-//*********************************************************************************************************************
-
-
-
-//*********************************************************************************************************************
 //Room Exit Classes
 //*********************************************************************************************************************
-
 function Exit(exitType, exitDirections){
     this.ExitType = exitType;
     this.ExitDirections = exitDirections;
@@ -221,7 +64,6 @@ function Zone(zoneType){
         return null;
     }
 }
-
 //*********************************************************************************************************************
 //End Room Exit Classes
 //*********************************************************************************************************************
@@ -229,9 +71,262 @@ function Zone(zoneType){
 
 
 //*********************************************************************************************************************
-//Create Faroth Exits
+//Mapping Classes
+//*********************************************************************************************************************
+function Map(mapName, variableName){    
+    this.Content = new Array();
+    this.MapName = mapName;
+    this.VariableName = variableName;
+}
+
+function MapCollection() {
+    this.Maps = new Array();
+    
+    //Add a map to the maps collection.    
+    this.Add = function(mapName, variableName){
+        if (mapName === "") throw "The map name cannot be blank.";
+        if (variableName === "") throw "The variable name cannot be blank."
+        if (this.IndexOf(mapName) !== -1) throw "Map name " + mapName + " already exists.";        
+        var map = new Map(mapName, variableName);
+        this.Maps.push(map);
+        return map;
+    }
+
+    //Resets the maps collection.
+    this.Clear = function() {
+        this.Maps = new Array();
+    };
+        
+    this.Count = function(){
+        return this.Maps.length;
+    }
+    
+    //Retrieve the map from the maps collection by the specified map name.
+    this.GetMap = function(mapName){
+        for (var index = 0;index < this.Maps.length;index++){
+            var currentMap = this.Maps[index];        
+            if (currentMap.MapName === mapName){
+                return currentMap;
+            }
+        }
+        return null;
+    }
+
+    this.GetMapByIndex = function(index) {
+        if (index >= -1) throw "Index must be greater than or equal to 0.";
+        if (index >= this.Maps.length) throw "Index is outside the bounds of the map collection."
+        return this.Maps[index];
+    }
+    
+    //Retrieve the ordinal index of a map name in the maps collection.
+    this.IndexOf = function(mapName){
+        for (var index = 0;index < this.Maps.length;index++){
+            var currentMap = this.Maps[index];        
+            if (currentMap.MapName === mapName){
+                return index;
+            }
+        }
+        return -1;
+    }
+    
+    //Remove a map from the map collection.
+    this.Remove = function(mapName){
+        var index = this.IndexOf(mapName);
+        if (index === -1) throw "Map name " + mapName + " does not exist in the map collection.";
+        this.Maps.splice(index, 1);
+    }
+}
+//*********************************************************************************************************************
+//End Mapping Classes
 //*********************************************************************************************************************
 
+
+
+//*********************************************************************************************************************
+//Skill Classes
+//*********************************************************************************************************************
+// function Skill(skillName, skillLevel){    
+//     this.SkillName = skillName;
+//     this.SkillLevel = skillLevel;
+// }
+
+// function SkillCollection() {
+    
+//     this.Skills = new Array();
+    
+//     //Add a skill to the skills collection.
+//     this.Add = function(skillName, skillLevel){
+//         if (this.IndexOf(skillName) !== -1) return;
+//         var skill = new Skill(skillName, skillLevel);
+//         this.Skills.push(skill);
+//         jmc.ShowMe(skillName + " has been added to the skill collection.", "blue");
+//         return skill;
+//     }
+
+//     //Resets the skills collection.
+//     this.Clear = function() {
+//         this.Skills = new Array();
+//     };
+
+//     this.Count = function(){
+//         return this.Skills.length;
+//     }
+    
+//     //Retrieve the skill from the skills collection by the specified skill name.
+//     this.GetSkill = function(skillName){
+//         for (var index = 0;index < this.Skills.length;index++){
+//             var currentSkill = this.Skills[index];        
+//             if (currentSkill.SkillName === skillName){
+//                 return currentSkill;
+//             }
+//         }
+//         return null;
+//     }
+    
+//     //Retrieve the ordinal index of a skill name in the skills collection.
+//     this.IndexOf = function(skillName){
+//         for (var index = 0;index < this.Skills.length;index++){
+//             var currentSkill = this.Skills[index];        
+//             if (currentSkill.SkillName === skillName){
+//                 return index;
+//             }
+//         }
+//         return -1;
+//     }
+    
+//     //List all skill names in a comma delimited format.
+//     this.ListSkills = function(){
+//         jmc.Parse("#wclear 0");
+//         jmc.Output("Registered skills: " + this.Skills.length, "green");
+//         for (var index = 0;index < this.Skills.length;index++){
+//             jmc.Output("Skill Name: " + this.Skills[index].SkillName + ", Skill Level: " + this.Skills[index].SkillLevel);
+//         }
+//         jmc.Output("");
+//     }
+    
+//     //Remove a skill from the skill collection.
+//     this.Remove = function(skillName){
+//         var index = this.IndexOf(skillName);
+//         if (index !== -1){
+//             this.Skills.splice(index, 1);
+//             jmc.ShowMe(skillName + " has been removed from the skill collection.", "blue");
+//         }
+//     }
+// }
+//*********************************************************************************************************************
+//End Skill Classes
+//*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
+//Group Classes
+//*********************************************************************************************************************
+function GroupMember(memberName, isLeader){
+    this.MemberName = memberName;
+    this.IsLeader = isLeader;
+    this.MutilateCount = 0;
+    this.FriendlyName = function(){
+        if (this.IsLeader){
+            return this.MemberName + " (Leader)";
+        }
+        return this.MemberName;
+    }
+    this.IncrementMutilateCount = function(){
+        this.MutilateCount++;
+    }
+    this.ClearMutilates = function(){
+        this.MutilateCount = 0;
+    }
+}
+
+
+function GroupMemberCollection(){
+    
+    this.GroupMembers = new Array();
+
+    //Add a member to the group members collection.
+    this.Add = function(memberName, isLeader){
+        var groupMember = new GroupMember(memberName, isLeader);
+        this.GroupMembers.push(groupMember);
+        jmc.ShowMe(groupMember.FriendlyName() + " has been added to the group.", "blue");
+        return groupMember;
+    }
+
+    //Resets the group members collection.
+    this.Clear = function() {
+        this.GroupMembers = [];
+    };
+
+    this.Count = function(){
+        return this.GroupMembers.length;
+    }
+    
+    //Retrieve the member from the group members collection by the specified group member name.
+    this.GetMember = function(memberName){
+        for (var index = 0;index < this.GroupMembers.length;index++){
+            var currentMember = this.GroupMembers[index];        
+            if (currentMember.MemberName === memberName){
+                return currentMember;
+            }
+        }
+        return null;
+    }
+    
+    //Retrieve the ordinal index of a member name in the group members collection.
+    this.IndexOf = function(memberName){
+        for (var index = 0;index < this.GroupMembers.length;index++){
+            var currentMember = this.GroupMembers[index];        
+            if (currentMember.MemberName === memberName){
+                return index;
+            }
+        }
+        return -1;
+    }
+    
+    //List all group member names in a comma delimited format.
+    this.ListMembers = function(){
+        var stringArray = new Array();
+        for (var index = 0; index < this.Count(); index++){
+            var currentMember = this.GroupMembers[index];
+            stringArray.push(currentMember.FriendlyName());
+        }
+        return stringArray.join(", ");
+    }
+    
+    //Remove a member from the group member collection.
+    this.Remove = function(memberName){
+        var index = this.IndexOf(memberName);
+        if (index !== -1){
+            var groupMemberName = this.GroupMembers[index].FriendlyName();        
+            this.GroupMembers.splice(index, 1);
+            jmc.ShowMe(groupMemberName + " has been added to the group.", "blue");
+        }
+    }
+
+    this.ListMutilates = function(){
+        jmc.Send("gt Mutilate Statistics:")
+        for (var index = 0;index < this.GroupMembers.length;index++){
+            var currentMember = this.GroupMembers[index];        
+            jmc.Send("gt " + currentMember.MemberName + ": " + currentMember.MutilateCount);
+        }
+    }
+
+    this.IncrementMutilateCount = function(memberName){
+        var index = this.IndexOf(memberName);
+        if (index === -1) return;
+        this.GroupMembers[index].IncrementMutilateCount();
+    }
+}
+//*********************************************************************************************************************
+//Group Classes
+//*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
+//Create Faroth Exits
+//*********************************************************************************************************************
 function CreateFarothExits(){
 
     var zone = new Zone(ZoneTypes.Faroth);
@@ -1233,7 +1328,6 @@ function CreateFarothExits(){
     return zone;
 
 }
-
 //*********************************************************************************************************************
 //End Create Faroth Exits
 //*********************************************************************************************************************

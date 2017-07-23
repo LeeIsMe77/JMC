@@ -6,26 +6,7 @@
 #action {^$leader says 'rest'} {rest} {5} {default}
 #action {^$leader says 'stand'} {stand} {5} {default}
 
-#COMMENT #alias {initialize-group} {#action {Your group consists of:}{#action {>}{#unaction {Your group consists of:};#unaction {>};#unaction {HP:%0,%1S:%2,%3MV:%4 -- %5}};#action {HP:%0,%1S:%2,%3MV:%4 -- %5}{#script {AddMember("%%5")}}};#script {ClearGroup()};group;} {default}
-
-
-#alias {initialize-group} {#script {InitializeGroup()} } {default}
-#alias {heal-group}{#script {HealGroup(["regen", "vitality", "insight", "curing"], false)}}
-#alias {regen-group}{#script {HealGroup(["regen"], false)}}
-#alias {vit-group}{#script {HealGroup(["vitality"], false)}}
-#alias {curing-group}{#script {HealGroup(["curing"], false)}}
-#alias {insight-group}{#script {HealGroup(["insight"], false)}}
-#alias {rest-group}{#script {HealGroup(["rest"], false)}}
-#alias {slow-group}{#script {HealGroup(["slow"], false)}}
-#alias {heal-leader}{#script {HealGroup(["regen", "vitality", "insight", "curing"], true)}};
-#alias {regen-leader}{#script {HealGroup(["regen"], true)}}
-#alias {vit-leader}{#script {HealGroup(["vitality"], true)}}
-#alias {curing-leader}{#script {HealGroup(["curing"], true)}}
-#alias {insight-leader}{#script {HealGroup(["insight"], true)}}
-#alias {rest-leader}{#script {HealGroup(["rest"], true)}}
-#alias {slow-leader}{#script {HealGroup(["slow"], true)}}
-
-#COMMENT #alias {heal-leader} {cast 'regen' $leader;cast 'curing' $leader; cast 'vit' $leader} {default}
+#alias {heal-leader} {cast 'regen' $leader;cast 'curing' $leader; cast 'vit' $leader} {default}
 #alias {heal-mounts} {#loop {1,8}{cast insight %0.mule;cast vit %0.mule;cast rest %0.mule;cast insight %0.horse;cast vit %0.horse;cast rest %0.horse}} {default}
 #alias {vit-group} {#action {HP:%0,%1S:%2,%3MV:%4 -- %5}{cast vit %5};#action {You start to concentrate.}{#unaction {HP:%0,%1S:%2,%3MV:%4 -- %5};#unaction {You start to concentrate.}};group;} {default}
 #alias {slow-group} {#action {HP:%0,%1S:%2,%3MV:%4 -- %5}{cast slow %5};#action {You start to concentrate.}{#unaction {HP:%0,%1S:%2,%3MV:%4 -- %5};#unaction {You start to concentrate.}};group;} {default}

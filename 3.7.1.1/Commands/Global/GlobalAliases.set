@@ -8,12 +8,10 @@
 #alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea soft}
 #alias {cotton-mail} {rem all.cotton;rem shiny;rem boots;wea all.mail} {default}
 
-#comment MAPPING
-#alias {addMap}{#script {AddMap("%%1", "%%2")}};
-#alias {clearMaps}{#script {ClearMaps()}};
-#alias {showMaps}{#script {ShowMaps()}};
-#alias {showMap}{#script {ShowMap("%%1")}};
-#alias {showMapIndex}{#script {ShowMapByIndex("%%1")}};
 
-#alias {showPracs}{#script {ShowPracs()}};
-#alias {deleteMap}{#script {DeleteMap("%%1")}};
+#alias {farothOn}{#script {AutoExits(ZoneTypes.Faroth)}}
+#alias {farothOff}{#script {AutoExits(ZoneTypes.None)}}
+#alias {showExits}{#script {ListExits()}}
+#alias {ent}{#script {NavigateToExit(ExitTypes.Entrance)}}
+#alias {gotoCave}{#script {NavigateToExit(ExitTypes.Cave)}}
+#alias {gotoMumak}{#script {NavigateToExit(ExitTypes.Mumak)}}

@@ -1,8 +1,5 @@
 #var {isWearingArmor}{0}
 #hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
-#var {isWieldingStaff}{0}
-#hotkey {F9}{ #if {$isWieldingStaff==0}{ #var {isWieldingStaff}{1};rem sword;wield staff}{ #var {isWieldingStaff}{0};rem staff;wield sword} }
-
 #var {watersource}{flask}
 #var {foodsource}{flesh}
 
