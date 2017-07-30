@@ -34,6 +34,15 @@ Date.prototype.toFriendlyDateString = function(){
     return [year, month, day].join('-');
 }
 
+Array.prototype.clean = function(deleteValue) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] == deleteValue) {         
+      this.splice(i, 1);
+      i--;
+    }
+  }
+  return this;
+};
 //*********************************************************************************************************************
 //End String Prototypes
 //*********************************************************************************************************************
@@ -47,9 +56,9 @@ Date.prototype.toFriendlyDateString = function(){
 //LOGGING
 var date = new Date();
 var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
-var errorLogFileName = "C:\\jmc\\3.7.1.1\\Logs\\Debug Logs\\Error - " + date.toFriendlyDateString() + ".txt";
-var socialLogsFileName = "C:\\jmc\\3.7.1.1\\Logs\\Social Logs\\Social - " + date.toFriendlyDateString() + ".txt";
-var damageLogFileName = "C:\\jmc\\3.7.1.1\\Logs\\Damage Logs\\Damage - " + date.toFriendlyDateString() + ".txt";
+var errorLogFileName = "C:\\jmc\\3.5.02\\Logs\\Debug Logs\\Error - " + date.toFriendlyDateString() + ".txt";
+var socialLogsFileName = "C:\\jmc\\3.5.02\\Logs\\Social Logs\\Social - " + date.toFriendlyDateString() + ".txt";
+var damageLogFileName = "C:\\jmc\\3.5.02\\Logs\\Damage Logs\\Damage - " + date.toFriendlyDateString() + ".txt";
 
 var errorStream = fileSystem.OpenTextFile(
     errorLogFileName,
@@ -71,10 +80,10 @@ var socialStream = fileSystem.OpenTextFile(
 
 var _socialOutputWindow = 1;
 var _mapOutputWindow = 2;
-var _skillOutputWindow = 2;
-var _exitOutputWindow = 2;
-var _damageOutputWindow = 3;
-var _rescueOutputWindow = 3;
+var _skillOutputWindow = 3;
+var _exitOutputWindow = 4;
+var _damageOutputWindow = 5;
+var _rescueOutputWindow = 6;
 var _exceptionOutputWindow = 9;
 
 var _isListeningForDamageTells = true;
@@ -176,7 +185,7 @@ function AutoExits(zoneType){
 
     WriteEmptyLineToWindow(_exitOutputWindow);
     if (previousZone !== ZoneTypes.None){
-        WriteToWindow(_exitOutputWindow, previousZone + " exits disabled.", "red", false);
+        WriteToWindow(_exitOutputWindow, previousZone + " exits disabled.", "red", false, true);
     }
     _currentZone = zoneType;
     switch (zoneType){
@@ -184,7 +193,7 @@ function AutoExits(zoneType){
             break;
         case ZoneTypes.Faroth:
         case ZoneTypes.Vale:
-            WriteToWindow(_exitOutputWindow, _currentZone + " exits enabled.", "green", false);
+            WriteToWindow(_exitOutputWindow, _currentZone + " exits enabled.", "green", false, true);
             break;        
     }
     WriteEmptyLineToWindow(_exitOutputWindow);
@@ -226,17 +235,17 @@ function ListExits(){
         }
 
         if (room === null) throw "Unable to load room \"" + _currentRoomName + "\"";
-        WriteToWindow(_exitOutputWindow, _currentRoomName, "blue", false);
+        WriteToWindow(_exitOutputWindow, _currentRoomName, "blue", false, true);
         for (var index = 0;index < room.Exits.length;index++){
             var exit = room.Exits[index];
-            WriteToWindow(_exitOutputWindow, exit.ExitType + ": " + exit.ExitDirections, "normal", false);
+            WriteToWindow(_exitOutputWindow, exit.ExitType + ": " + exit.ExitDirections, "normal", false, true);
         }
         WriteEmptyLineToWindow(_exitOutputWindow);
     }
     catch (caught){
         WriteExceptionToStream("Failure listing exits: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure listing exits: ", "red", false);
-        WriteToWindow(_exceptionOutputWindow, caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure listing exits: ", "red", false, true);
+        WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
     }
 }
 
@@ -261,14 +270,14 @@ function NavigateToExit(exitType){
 
         if (exit.ExitDirections === "") throw "No exits exist.  Are you at the " + exitType + "?";
     
-        WriteToWindow(_exitOutputWindow, "Navigating to \"" + exitType + "\"...", "green");
+        WriteToWindow(_exitOutputWindow, "Navigating to \"" + exitType + "\"...", "green", true, true);
         jmc.Parse(exit.ExitDirections);
 
     }
     catch (caught){
         WriteExceptionToStream("Failure navigating to " + exitType + ": " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure navigating to " + exitType , "red", false);
-        WriteToWindow(_exceptionOutputWindow, caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure navigating to " + exitType , "red", false, true);
+        WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
     }
 }
 
@@ -296,8 +305,8 @@ function SayExit(exitName){
     }
     catch (caught){
         WriteExceptionToStream("Failure listing exits: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure listing exits:" , "red", false);
-        WriteToWindow(_exceptionOutputWindow, caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure listing exits:" , "red", false, true);
+        WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
     }
 }
 
@@ -325,8 +334,8 @@ function SayExits(){
     }
     catch (caught){
         WriteExceptionToStream("Failure saying exits: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure saying exits:" , "red", false);
-        WriteToWindow(_exceptionOutputWindow, caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure saying exits:" , "red", false, true);
+        WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
     }
 }
 
@@ -346,17 +355,17 @@ function ShowExit(exitName){
 
         if (room === null) throw "Unable to load room \"" + exitName + "\"";
         
-        WriteToWindow(_exitOutputWindow, exitName, "blue", false);
+        WriteToWindow(_exitOutputWindow, exitName, "blue", false, true);
         for (var index = 0;index < room.Exits.length;index++){
             var exit = room.Exits[index];
-            WriteToWindow(_exitOutputWindow, exit.ExitType + ": " + exit.ExitDirections, "normal", false);
+            WriteToWindow(_exitOutputWindow, exit.ExitType + ": " + exit.ExitDirections, "normal", false, true);
         }
         WriteEmptyLineToWindow(_exitOutputWindow);
     }
     catch (caught){
         WriteExceptionToStream("Failure showing exit: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure showing exit:" , "red", false);
-        WriteToWindow(_exceptionOutputWindow, caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure showing exit:" , "red", false, true);
+        WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
     }
 }
 
@@ -530,7 +539,7 @@ function DisplaySkills(){
         if (a.SkillName.toUpperCase() > b.SkillName.toUpperCase()) return 1;
         return 0;
     });
-    WriteToWindow(_skillOutputWindow, "Registered skills: " + skills.length, "green", false);
+    WriteToWindow(_skillOutputWindow, "Registered skills: " + skills.length, "green", false, true);
     for (var index = 0;index < skills.length;index++){
         var skill = skills[index];
         var message = skill.SkillName + ": " + skill.SkillLevel;
@@ -545,14 +554,14 @@ function DisplaySkills(){
         if (additional !== ""){
             message = message + " (" + additional + ")";
         }
-        WriteToWindow(_skillOutputWindow, message, "normal", false);
+        WriteToWindow(_skillOutputWindow, message, "normal", false, true);
     }
     WriteEmptyLineToWindow(_skillOutputWindow);
 
 }
 
 function RegisterSkills() {
-	jmc.ShowMe("Registering Skills.");
+    WriteToWindow(_skillOutputWindow, "Resetting skills...", "green", true, true);
 	_skills.Clear();
     _isListeningForSkills = true;
     _isSkillsFound = false;
@@ -582,10 +591,10 @@ function ParseLine(incomingLine){
 
 function ParseLineForSocial(incomingLine){  
     try{
-        var socialRegex = /^([a-zA-Z]*) (chat|chats|narrate|narrates|tell|tells|sing|sings|say|says|group-say|group-says|petition|wiznet|wiznets|whispers)(?: to you,)? '(.*)'$/;
+        var socialRegex = /^(?:[a-zA-Z]*) (chat|chats|narrate|narrates|tell|tells|sing|sings|say|says|group-say|group-says|petition|wiznet|wiznets|whispers)(?:[a-zA-Z, ]+)'(.*)'$/;
         var matches = incomingLine.match(socialRegex);  
         if (matches !== null){        
-            var social = matches[2].replace(/s$/, "");
+            var social = matches[1].replace(/s$/, "");
             var color = "normal";
             switch (social){
                 case "chat":
@@ -606,7 +615,7 @@ function ParseLineForSocial(incomingLine){
     }
     catch (caught){
         WriteExceptionToStream("Failure parsing social: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing social: " + caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure parsing social: " + caught, "red", true, true);
     }
 }
 
@@ -618,14 +627,14 @@ function ParseLineForDamageTell(incomingLine){
         if (matches !== null){            
             var saved = matches[4].trim() !== "";
             var message = "Spell: " + matches[3] + ", Damage: " + matches[1] + ", Saved: " + saved;
-            WriteToWindow(_damageOutputWindow, message, "normal", false);
+            WriteToWindow(_damageOutputWindow, message, "normal", false, true);
             damageStream.WriteLine(jmc.GetVar("me") + "," + matches[3] + "," + matches[1] + "," + matches[2] + "," + saved );
             jmc.DropEvent();
         }
     }
     catch (caught){
         WriteExceptionToStream("Failure parsing damage tell: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing damage tell: " + caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure parsing damage tell: " + caught, "red", true, true);
     }
 }
 
@@ -653,7 +662,7 @@ function ParseLineForExitLine(incomingLine){
     }
     catch (caught){
         WriteExceptionToStream("Failure parsing exit line: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing exit line: " + caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure parsing exit line: " + caught, "red", true, true);
     }
 }
 
@@ -674,7 +683,7 @@ function ParseLineForStatus(incomingLine){
     }
     catch (caught){
         WriteExceptionToStream(caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing status line: " + caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure parsing status line: " + caught, "red", true, true);
     }
 }
 
@@ -707,7 +716,7 @@ function ParseLineForGroupMember(incomingLine){
     }
     catch (caught){
         WriteExceptionToStream("Failure parsing group line: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing group line: " + caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure parsing group line: " + caught, "red", true, true);
     }
 }
 
@@ -733,7 +742,7 @@ function ParseLineForMutilate(incomingLine){
     }
     catch (caught){
         WriteExceptionToStream("Failure parsing mutilate line: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing mutilate line: " + caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure parsing mutilate line: " + caught, "red", true, true);
     }
 }
 
@@ -774,7 +783,7 @@ function ParseLineForMap(incomingLine){
     }
     catch (caught){
         WriteExceptionToStream("Failure parsing map line: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing map line: " + caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure parsing map line: " + caught, "red", true, true);
     }
 }
 
@@ -793,12 +802,12 @@ function ParseLineForRescue(incomingLine){
 			        jmc.Send("rescue " + victim);
 			        break;
             }
-            WriteToWindow(_rescueOutputWindow, matches[0], "green", true);
+            WriteToWindow(_rescueOutputWindow, matches[0], "green", true, true);
         }
     }
     catch (caught){
         WriteExceptionToStream("Failure parsing social: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing social: " + caught, "red", true);
+        WriteToWindow(_exceptionOutputWindow, "Failure parsing social: " + caught, "red", true, true);
     }
 }
 
