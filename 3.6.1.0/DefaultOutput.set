@@ -215,7 +215,7 @@
 #variable {autoNotifyTells} {0}
 #variable {autoRescueOn} {0}
 #variable {autoStatSumOn} {1}
-#variable {defSum} {0}
+#variable {defSum} {109}
 #variable {foodsource} {waybread}
 #variable {leader} {self}
 #variable {spiritReceived} {0}

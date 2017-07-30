@@ -16,6 +16,9 @@
 #secure {disable}
 #codepage {iso-8859-1}
 #telnet {debug} {off}
+#oob {GMCP} {disable}
+#oob {MSDP} {disable}
+#oob {MSSP} {disable}
 #broadcast {filterip} {on}
 #broadcast {filterport} {on}
 #broadcast {port} {8136}
@@ -58,7 +61,7 @@
 #alias {chieftain} {#var {target} {chieftain} } {default}
 #alias {clearMaps} {#script {ClearMaps()}} {default}
 #alias {cold} {#var {target} {cold} } {default}
-#alias {cotton-mail} {rem all.cotton;rem shiny;rem boots;wea all.mail} {default}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem soft;wea all.mail} {default}
 #alias {cowled} {#var {target} {cowled} } {default}
 #alias {croc} {#var {target} {croc} } {default}
 #alias {cure} {cast 'cure self'} {default}
@@ -120,7 +123,7 @@
 #alias {mage} {#var {target} {mage} } {default}
 #alias {magi} {#var {target} {magi} } {default}
 #alias {magus} {#var {target} {magus} } {default}
-#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea soft} {default}
+#alias {mail-cotton} {rem all.mail;wea shiny;wea soft;wea all.cotton} {default}
 #alias {man} {#var {target} {man} } {default}
 #alias {marble} {#var {target} {marble} } {default}
 #alias {master} {#var {target} {master} } {default}
@@ -134,6 +137,7 @@
 #alias {olog} {#var {target} {olog} } {default}
 #alias {omarr} {#var {target} {omarr} } {default}
 #alias {orc} {#var {target} {1.orc} } {default}
+#alias {p} {unlock swirlingdoor;open swirlingdoor} {default}
 #alias {pale} {#var {target} {pale} } {default}
 #alias {pool} {#var {target} {pool} } {default}
 #alias {post_login} { #action {You are %1 the %2, %3 %4 (%5) %6 %7.} {load_profile %1;#var {me}{%%1}};blow eye;info } {default}
@@ -216,6 +220,8 @@
 #action TEXT {^Here we go...} {post_login} {5} {default}
 #action TEXT {^Reconnecting.} {post_login} {5} {default}
 #action TEXT {%0 stores your belongings and helps you into your private chamber.} {#woutput {1}{blue}{$TIME: Logout.};#woutput {1}{blue}{ } } {5} {default}
+#action TEXT {$leader mounts} {ride} {5} {default}
+#action TEXT {$leader stops riding} {dism} {5} {default}
 #variable {autoAFK} {0}
 #variable {autoBashOn} {0}
 #variable {autoCurseOn} {0}
@@ -224,28 +230,40 @@
 #variable {autoNotifyTells} {0}
 #variable {autoRescueOn} {0}
 #variable {autoStatSumOn} {1}
-#variable {defSum} {0}
-#variable {foodsource} {waybread}
-#variable {leader} {self}
-#variable {spiritReceived} {0}
-#variable {statSum} {0}
-#variable {watersource} {waterskin}
-#variable {xpReceived} {0}
+#variable {defSum} {109}
+#variable {foodsource} {flesh}
+#variable {isWearingArmor} {0}
+#variable {isWieldingStaff} {1}
+#variable {itemCount} {0}
+#variable {leader} {Gilgamesh}
+#variable {me} {Diabolos}
+#variable {spiritReceived} {183}
+#variable {statSum} {83}
+#variable {watersource} {flask}
+#variable {xpReceived} {50119}
 #highlight {light magenta} {%0 has recovered from a bash!} {default}
 #highlight {light red,b black} {%1 appears to be confused!} {default}
 #highlight {red} {A huge boulder looks as though it could fall at any moment.} {default}
 #highlight {light blue} {You hear a sound of a key turning..} {default}
 #highlight {light blue} {You hear a sound of a lock snapping shut.} {default}
+#highlight {normal} {flesh} {default}
 #substitute {#10 seconds till TICK} {.}
 #substitute {#TICK} {You feel the time passing by.}
 #substitute {You feel the time passing by.} {.}
 #hot {F1} {#connect rotsmud.dyndns.org 3791} {default}
 #hot {F7} {#action {PANIC!  You couldn't escape!}{flee}} {default}
-#hot {F9} {#unaction {PANIC!  You couldn't escape!}} {default}
+#hot {F9} { #if {$isWieldingStaff==0}{ #var {isWieldingStaff}{1};rem sword;wield staff}{ #var {isWieldingStaff}{0};rem staff;wield sword} } {default}
+#hot {F10} { #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } } {default}
 #hot {F12} {reset_login} {default}
+#hot {Ctrl+Q} {cast magic} {default}
 #hot {Ctrl+R} {ride} {default}
+#hot {Ctrl+I} {cast searing} {default}
+#hot {Ctrl+O} {cast chill} {default}
+#hot {Ctrl+P} {cast dark} {default}
 #hot {Ctrl+A} {assist $leader} {default}
 #hot {Ctrl+D} {dismount} {default}
+#hot {Ctrl+H} {cast flash} {default}
+#hot {Ctrl+J} {cast cone} {default}
 #hot {Ctrl+B} {bash} {default}
 #hot {Ctrl+F11} { #read {Commands/Mystic/Triggers/SpiritTriggers.set};} {default}
 #hot {Ctrl+F12} { #read {Commands/Mystic/Triggers/ArkenTriggers.set};} {default}

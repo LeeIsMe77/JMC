@@ -815,7 +815,7 @@ function ParseForSkill(incomingLine){
     if (!_isListeningForSkills) return;
 
     if (!_isSkillsFound){
-        if(incomingLine.trim().match(/^You have -5 practice sessions left$/g) !== null) {            
+        if(incomingLine.trim().match(/^You have \d+ practice sessions left$/g) !== null) {            
             _isSkillsFound = true;
             jmc.DropEvent();
             return;

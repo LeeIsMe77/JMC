@@ -34,15 +34,6 @@ Date.prototype.toFriendlyDateString = function(){
     return [year, month, day].join('-');
 }
 
-Array.prototype.clean = function(deleteValue) {
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] == deleteValue) {         
-      this.splice(i, 1);
-      i--;
-    }
-  }
-  return this;
-};
 //*********************************************************************************************************************
 //End String Prototypes
 //*********************************************************************************************************************
@@ -815,7 +806,7 @@ function ParseForSkill(incomingLine){
     if (!_isListeningForSkills) return;
 
     if (!_isSkillsFound){
-        if(incomingLine.trim().match(/^You have -5 practice sessions left$/g) !== null) {            
+        if(incomingLine.trim().match(/^You have \d+ practice sessions left$/g) !== null) {            
             _isSkillsFound = true;
             jmc.DropEvent();
             return;
