@@ -1,10 +1,12 @@
+
 #multiaction on
 #multihighlight on
 #ignore off
-#echo on
-#alias {lookRoom} {#tickoff;#ticksize 12;targetMe;look;#wait 10;kill $target} {default}
-#alias {reviveMe} {#action {You try to revive $me.}{cast 'revive' $me};#action {Your spell does no good to %1.}{#tickon;#unaction {You try to revive $me.};#unaction {Your spell does no good to %1.}};cast 'revive' $me} {default}
-#alias {buffMe} {#ticksize 150;cast 'infravision';cast slow $me;cast insight $me} {default}
+#alias ToggleMoveTimer { #script { AutoArkenMoveTimer(%%0)};}
+#alias ToggleWaitTimer { #script { AutoArkenWaitTimer(%%0)};}
+#alias {lookRoom} {ToggleMoveTimer false;targetMe;look;#wait 10;kill $target} {default}
+#alias {reviveMe} {#action {You try to revive $me.}{cast 'revive' $me};#action {Your spell does no good to %1.}{#unaction {You try to revive $me.};#unaction {Your spell does no good to %1.}};cast 'revive' $me} {default}
+#alias {buffMe} {ToggleMoveTimer false;ToggleWaitTimer true;cast 'infravision';cast slow $me;cast insight $me} {default}
 #alias {targetMe} {#var {target}{$me}} {default}
 #alias {whoAmI} {#action {You are %1 %2, a %3 (%4) %5 %6.}{#var {me}{%%1};#unaction {You are %1 %2, a %3 (%4) %5 %6.}};info;} {default}
 #action {   This hall has been stripped of all of its valueable furnishings. Unlike} {n} {5} {default}
@@ -16,21 +18,16 @@
 #action {   A large blue marble statue stands here, the statue depicts a richly dressed} {nw} {5} {default}
 #action {   Standing upon a white marble plinth was once a great statue of a tall king,} {n} {5} {default}
 #action {   Clad in torn furs edged with ermin this statue represents a fiercesome} {ss} {5} {default}
-#action {   The disfiguresd statue of a cowled wizard rests against the walls of the} {neee;buffMe;reviveMe;whoAmI} {5} {default}
+#action {   The disfiguresd statue of a cowled wizard rests against the walls of the} {neee;buffMe;reviveMe} {5} {default}
 #action {It's empty.}{get waterskin all} {5} {default}
-#action {You feel the time passing by.} {lookRoom} {5} {default}
-#action {You contemplate yourself for a little while.} {#tickon;examine} {5} {default}
-#action {Whom do you want to press?} {#tickon} {5} {default}
+#action {You contemplate yourself for a little while.} {ToggleMoveTimer true;examine} {5} {default}
+#action {Whom do you want to press?} {ToggleMoveTimer true} {5} {default}
 #action {%1 pokes you in the ribs.} {group %1} {5} {default}
-#action {You force your Will against %0's %1!} {#tickoff} {5} {default}
+#action {You force your Will against %0's %1!} {ToggleMoveTimer false} {5} {default}
 #action {^The %0 pulsing wraith of a %1 hovers above the statue. (shadow)} {#var {target} {wraith}} {5} {default}
-#action {Your spirit increases by %0.} {#tickon;get uncut;put uncut sat} {5} {default}
+#action {Your spirit increases by %0.} {ToggleMoveTimer true;get uncut;put uncut sat} {5} {default}
 #action {Your mind is not ready yet.} {#WAIT 30;!} {5} {default}
 #action {You hit yourself...OUCH!.} {set mental on;lookRoom} {5} {default}
 #action {You lost your concentration!} {!} {5} {default}
-#gag {You feel the time passing by.}
-#substitute {#10 seconds till TICK} { }
-#substitute {#TICK} {You feel the time passing by.}
-#ticksize 12
-#tickon
+ToggleMoveTimer true
 whoAmI

@@ -1,5 +1,10 @@
-jmc.RegisterHandler("Connected", "OnConnected()")
-
-function OnConnected(){
-    jmc.Output("You have connected successfully, Lee.");
+function Test(newFunction){
+    this.NewFuncion = newFunction;
 }
+
+var test = new Test(
+    function(){
+        return "false";
+    }
+)
+jmc.ShowMe(test.NewFuncion());

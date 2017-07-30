@@ -1,0 +1,2 @@
+21:54:49: Failure listing exits: Unable to load room "The Guard Tower"
+21:54:59: Failure listing exits: Unable to load room "The Guard Tower"

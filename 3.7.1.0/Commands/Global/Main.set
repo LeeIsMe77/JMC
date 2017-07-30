@@ -1,6 +1,6 @@
 #spit {Commands/Global/GlobalActions.set} {%0} {ns}
 #spit {Commands/Global/GlobalAliases.set} {%0} {ns}
-#spit {Commands/Global/GlobalChat.set} {%0} {ns}
+#COMMENT #spit {Commands/Global/GlobalChat.set} {%0} {ns}
 #spit {Commands/Global/GlobalCounters.set} {%0} {ns}
 #spit {Commands/Global/GlobalFood.set} {%0} {ns}
 #spit {Commands/Global/GlobalHighlights.set} {%0} {ns}
