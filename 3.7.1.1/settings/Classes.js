@@ -154,6 +154,7 @@ function Skill(skillName, skillLevel, time, cost){
 
 function SkillCollection() {
     
+    this.SessionsRemaining = 0;
     this.Skills = new Array();
     
     //Add a skill to the skills collection.
@@ -216,20 +217,19 @@ function GroupMember(memberName, isLeader){
     this.MemberName = memberName;
     this.IsLeader = isLeader;
     this.MutilateCount = 0;
+    this.HitCount = 0;
+    this.Damage = 0.0;
+    this.AverageDamage = function(){
+        if (this.HitCount === 0) return 0;
+        return (this.Damage / this.HitCount).toFixed(3);
+    }
     this.FriendlyName = function(){
         if (this.IsLeader){
             return this.MemberName + " (Leader)";
         }
         return this.MemberName;
     }
-    this.IncrementMutilateCount = function(){
-        this.MutilateCount++;
-    }
-    this.ClearMutilates = function(){
-        this.MutilateCount = 0;
-    }
 }
-
 
 function GroupMemberCollection(){
     
@@ -290,7 +290,6 @@ function GroupMemberCollection(){
         if (index !== -1){
             var groupMemberName = this.GroupMembers[index].FriendlyName();        
             this.GroupMembers.splice(index, 1);
-            jmc.ShowMe(groupMemberName + " has been added to the group.", "blue");
         }
     }
 
@@ -300,12 +299,6 @@ function GroupMemberCollection(){
             var currentMember = this.GroupMembers[index];        
             jmc.Send("gt " + currentMember.MemberName + ": " + currentMember.MutilateCount);
         }
-    }
-
-    this.IncrementMutilateCount = function(memberName){
-        var index = this.IndexOf(memberName);
-        if (index === -1) return;
-        this.GroupMembers[index].IncrementMutilateCount();
     }
 }
 //*********************************************************************************************************************

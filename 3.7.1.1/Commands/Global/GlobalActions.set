@@ -1,4 +1,3 @@
 #action {PANIC!  You couldn't escape!} {flee} {5} {default}
-#action {%1 prays to you, hoping for your good will.} {pray %1} {5} {default}
 #action {The %1 seems to be closed.} {open %1} {5} {default}
 #action {You receive your share of experience -- %0 points.} {get coin all.cor} {5} {default}

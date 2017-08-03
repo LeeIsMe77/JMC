@@ -7,9 +7,7 @@ String.prototype.cleanString = function(){
         //Remove ansi color codes and BOM...
         .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,'')
         //...strip off health status at beginning of line, if it exists...
-        .replace(/^(?:(?:HP|MV|S):[a-zA-Z]+ ?)+>/, '')
-        //...and finally remove the beginning angle bracket from the line...
-        .replace(/^R?>/, '');
+        .replace(/^(?:(?:HP|MV|S):[a-zA-Z]+ ?)+R?>/, '')
 }
 
 String.prototype.toTitleCase = function () {
@@ -584,7 +582,7 @@ function ParseLine(incomingLine){
 	ParseLineForMap(cleanLine);
 	ParseLineForGroupMember(cleanLine);
 	ParseLineForMutilate(cleanLine);
-    ParseLineForExitLine(cleanLine);
+    ParseLineForRoomName(cleanLine);
     ParseLineForDamageTell(cleanLine);
     ParseForSkill(cleanLine);
 }
@@ -638,11 +636,10 @@ function ParseLineForDamageTell(incomingLine){
     }
 }
 
-function ParseLineForExitLine(incomingLine){
+function ParseLineForRoomName(incomingLine){
     if (_currentZone === ZoneTypes.None) return;
     try{
-        var cleanLine = incomingLine;
-        var matches = cleanLine.match(/^([a-zA-Z\- ]+)    Exits are: (.+)/);
+        var matches = incomingLine.match(/^([a-zA-Z\- ]+)    Exits are: (.+)/);
         if (matches !== null && matches.length >= 2){
             _currentRoomName = matches[1];
                 

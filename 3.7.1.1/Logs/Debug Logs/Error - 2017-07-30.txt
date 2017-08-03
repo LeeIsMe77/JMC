@@ -1,5 +1,0 @@
-00:34:53: Failure listing exits: Unable to load room "Makeshift Tents"
-00:34:58: Failure navigating to Entrance: Unable to load room Makeshift Tents
-00:35:00: Failure navigating to Entrance: Unable to load room Makeshift Tents
-00:35:03: Failure listing exits: Unable to load room "Makeshift Tents"
-00:35:41: Failure listing exits: Unable to load room "Makeshift Tents"
