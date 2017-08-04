@@ -1,4 +1,3 @@
-
 //*********************************************************************************************************************
 //"Enums", or as close as we can get in javascript...
 //*********************************************************************************************************************
@@ -10,39 +9,39 @@ ExitTypes = {
 }
 
 ZoneTypes = {
-    None: "None",
-    Faroth: "Faroth",
-    Vale: "Vale"
-}
-//*********************************************************************************************************************
-//End Enums
-//*********************************************************************************************************************
+        None: "None",
+        Faroth: "Faroth",
+        Vale: "Vale"
+    }
+    //*********************************************************************************************************************
+    //End Enums
+    //*********************************************************************************************************************
 
 
 
 //*********************************************************************************************************************
 //Room Exit Classes
 //*********************************************************************************************************************
-function Exit(exitType, exitDirections){
+function Exit(exitType, exitDirections) {
     this.ExitType = exitType;
     this.ExitDirections = exitDirections;
 }
 
-function Room(roomName){
+function Room(roomName) {
     this.RoomName = roomName;
     this.Exits = new Array();
-    this.GetExit = function(exitType){
-        for (var index = 0;index < this.Exits.length;index++){
+    this.GetExit = function(exitType) {
+        for (var index = 0; index < this.Exits.length; index++) {
             var exit = this.Exits[index];
-            if (exit.ExitType === exitType){
+            if (exit.ExitType === exitType) {
                 return exit;
             }
         }
         return null;
     }
-    this.GetExitString = function(){
+    this.GetExitString = function() {
         var exits = []
-        for (var index = 0;index < this.Exits.length;index++){
+        for (var index = 0; index < this.Exits.length; index++) {
             var exit = this.Exits[index];
             exits.push(exit.ExitType + ":" + exit.ExitDirections);
         }
@@ -50,14 +49,14 @@ function Room(roomName){
     }
 }
 
-function Zone(zoneType){
+function Zone(zoneType) {
     this.ZoneType = zoneType;
     this.Rooms = new Array();
-    this.GetRoom = function(roomName){
+    this.GetRoom = function(roomName) {
         if (roomName === "") return null;
-        for (var index = 0;index < this.Rooms.length;index++){
+        for (var index = 0; index < this.Rooms.length; index++) {
             var room = this.Rooms[index];
-            if (room.RoomName === roomName){
+            if (room.RoomName === roomName) {
                 return room;
             }
         }
@@ -73,7 +72,7 @@ function Zone(zoneType){
 //*********************************************************************************************************************
 //Mapping Classes
 //*********************************************************************************************************************
-function Map(mapName, variableName){    
+function Map(mapName, variableName) {
     this.Content = new Array();
     this.MapName = mapName;
     this.VariableName = variableName;
@@ -81,12 +80,12 @@ function Map(mapName, variableName){
 
 function MapCollection() {
     this.Maps = new Array();
-    
+
     //Add a map to the maps collection.    
-    this.Add = function(mapName, variableName){
+    this.Add = function(mapName, variableName) {
         if (mapName === "") throw "The map name cannot be blank.";
         if (variableName === "") throw "The variable name cannot be blank."
-        if (this.IndexOf(mapName) !== -1) throw "Map name " + mapName + " already exists.";        
+        if (this.IndexOf(mapName) !== -1) throw "Map name " + mapName + " already exists.";
         var map = new Map(mapName, variableName);
         this.Maps.push(map);
         return map;
@@ -96,16 +95,16 @@ function MapCollection() {
     this.Clear = function() {
         this.Maps = new Array();
     };
-        
-    this.Count = function(){
+
+    this.Count = function() {
         return this.Maps.length;
     }
-    
+
     //Retrieve the map from the maps collection by the specified map name.
-    this.GetMap = function(mapName){
-        for (var index = 0;index < this.Maps.length;index++){
-            var currentMap = this.Maps[index];        
-            if (currentMap.MapName === mapName){
+    this.GetMap = function(mapName) {
+        for (var index = 0; index < this.Maps.length; index++) {
+            var currentMap = this.Maps[index];
+            if (currentMap.MapName === mapName) {
                 return currentMap;
             }
         }
@@ -113,24 +112,24 @@ function MapCollection() {
     }
 
     this.GetMapByIndex = function(index) {
-        if (index >= -1) throw "Index must be greater than or equal to 0.";
+        if (index <= -1) throw "Index must be greater than or equal to 0.";
         if (index >= this.Maps.length) throw "Index is outside the bounds of the map collection."
         return this.Maps[index];
     }
-    
+
     //Retrieve the ordinal index of a map name in the maps collection.
-    this.IndexOf = function(mapName){
-        for (var index = 0;index < this.Maps.length;index++){
-            var currentMap = this.Maps[index];        
-            if (currentMap.MapName === mapName){
+    this.IndexOf = function(mapName) {
+        for (var index = 0; index < this.Maps.length; index++) {
+            var currentMap = this.Maps[index];
+            if (currentMap.MapName === mapName) {
                 return index;
             }
         }
         return -1;
     }
-    
+
     //Remove a map from the map collection.
-    this.Remove = function(mapName){
+    this.Remove = function(mapName) {
         var index = this.IndexOf(mapName);
         if (index === -1) throw "Map name " + mapName + " does not exist in the map collection.";
         this.Maps.splice(index, 1);
@@ -145,7 +144,7 @@ function MapCollection() {
 //*********************************************************************************************************************
 //Skill Classes
 //*********************************************************************************************************************
-function Skill(skillName, skillLevel, time, cost){    
+function Skill(skillName, skillLevel, time, cost) {
     this.SkillName = skillName;
     this.SkillLevel = skillLevel;
     this.Time = time;
@@ -153,12 +152,12 @@ function Skill(skillName, skillLevel, time, cost){
 }
 
 function SkillCollection() {
-    
+
     this.SessionsRemaining = 0;
     this.Skills = new Array();
-    
+
     //Add a skill to the skills collection.
-    this.Add = function(skillName, skillLevel, time, cost){
+    this.Add = function(skillName, skillLevel, time, cost) {
         if (this.IndexOf(skillName) !== -1) return;
         var skill = new Skill(skillName, skillLevel, time, cost);
         this.Skills.push(skill);
@@ -170,36 +169,36 @@ function SkillCollection() {
         this.Skills = new Array();
     };
 
-    this.Count = function(){
+    this.Count = function() {
         return this.Skills.length;
     }
-    
+
     //Retrieve the skill from the skills collection by the specified skill name.
-    this.GetSkill = function(skillName){
-        for (var index = 0;index < this.Skills.length;index++){
-            var currentSkill = this.Skills[index];        
-            if (currentSkill.SkillName === skillName){
+    this.GetSkill = function(skillName) {
+        for (var index = 0; index < this.Skills.length; index++) {
+            var currentSkill = this.Skills[index];
+            if (currentSkill.SkillName === skillName) {
                 return currentSkill;
             }
         }
         return null;
     }
-    
+
     //Retrieve the ordinal index of a skill name in the skills collection.
-    this.IndexOf = function(skillName){
-        for (var index = 0;index < this.Skills.length;index++){
-            var currentSkill = this.Skills[index];        
-            if (currentSkill.SkillName === skillName){
+    this.IndexOf = function(skillName) {
+        for (var index = 0; index < this.Skills.length; index++) {
+            var currentSkill = this.Skills[index];
+            if (currentSkill.SkillName === skillName) {
                 return index;
             }
         }
         return -1;
     }
-    
+
     //Remove a skill from the skill collection.
-    this.Remove = function(skillName){
+    this.Remove = function(skillName) {
         var index = this.IndexOf(skillName);
-        if (index !== -1){
+        if (index !== -1) {
             this.Skills.splice(index, 1);
         }
     }
@@ -213,30 +212,30 @@ function SkillCollection() {
 //*********************************************************************************************************************
 //Group Classes
 //*********************************************************************************************************************
-function GroupMember(memberName, isLeader){
+function GroupMember(memberName, isLeader) {
     this.MemberName = memberName;
     this.IsLeader = isLeader;
     this.MutilateCount = 0;
     this.HitCount = 0;
     this.Damage = 0.0;
-    this.AverageDamage = function(){
+    this.AverageDamage = function() {
         if (this.HitCount === 0) return 0;
         return (this.Damage / this.HitCount).toFixed(3);
     }
-    this.FriendlyName = function(){
-        if (this.IsLeader){
+    this.FriendlyName = function() {
+        if (this.IsLeader) {
             return this.MemberName + " (Leader)";
         }
         return this.MemberName;
     }
 }
 
-function GroupMemberCollection(){
-    
+function GroupMemberCollection() {
+
     this.GroupMembers = new Array();
 
     //Add a member to the group members collection.
-    this.Add = function(memberName, isLeader){
+    this.Add = function(memberName, isLeader) {
         var groupMember = new GroupMember(memberName, isLeader);
         this.GroupMembers.push(groupMember);
         jmc.ShowMe(groupMember.FriendlyName() + " has been added to the group.", "blue");
@@ -248,55 +247,55 @@ function GroupMemberCollection(){
         this.GroupMembers = [];
     };
 
-    this.Count = function(){
+    this.Count = function() {
         return this.GroupMembers.length;
     }
-    
+
     //Retrieve the member from the group members collection by the specified group member name.
-    this.GetMember = function(memberName){
-        for (var index = 0;index < this.GroupMembers.length;index++){
-            var currentMember = this.GroupMembers[index];        
-            if (currentMember.MemberName === memberName){
+    this.GetMember = function(memberName) {
+        for (var index = 0; index < this.GroupMembers.length; index++) {
+            var currentMember = this.GroupMembers[index];
+            if (currentMember.MemberName === memberName) {
                 return currentMember;
             }
         }
         return null;
     }
-    
+
     //Retrieve the ordinal index of a member name in the group members collection.
-    this.IndexOf = function(memberName){
-        for (var index = 0;index < this.GroupMembers.length;index++){
-            var currentMember = this.GroupMembers[index];        
-            if (currentMember.MemberName === memberName){
+    this.IndexOf = function(memberName) {
+        for (var index = 0; index < this.GroupMembers.length; index++) {
+            var currentMember = this.GroupMembers[index];
+            if (currentMember.MemberName === memberName) {
                 return index;
             }
         }
         return -1;
     }
-    
+
     //List all group member names in a comma delimited format.
-    this.ListMembers = function(){
+    this.ListMembers = function() {
         var stringArray = new Array();
-        for (var index = 0; index < this.Count(); index++){
+        for (var index = 0; index < this.Count(); index++) {
             var currentMember = this.GroupMembers[index];
             stringArray.push(currentMember.FriendlyName());
         }
         return stringArray.join(", ");
     }
-    
+
     //Remove a member from the group member collection.
-    this.Remove = function(memberName){
+    this.Remove = function(memberName) {
         var index = this.IndexOf(memberName);
-        if (index !== -1){
-            var groupMemberName = this.GroupMembers[index].FriendlyName();        
+        if (index !== -1) {
+            var groupMemberName = this.GroupMembers[index].FriendlyName();
             this.GroupMembers.splice(index, 1);
         }
     }
 
-    this.ListMutilates = function(){
+    this.ListMutilates = function() {
         jmc.Send("gt Mutilate Statistics:")
-        for (var index = 0;index < this.GroupMembers.length;index++){
-            var currentMember = this.GroupMembers[index];        
+        for (var index = 0; index < this.GroupMembers.length; index++) {
+            var currentMember = this.GroupMembers[index];
             jmc.Send("gt " + currentMember.MemberName + ": " + currentMember.MutilateCount);
         }
     }
@@ -305,8 +304,8 @@ function GroupMemberCollection(){
 //Group Classes
 //*********************************************************************************************************************
 
-function CreateValeExits(){
-        
+function CreateValeExits() {
+
     var zone = new Zone("Vale");
     var room;
     var exit;
@@ -1695,7 +1694,7 @@ function CreateValeExits(){
 //*********************************************************************************************************************
 //Create Faroth Exits
 //*********************************************************************************************************************
-function CreateFarothExits(){
+function CreateFarothExits() {
 
     var zone = new Zone(ZoneTypes.Faroth);
     var room = new Room("A Bleached Skeleton");

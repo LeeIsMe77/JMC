@@ -12,9 +12,10 @@
 #alias {addMap}{#script {AddMap("%%1", "%%2")}}
 #alias {clearMaps}{#script {ClearMaps()}}
 #alias {showMaps}{#script {ShowMaps()}}
-#alias {showMap}{#script {ShowMap("%%1")}}
+#alias {showMap}{#script {ShowMapByName("%%1")}}
 #alias {showMapIndex}{#script {ShowMapByIndex("%%1")}}
-#alias {deleteMap}{#script {DeleteMap("%%1")}}
+#alias {deleteMap}{#script {DeleteMapByName("%%1")}}
+#alias {deleteMapIndex}{#script {DeleteMapByIndex(%%1)}};
 
 #comment VALE/FAROTH EXITS
 #alias {valeOn}{#script {AutoExits(ZoneTypes.Vale)}}

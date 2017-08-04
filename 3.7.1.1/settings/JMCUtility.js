@@ -471,47 +471,59 @@ function ClearMaps() {
     }
 }
 
-function DeleteMap(mapName) {
+function DeleteMapByName(mapName) {
     try {
-        ClearWindow(_mapOutputWindow);
-        _maps.Remove(mapName);
+        var map = _maps.GetMap(mapName.toTitleCase());
+        if (map !== null) {
+            _maps.Remove(mapName.MapName);
+        }
+        ShowMaps();
     } catch (caught) {
-        WriteExceptionToStream("Failure deleting map: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure deleting map: " + caught, "red", true, true);
+        WriteExceptionToStream("Failure deleting map by name: " + caught);
+        WriteToWindow(_exceptionOutputWindow, "Failure deleting map by name: " + caught, "red", true, true);
     }
 }
 
-function DisplayMap(map) {
-    if (map.Content.length === 0) {
-        WriteToWindow(_mapOutputWindow, "Map " + map.MapName + " has no content.");
-        return;
+function DeleteMapByIndex(mapIndex) {
+    try {
+        var map = _maps.GetMapByIndex(mapIndex);
+        if (map !== null) {
+            _maps.Remove(mapName.MapName);
+        }
+        ShowMaps();
+    } catch (caught) {
+        WriteExceptionToStream("Failure deleting map by index: " + caught);
+        WriteToWindow(_exceptionOutputWindow, "Failure deleting map by index: " + caught, "red", true, true);
     }
+}
 
-    WriteToWindow(_mapOutputWindow, mapName, "red", true, false);
+function ShowMap(map) {
+    ClearWindow(_mapOutputWindow);
+    WriteToWindow(_mapOutputWindow, "Map " + map.MapName, "green", true, false);
     for (var index = 0; index < map.Content.length; index++) {
         WriteToWindow(_mapOutputWindow, map.Content[index], "normal", false, false);
     }
+    WriteEmptyLineToWindow(_mapOutputWindow);
 }
 
-function ShowMap(mapName) {
+function ShowMapByName(mapName) {
     try {
-        ClearWindow(_mapOutputWindow);
         var map = _maps.GetMap(mapName.toTitleCase());
         if (map !== null) {
-            this.DisplayMap(map);
+            ShowMap(map);
         }
     } catch (caught) {
-        WriteExceptionToStream("Failure showing map: " + caught);
+        WriteExceptionToStream("Failure showing map by name: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure showing map: " + caught, "red", true, true);
     }
 }
 
-function ShowMapByIndex(index) {
+function ShowMapByIndex(mapIndex) {
     try {
         ClearWindow(_mapOutputWindow);
-        var map = _maps.GetMapByIndex(index);
+        var map = _maps.GetMapByIndex(mapIndex);
         if (map !== null) {
-            this.DisplayMap(map);
+            ShowMap(map);
         }
     } catch (caught) {
         WriteExceptionToStream("Failure showing map by index: " + caught);
@@ -607,6 +619,7 @@ function RegisterSkills() {
 
 function ParseLine(incomingLine) {
     var cleanLine = incomingLine.cleanString();
+    ParseForMap(cleanLine);
     ParseForRescue(cleanLine);
     ParseForSocial(cleanLine);
     ParseForStatus(cleanLine);
@@ -616,7 +629,6 @@ function ParseLine(incomingLine) {
     ParseForGroupMemberMutilate(cleanLine);
     ParseForDamageTell(cleanLine);
     ParseForSkill(cleanLine);
-    ParseForMap(cleanLine);
 }
 
 function ParseForGroupMemberDamage(incomingLine) {
@@ -905,35 +917,42 @@ function ParseForGroupMemberMutilate(incomingLine) {
 
 function ParseForMap(incomingLine) {
     try {
-        if (_newMap === null) return;
-        var cleanLine = incomingLine;
-
+        if (_newMap === null) {
+            return;
+        }
         if (incomingLine === "You do not see that here.") {
-            _maps.Remove(newMap.MapName);
+            _maps.Remove(_newMap.MapName);
             jmc.DropEvent();
-            jmc.ShowMe("Unrecognized map " + newMap.VariableName, "red");
+            jmc.ShowMe("Unrecognized map " + _newMap.VariableName, "red");
             _newMap = null;
-        }
-        var indexOf = _maps.IndexOf(newMap.MapName);
-        if (indexOf === -1) {
-            jmc.ShowMe("Error adding map.");
-            newMap = null;
             return;
         }
-        var matches = incomingLine.match(/([ .+-|V])+/);
-        if (matches !== null && matches.length > 0) {
-            newMap.Content.push(matches[0]);
-            jmc.DropEvent();
-            return;
-        } else if (incomingLine === "") {
-            if (newMap.Content.length === 0) {
-                _maps.Remove(newMap.MapName);
-                jmc.ShowMe("Map " + newMap.MapName + " contains no map content.", "red");
+
+        if (incomingLine === "") {
+            if (_newMap.Content.length === 0) {
+                _maps.Remove(_newMap.MapName);
+                jmc.ShowMe("Map " + _newMap.MapName + " contains no map content.", "red");
             } else {
-                jmc.ShowMe("Map " + newMap.MapName + " has been added successfully.", "green");
-                newMap.DisplayMap();
+                jmc.ShowMe("Map " + _newMap.MapName + " has been added successfully.", "green");
+                ShowMap(_newMap);
             }
             _newMap = null;
+            jmc.DropEvent();
+            return;
+        }
+
+        var indexOf = _maps.IndexOf(_newMap.MapName);
+        if (indexOf === -1) {
+            jmc.ShowMe("Error adding map.");
+            _newMap = null;
+            return;
+        }
+
+        var matches = incomingLine.match(/^([ \.+\-|V])+/);
+        if (matches !== null && matches.length > 0) {
+            _newMap.Content.push(matches[0]);
+            jmc.DropEvent();
+            return;
         }
     } catch (caught) {
         WriteExceptionToStream("Failure parsing map line: " + caught);
