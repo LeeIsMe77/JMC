@@ -12,7 +12,6 @@
 #hotkey {Ctrl+P}{cast dark}
 #hotkey {Ctrl+Q}{cast magic}
 
-#hotkey {Ctrl+H}{cast flash}
 #hotkey {Ctrl+O}{cast chill}
 #hotkey {Ctrl+I}{cast searing}
 #hotkey {Ctrl+J}{cast cone}

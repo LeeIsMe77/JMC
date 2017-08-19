@@ -1,0 +1,2 @@
+#spit {Commands/Global/Main.set} {%0} {ns}
+#spit {Commands/Login.set} {%0} {ns}

@@ -9,13 +9,231 @@ ExitTypes = {
 }
 
 ZoneTypes = {
-        None: "None",
-        Faroth: "Faroth",
-        Vale: "Vale"
+    None: "None",
+    Faroth: "Faroth",
+    Vale: "Vale"
+}
+
+AnsiColors = {
+
+    Default: "\u001b[0m",
+
+    ForegroundBlack: "\u001b[0;30m",
+    ForegroundRed: "\u001b[0;31m",
+    ForegroundGreen: "\u001b[0;32m",
+    ForegroundYellow: "\u001b[0;33m",
+    ForegroundBlue: "\u001b[0;34m",
+    ForegroundMagenta: "\u001b[0;35m",
+    ForegroundCyan: "\u001b[0;36m",
+    ForegroundWhite: "\u001b[0;37m",
+    ForegroundUnknown: "\u001b[0;38m",
+    ForegroundDefault: "\u001b[0;39m",
+
+    ForegroundBrightBlack: "\u001b[1;30m",
+    ForegroundBrightRed: "\u001b[1;31m",
+    ForegroundBrightGreen: "\u001b[1;32m",
+    ForegroundBrightYellow: "\u001b[1;33m",
+    ForegroundBrightBlue: "\u001b[1;34m",
+    ForegroundBrightMagenta: "\u001b[1;35m",
+    ForegroundBrightCyan: "\u001b[1;36m",
+    ForegroundBrightWhite: "\u001b[1;37m",
+    ForegroundBrightUnknown: "\u001b[1;38m",
+    ForegroundBrightDefault: "\u001b[1;39m",
+
+    BackgroundBlack: "\u001b[0;40m",
+    BackgroundRed: "\u001b[0;41m",
+    BackgroundGreen: "\u001b[0;42m",
+    BackgroundYellow: "\u001b[0;43m",
+    BackgroundBlue: "\u001b[0;44m",
+    BackgroundMagenta: "\u001b[0;45m",
+    BackgroundCyan: "\u001b[0;46m",
+    BackgroundWhite: "\u001b[0;47m",
+    BackgroundUnknown: "\u001b[0;48m",
+    BackgroundDefault: "\u001b[0;49m",
+
+    BackgroundBrightBlack: "\u001b[1;40m",
+    BackgroundBrightRed: "\u001b[1;41m",
+    BackgroundBrightGreen: "\u001b[1;42m",
+    BackgroundBrightYellow: "\u001b[1;43m",
+    BackgroundBrightBlue: "\u001b[1;44m",
+    BackgroundBrightMagenta: "\u001b[1;45m",
+    BackgroundBrightCyan: "\u001b[1;46m",
+    BackgroundBrightWhite: "\u001b[1;47m",
+    BackgroundBrightUnknown: "\u001b[1;48m",
+    BackgroundBrightDefault: "\u001b[1;49m"
+
+}
+
+//*********************************************************************************************************************
+//End Enums
+//*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
+//Group Classes
+//*********************************************************************************************************************
+function GroupMember(memberName, isLeader) {
+    this.MemberName = memberName;
+    this.IsLeader = isLeader;
+    this.MutilateCount = 0;
+    this.HitCount = 0;
+    this.Damage = 0.0;
+    this.AverageDamage = function() {
+        if (this.HitCount === 0) return 0;
+        return (this.Damage / this.HitCount).toFixed(3);
     }
-    //*********************************************************************************************************************
-    //End Enums
-    //*********************************************************************************************************************
+    this.FriendlyName = function() {
+        if (this.IsLeader) {
+            return this.MemberName + " (Leader)";
+        }
+        return this.MemberName;
+    }
+}
+
+function GroupMemberCollection() {
+
+    this.GroupMembers = new Array();
+
+    //Add a member to the group members collection.
+    this.Add = function(memberName, isLeader) {
+        var groupMember = new GroupMember(memberName, isLeader);
+        this.GroupMembers.push(groupMember);
+        jmc.ShowMe(groupMember.FriendlyName() + " has been added to the group.", "blue");
+        return groupMember;
+    }
+
+    //Resets the group members collection.
+    this.Clear = function() {
+        this.GroupMembers = [];
+    };
+
+    this.Count = function() {
+        return this.GroupMembers.length;
+    }
+
+    //Retrieve the member from the group members collection by the specified group member name.
+    this.GetMember = function(memberName) {
+        for (var index = 0; index < this.GroupMembers.length; index++) {
+            var currentMember = this.GroupMembers[index];
+            if (currentMember.MemberName === memberName) {
+                return currentMember;
+            }
+        }
+        return null;
+    }
+
+    //Retrieve the ordinal index of a member name in the group members collection.
+    this.IndexOf = function(memberName) {
+        for (var index = 0; index < this.GroupMembers.length; index++) {
+            var currentMember = this.GroupMembers[index];
+            if (currentMember.MemberName === memberName) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    //List all group member names in a comma delimited format.
+    this.ListMembers = function() {
+        var stringArray = new Array();
+        for (var index = 0; index < this.Count(); index++) {
+            var currentMember = this.GroupMembers[index];
+            stringArray.push(currentMember.FriendlyName());
+        }
+        return stringArray.join(", ");
+    }
+
+    //Remove a member from the group member collection.
+    this.Remove = function(memberName) {
+        var index = this.IndexOf(memberName);
+        if (index !== -1) {
+            var groupMemberName = this.GroupMembers[index].FriendlyName();
+            this.GroupMembers.splice(index, 1);
+        }
+    }
+
+    this.ListMutilates = function() {
+        jmc.Send("gt Mutilate Statistics:")
+        for (var index = 0; index < this.GroupMembers.length; index++) {
+            var currentMember = this.GroupMembers[index];
+            jmc.Send("gt " + currentMember.MemberName + ": " + currentMember.MutilateCount);
+        }
+    }
+}
+//*********************************************************************************************************************
+//End Group Classes
+//*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
+//Player Class
+//*********************************************************************************************************************
+function Player(name, alignment, gender, race) {
+
+    this.Name = name;
+    this.Alignment = alignment;
+    this.Gender = gender;
+    this.Race = race;
+
+    this.Level = 0;
+
+    this.WarriorLevel = 0;
+    this.RangerLevel = 0;
+    this.MysticLevel = 0;
+    this.MageLevel = 0;
+
+    this.Specialization = "None";
+
+    this.XPNeeded = 0;
+
+    this.Height = 0;
+    this.Weight = 0;
+    this.CarriedWeight = 0;
+
+    this.CurrentHitPoints = 0;
+    this.CurrentStamina = 0;
+    this.CurrentMoves = 0;
+
+    this.MaxHitPoints = 0;
+    this.MaxStamina = 0;
+    this.MaxMoves = 0;
+
+    this.Spirit = 0;
+
+    this.CurrentStrength = 0;
+    this.CurrentIntelligence = 0;
+    this.CurrentWill = 0;
+    this.CurrentDexterity = 0;
+    this.CurrentConstitution = 0;
+    this.CurrentLearningAbility = 0;
+
+    this.MaxStrength = 0;
+    this.MaxIntelligence = 0;
+    this.MaxWill = 0;
+    this.MaxDexterity = 0;
+    this.MaxConstitution = 0;
+    this.MaxLearningAbility = 0;
+
+    this.OffensiveBonus = 0;
+    this.DodgeBonus = 0;
+    this.ParryBonus = 0;
+    this.AttackSpeed = 0;
+
+    this.DefenseSum = function() {
+        return parseInt(this.ParryBonus) + parseInt(this.DodgeBonus);
+    }
+
+    this.StatSum = function() {
+        return parseInt(this.MaxStrength) + parseInt(this.MaxIntelligence) + parseInt(this.MaxWill) +
+            parseInt(this.MaxDexterity) + parseInt(this.MaxConstitution) + parseInt(this.MaxLearningAbility);
+    }
+
+}
+//*********************************************************************************************************************
+//End Player Class
+//*********************************************************************************************************************
 
 
 
@@ -210,100 +428,8 @@ function SkillCollection() {
 
 
 //*********************************************************************************************************************
-//Group Classes
+//Create Vale Exits
 //*********************************************************************************************************************
-function GroupMember(memberName, isLeader) {
-    this.MemberName = memberName;
-    this.IsLeader = isLeader;
-    this.MutilateCount = 0;
-    this.HitCount = 0;
-    this.Damage = 0.0;
-    this.AverageDamage = function() {
-        if (this.HitCount === 0) return 0;
-        return (this.Damage / this.HitCount).toFixed(3);
-    }
-    this.FriendlyName = function() {
-        if (this.IsLeader) {
-            return this.MemberName + " (Leader)";
-        }
-        return this.MemberName;
-    }
-}
-
-function GroupMemberCollection() {
-
-    this.GroupMembers = new Array();
-
-    //Add a member to the group members collection.
-    this.Add = function(memberName, isLeader) {
-        var groupMember = new GroupMember(memberName, isLeader);
-        this.GroupMembers.push(groupMember);
-        jmc.ShowMe(groupMember.FriendlyName() + " has been added to the group.", "blue");
-        return groupMember;
-    }
-
-    //Resets the group members collection.
-    this.Clear = function() {
-        this.GroupMembers = [];
-    };
-
-    this.Count = function() {
-        return this.GroupMembers.length;
-    }
-
-    //Retrieve the member from the group members collection by the specified group member name.
-    this.GetMember = function(memberName) {
-        for (var index = 0; index < this.GroupMembers.length; index++) {
-            var currentMember = this.GroupMembers[index];
-            if (currentMember.MemberName === memberName) {
-                return currentMember;
-            }
-        }
-        return null;
-    }
-
-    //Retrieve the ordinal index of a member name in the group members collection.
-    this.IndexOf = function(memberName) {
-        for (var index = 0; index < this.GroupMembers.length; index++) {
-            var currentMember = this.GroupMembers[index];
-            if (currentMember.MemberName === memberName) {
-                return index;
-            }
-        }
-        return -1;
-    }
-
-    //List all group member names in a comma delimited format.
-    this.ListMembers = function() {
-        var stringArray = new Array();
-        for (var index = 0; index < this.Count(); index++) {
-            var currentMember = this.GroupMembers[index];
-            stringArray.push(currentMember.FriendlyName());
-        }
-        return stringArray.join(", ");
-    }
-
-    //Remove a member from the group member collection.
-    this.Remove = function(memberName) {
-        var index = this.IndexOf(memberName);
-        if (index !== -1) {
-            var groupMemberName = this.GroupMembers[index].FriendlyName();
-            this.GroupMembers.splice(index, 1);
-        }
-    }
-
-    this.ListMutilates = function() {
-        jmc.Send("gt Mutilate Statistics:")
-        for (var index = 0; index < this.GroupMembers.length; index++) {
-            var currentMember = this.GroupMembers[index];
-            jmc.Send("gt " + currentMember.MemberName + ": " + currentMember.MutilateCount);
-        }
-    }
-}
-//*********************************************************************************************************************
-//Group Classes
-//*********************************************************************************************************************
-
 function CreateValeExits() {
 
     var zone = new Zone("Vale");
@@ -1690,6 +1816,11 @@ function CreateValeExits() {
 
     return zone;
 }
+//*********************************************************************************************************************
+//End Create Vale Exits
+//*********************************************************************************************************************
+
+
 
 //*********************************************************************************************************************
 //Create Faroth Exits

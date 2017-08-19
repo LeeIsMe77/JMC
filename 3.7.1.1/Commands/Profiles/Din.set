@@ -1,5 +1,8 @@
 #var {isWieldingDagger}{1}
 #hotkey {F10}{ #if {$isWieldingDagger==0}{ #var {isWieldingDagger}{1};rem sword;wield claw}{ #var {isWieldingDagger}{0};rem claw;wield sword } }
-#var {watersource}{flask}
+
+#var {watersource}{waterskin}
+#var {foodsource}{waybread}
+
 #alias {mail-cotton} {rem all.mail;rem all.chain;wea shiny;wea soft;wea all.cotton}
 #alias {cotton-mail} {rem all.cotton;rem shiny;rem soft;wea all.mail;wea all.chain} {default}

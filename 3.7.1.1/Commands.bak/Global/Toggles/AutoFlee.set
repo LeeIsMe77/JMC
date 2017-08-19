@@ -1,0 +1,2 @@
+#var {autoFleeOn}{0}
+#alias {autoflee}{#if { $autoFleeOn==0} { #action {PANIC!  You couldn't escape!} {flee};#var {autoFleeOn}{1};#showme {green}{Auto-Flee Enabled} }{ #unaction {PANIC!  You couldn't escape!} {flee};#var {autoFleeOn}{0};#showme {red}{Auto-Flee Disabled} };}

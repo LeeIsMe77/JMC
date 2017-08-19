@@ -22,5 +22,5 @@
 #hotkey {Ctrl+F11}{ #read {Commands/Mystic/Triggers/SpiritTriggers.set};}
 #hotkey {Ctrl+F12}{ #read {Commands/Mystic/Triggers/ArkenTriggers.set};}
 #hotkey {F12}{reset_login}
-#alias {reset_login}{#killall;#spit {Default.set} {%0} {ns};post_login};
+#alias {reset_login}{#killall;#spit {Default.set} {%0} {ns};info};
 #spit {Commands/Main.set} {%0} {ns}

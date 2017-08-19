@@ -1,3 +1,6 @@
+#var {watersource}{waterskin}
+#var {foodsource}{waybread}
+
 #hot {Ctrl+Q} {cast confuse} {default}
 #hot {Ctrl+I} {cast poison $target} {default}
 #hot {Ctrl+O} {cast insight $target} {default}

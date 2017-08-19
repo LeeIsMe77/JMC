@@ -3,3 +3,6 @@
 #hot {ctrl+P}{of assist Shooter}
 #alias {o}{am troll}
 #alias {p}{am wolf}
+
+#var {watersource}{waterskin}
+#var {foodsource}{waybread}

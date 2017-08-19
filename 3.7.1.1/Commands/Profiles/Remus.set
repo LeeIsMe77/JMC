@@ -1,3 +1,6 @@
 #action {^$leader attacks}{assist $leader}
 #action {^$leader leaps at %0, and hits %1 extremely hard!}{assist $leader}
 #action {%0 has recovered from a bash!}{bash}
+
+#var {watersource}{waterskin}
+#var {foodsource}{waybread}
