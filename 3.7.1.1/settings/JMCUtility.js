@@ -1089,11 +1089,6 @@ function ParseForScoreLine(incomingLine) {
 			_currentPlayer.CurrentMoves = matches[5];
 			_currentPlayer.MaxMoves = matches[6];
 			_currentPlayer.Spirit = matches[7];
-			return;
-
-			// WriteFractionToStatusBar("HP", matches[1], matches[2], 1);
-			// WriteFractionToStatusBar("MP", matches[3], matches[4], 2);
-			// WriteFractionToStatusBar("MV", matches[5], matches[6], 3);
 		}
 
 		if (!matchesFound && _isScoreLineFound) {
@@ -1105,31 +1100,18 @@ function ParseForScoreLine(incomingLine) {
 				_currentPlayer.ParryBonus = matches[3];
 				_currentPlayer.AttackSpeed = matches[4];
 
-				//TODO: If score XP is a full 1000k less than _currentPlayer.XPNeeded, update. If doesn't end in K, update.
+				//If score XP is a k less than _currentPlayer.XPNeeded, update. If doesn't end in K, update.
 				var tnl = matches[6];
 				if (!tnl.endsWith("K")) {
 					_currentPlayer.XPNeeded = parseInt(tnl);
-					return;
+				} else {
+
+					//This is more of an approximation than a science...
+					var tnlAsInt = parseInt(tnl.substring(0, tnl.length - 1) + "999")
+					if (tnlAsInt < _currentPlayer.XPNeeded) {
+						_currentPlayer.XPNeeded = tnlAsInt;
+					}
 				}
-
-				//This is more of an approximation than a science...
-				var tnlAsInt = parseInt(tnl.substring(0, tnl.length - 1) + "999")
-				if (tnlAsInt < _currentPlayer.XPNeeded) {
-					_currentPlayer.XPNeeded = tnlAsInt;
-				}
-
-				// var tnl = matches[6];
-				// if (tnl.endsWith("K")) {
-				//     tnl = tnl.substring(0, tnl.length - 1) + "000";
-				// }
-				// var tnlInt = parseInt(tnl);
-				// _currentPlayer.XPNeeded = tnlInt;
-				return;
-
-				// var defenseSum = parseInt(matches[2]) + parseInt(matches[3]);
-				// if (!_isListeningForScore) {
-				//     jmc.ShowMe("Defense Sum: " + defenseSum, "green");
-				// }
 			}
 		}
 
@@ -1516,23 +1498,6 @@ function CleanGroupMemberName(memberName) {
 
 function ClearWindow(windowNumber) {
 	jmc.Parse("#wclear " + windowNumber);
-}
-
-function WriteFractionToStatusBar(name, currentValue, maxValue, statusWindow) {
-	var percentage = (parseFloat(currentValue) / parseFloat(maxValue)) * 100.00;
-	var message = name + ": " + currentValue + "/" + maxValue;
-
-	if (percentage >= 80) {
-		jmc.SetStatus(statusWindow, message, "green");
-	} else if (percentage >= 60) {
-		jmc.SetStatus(statusWindow, message, "charcoal");
-	} else if (percentage >= 40) {
-		jmc.SetStatus(statusWindow, message, "yellow");
-	} else if (percentage >= 20) {
-		jmc.SetStatus(statusWindow, message, "light cyan");
-	} else {
-		jmc.SetStatus(statusWindow, message, "white");
-	}
 }
 
 function WriteEmptyLineToWindow(windowNumber) {
