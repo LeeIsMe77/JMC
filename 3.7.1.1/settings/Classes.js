@@ -172,6 +172,8 @@ function GroupMemberCollection() {
 //*********************************************************************************************************************
 function Player(name, alignment, gender, race) {
 
+    this.LogonTime = new Date();
+
     this.Name = name;
     this.Alignment = alignment;
     this.Gender = gender;
@@ -187,6 +189,7 @@ function Player(name, alignment, gender, race) {
     this.Specialization = "None";
 
     this.XPNeeded = 0;
+    this.XPGained = 0;
 
     this.Height = 0;
     this.Weight = 0;
