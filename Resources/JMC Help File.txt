@@ -1,0 +1,942 @@
+﻿Most players choose to play MUD MUD-specialized customers.  Many of them, however, are weak real capabilities of clients, which they use.  For some, it is not so important, but someone this tutorial will help lift the game to a new level.  What would be the type of player you are, we will be happy to supply you with information on how to get your client to work in full force.  This tutorial focuses mainly, MUD-client JMC, however, many of the concepts discussed here apply to other MUD-customers, so this tutorial will be useful to you, even if you are not a user JMC.  You can download free at JMC: http://mudlogs.foghaven.net/clients/jmc/ [Since the download is offered JMC version 3.26, it is likely that for this version of the authors and wrote the textbook - prim.per .]
+
+ ================================================ 
+ ================= CONTENT ======================
+ ================================================ 
+ 
+ 1) Get acquainted with the client 
+	1.1 ) Let us examine the buttons on the toolbar 
+	1.2 ) What is a "profile" 
+	1.3 ) Create a connection to the MUD through by JMC 
+	1.4 ) closes the connection to the MUD 
+2) Aliases (alias), and hotkeys (a hotkey), 
+	2.1 ) Let us examine how they differ from each other by 
+	2.2 ) Creating a simple alias 
+	2.3 ) Create a simple hotkey 
+	2.4 ) Deleting unnecessary alias 
+	2.5 ) Removal of unnecessary hotkey 
+3) Tsvetovydeliteli (the highlight of)
+	3.1 ) Why tsvetovydeliteli 
+	3.2 ) Creating tsvetovydelitelya 
+	3.3 ) Deleting unnecessary tsvetovydelitelya 
+4) Variable 
+	4.1 ) Why variable 
+	4.2 ) Chastevye variables (the partial variable)
+	4.3 ) Creating a variable 
+	4.4 ) using a variable 
+	4.5 ) Removal of unnecessary variable 
+5) Triggers (the action)
+	5.1 ) What is the "trigger" 
+	5.2 ) Creating a trigger 
+	5.3 ) Securing the trigger 
+	5.4 ) Deleting unnecessary trigger 
+6) Substitutions (Substitution)
+	6.1 ) What is "substitution" (the substitute)
+	6.2 ) What is a "stub" (the gag)
+	6.3 ) Creating a substitution 
+	6.4 ) Creating a stub 
+	6.5 ) Deleting unnecessary substitution 
+	6.6 ) Deleting unnecessary stub 
+7) #showme team 
+	7.1 ) What is the team #showme 
+	7.2 ) Use the command #showme 
+8) Binds together the study together 
+	8.1 ) Aliases variable 
+	8.2 ) aliases that cause run commands 
+9) Additional functions by JMC 
+	9.1 ) Additional window for output (output window)
+	9.2 ) Creating a command output information in the additional box 
+	9.3 ) Using the status bar of the cell 
+	9.4 ) Using sound to attract the attention of 
+10) Logging 
+	10.1 ) what you need to keep logs 
+	10.2 ) We write the log to a file 
+	10.3 ) closes the file log 
+	10.4 ) Where logs are stored 
+11) Conditional expressions 
+	11.1 ) expressions with the keyword if (#if command)
+	11.2 ) We use the conditional expressions 
+	11.3 ) Mathematics in by JMC 
+	11.4 ) using mathematical expression 
+12) regular expressions 
+	12.1 ) What is "regular expressions", and what are they for 
+	12.2 ) Create simple regular expressions 
+	12.3 ) for more information about regular expressions, 
+13) Conclusion Note authors where not mentioned specifically, by default it is believed that examples of texts entered on the command line client.  
+
+
+Before you press the enter key, check the correctness of the code.  Also keep in mind that capitalization matters.  
+ 
+ 
+================================================== ============   
+1) get acquainted with the client 
+---------------------------   
+  
+1.1)
+We will understand with the buttons on the toolbar - button with a white sheet (new profile)
+creates a new file for the code.  If you do not create such a file, your default settings will be saved to a file with the name "default".  
+Some people give birth in the game characters of different classes and prefer to share settings for each class.  
+- Folder button (load profile) allows the user to open the profile that you saved earlier.  
+Before opening a new profile, the current profile will be saved automatically.  
+Generally, it is a good idea - always save your work.  
+- With the floppy button (save profile) needs to save the current profile.  
+- Button with rainbow (color) 
+- Allows you to customize the color scheme of the game.  You can set the background color or the default color of the text.  
+- Button with the letters "Ff" (fonts) 
+- Allows you to select text font, font style and size.  
+- Button with a blue wrench (Setup) 
+- For advanced users.  It is assumed that you will not be messing with these settings until you get to know the JMC closer.  
+- With white box button (editing objects JMC) 
+- Allows you to manually configure the aliases, triggers, tsvetovydeliteli and hotkeys.  
+- Button with a red circle (pause) 
+- The game freezes in the text box JMC.  
+- Button with "S" letter (add a script) 
+- For advanced users.  Ability to add scripts that extend the built-in capabilities by JMC, in different programming languages.  
+- Button with red Iksom (interrupt script)
+- For advanced users.  
+- Button with bug (Debug) 
+- Opens the script text in the program that you use to debug their programs, such as Microsoft Development Kit (Kit from Microsoft's software developer)
+- For advanced users.  
+- Button with the question (the program)
+- Gives a summary of the software product (that is, the JMC)
+- All of the above problems can be solved by using the drop-down menu (which are usually located above the buttons)
+  
+We consider only the drop-down menu that perform tasks other than those listed.  
+- Drop-down View menu (appearance) 
+- Toolbar menu item (the toolbar)
+- Status bar (status bar)
+- Output window (additional output window)
+- can be included later when you learn from this manual, what they do and how they can be used. 
+- Drop-down Options menu (application settings)
+- It is a good idea to set the Scroll buffer (scroll buffer - memory that stores the contents of the document, which is outside the screen)
+is set to 30000. This is the maximum that can be set.  This figure means that if you need to scroll the text games back, you can unscrew the back to 30,000 rows.  
+- Drop-down Help menu (assistance)
+- will help you if you mess up in the syntax command language, or can not remember how to use a function of the JMC.  But here it is given only brief information, which is not exhaustive.   
+
+
+1.2) What is "Profile" 
+
+	All code (triggers, aliases, substitution, etc.) is recorded in the profile.  Unless otherwise specified, all this falls into the "default" profile (default)
+	A good solution is to keep the "default" profile in all versatile that can be used by all your characters.  Then, each time you create a new profile, it will be enough to open the 
+	profile "default", click on the button to create a new profile - with the JMC will ask you if you want to load into the current profile generated by the profile of the code.  This 
+	universal code for different characters stored in the "default" profiles, should be useful for any of your profile.  Such a collection of universal codes is not something absolutely 
+	essential, but to have it in a very user-friendly.  For different classes of characters, you can write specialized profiles. For example, you can specify the command "b" (bash - knock down) 
+	for the profile of the character classes "Warrior" and the same command "b" (backstab - stab in the back) for the profile of the character class "thief."  
+	If you do not understand these explanations yet, do not worry, everything will be clearer when you start writing your code to your profiles.   
+ 
+1.3) Create a connection to the MUD through the JMC 
+
+	What good is it to own a MUD-client and do not know how to create a connection with your favorite MUD? I believe that many of the readers of this handbook are playing MUD called "Arctic", and 
+	therefore use this MUD in the example.  
+	
+	COMMAND: #connect 
+	SYNTAX: #connect adres_servera_igry portnumber 
+	Example: #connect mud.arctic.org 2700 
+	
+	After entering this command will display the same text that appears if you are using a simple Telnet-client.  Obviously, each time to enter a long command to enter the game you get tired quickly, 
+	so it will be convenient to write a simple alias to help get rid of this problem.  What is the "Alias" - I'll explain later, but for now just enter the following: 
+	
+	#alias {z} {#connect mud.arctic.org 2700} 
+	
+	Now, typing the letter "the z", you connect to the MUD, called "Arctic".   
+	
+1.4) closes the connection to the MUD 
+
+	If for any reason you need to disconnect from the MUD, in which you are playing at the moment, you can enter: 
+	
+	COMMAND: #zap 
+	SYNTAX: #zap Entering #zap command initiates the closing of the connection with the game.  
+	
+	I will not talk in detail, in some cases, you may need this team, but it works well if you want to clear all of the plurality of commands naspamlennyh by you and creating lag (delay of game server 
+	responses to your commands)	at the wrong time.    
+
+
+2) aliases (alias), and hotkeys (hotkey) 
+-------------------------------------- ------   
+ 
+2.1) Let us examine how they differ from each other 
+
+	Both of these functions are very useful.  I myself prefer to use aliases in all cases, but some people can not live without hot keys.  Both the functions in question resemble each other in that 
+	they are a quick way to enter long commands.  The difference is that the alias still require a set number of characters and press Enter before the team will be transferred to the game.  Hotkey 
+	same work as soon as you press the corresponding key.  In those rare cases where I used hot keys, it was the function keys (F1-F12).  In fact, as a hot key may be any, but the use of conventional letter 
+	keys as hot - not a good idea.  It can be used as a hot key buttons such as the tilde (~) or a combination of keys, such as "CTRL + A".   
+ 
+2.2) Creating a simple command aliases: 
+
+	COMMAND: #alias 	
+	SYNTAX: #alias {short text for the name-calling} {full text} 
+	Example: #alias {AME} {get all corpse} 
+	
+	to take all of the body now, when you kill a mob, all you need to do to rob his corpse, to introduce this "AME".  Such reductions (aliases)
+	allows us to be much faster, especially if you make a lot of typos or feel insecure with long commands like "to! Magic arrow! Mouse".   
+ 
+2.3) Create a simple hot-key commands: 
+
+	COMMAND: #hotkey 
+	SYNTAX: #hotkey {key} {full text} 
+	Example: #hotkey {F1} {get all corpse} 
+	
+	to take all the body analogy with the example of an alias.  Now, when you kill mobs to loot his corpse, just press the F1 key.   
+ 
+2.4) Removal of unnecessary alias 
+
+	COMMAND: #unalias 
+	SYNTAX: #unalias {short text for the name-calling} 
+	Example: #unalias {AME} 
+	
+	Now alias that we created earlier will be removed.  Delete aliases as possible by calling a special dialogue with white box button in the toolbar (editing objects JMC), 
+	hereinafter - the tab "Alias" (Aliases), select the alias "AME", click mouse button "Remove" (Remove), although personally I find this way too long and therefore boring.  I prefer the first method.   
+
+2.5) Removal of unnecessary hot keys 
+
+	COMMAND: #unhotkey 
+	SYNTAX: #unhotkey {key} 
+	Example: #unhotkey {F1} 
+	
+	Now hot key that we created earlier will be removed.  Delete the shortcuts can also be in the manner described above, only the selected tab in the dialog "Shortcuts" (Hotkeys)
+	instead of "Alias" (Aliases)
+
+ 
+
+3) Tsvetovydeliteli (highlight)
+------------------------------   
+ 
+3.1)Why tsvetovydeliteli 
+
+	Many people know that the use of colors in the game helps to differentiate between players and objects, monsters and the like, and it's very easy to color separation.  If you've never used the console 
+	colors ANSI standard (short - color ANSI) and you play, for example, in the MUD called "Arctic", I suggest you enter the command "opt ansi" [in Russian MUD called "epic" of the analogue the team will 
+	be "full color" - prim.per]..  
+	
+	First, you will have a little dazzled, but having run in the game with flowers ANSI longer you from this will not refuse.  JMC supports ANSI console colors standard.  The names of some characters in the 
+	game, or any information on the game server for you can be more important than other names or other information, and therefore we do not want to miss them in the flow of text.  Isolation of such information, 
+	the color - is one way not to miss it.   
+	
+3.2) Creating tsvetovydelitelya 
+
+	COMMAND: #highlight 
+	SYNTAX: #highlight {} {color information for highlighting} 
+	Example: #highlight {green} {Peter} 
+	
+	Now every time in the flow of the text from the server of the game you find a name "Peter", it It will be automatically highlighted in green (green) color.  However, one should bear in mind that due to the fact that, 
+	for example, the word "Petrovich" is also present, "Peter", the words "Petrovich" is highlighted in green, too.  Learn what colors to highlight the text you are available by clicking on the button with a rainbow JMC 
+	toolbar.  
+	
+	Here is a list of colors that will be there for sure (in addition to these there may be other colors): 
+	
+	COLOR: 
+		yellow (yellow), 
+		red (red),
+		green (green), 
+		brown (brown), 
+		blue (blue), 
+		magenta (purple), 
+		cyan (blue), 
+		light red (bright red), 
+		light green (bright green), 
+		light blue (bright blue), 
+		light cyan (bright blue), 
+		light magenta (bright purple)
+
+3.3) Removal of unnecessary tsvetovydelitelya 
+
+	COMMAND: #unhighlight 
+	SYNTAX: #unhighlight {information for highlighting} 
+	Example: #unhighlight {name} 
+	
+	Peter, "Peter," which, thanks to a team from the last chapter, is highlighted, will now be displayed in the default color.  You can delete unnecessary tsvetovydelitel and using the button with the white box on the toolbar 
+	JMC - in the dialog that opens select the tab HighLights (Tsvetovydeliteli), select the unwanted tsvetovydelitel in the list, click the Remove button (Delete) on the right.   
+
+
+
+4) Variable 
+--------------   
+
+4.1) Why do we need the variable 
+	Variables have many uses.  With their help, you can store values ​​that are later used for various calculations.  The variable can store the name of a trigger, or alias, or we may just need a placeholder (placeholder)
+	in the line-pattern that matches any combination of the original string.   
+	
+4.2) Chastevye variables (partial variable)
+	It is basically the same aggregates that have been mentioned above.  These variables are not defined by the user, they are built-in and match any combination of the original string.  Accessing chastevym variables 
+	produced by their names, which consist of a percent sign and numbers, that is,% 0,% 1,% 2, ..., 9% - a total of ten.  Suppose, MUD (in this case - the game server), in which we play, can give the line-originals like this: 
+	
+	The Raven came from the south.  
+	
+	Using chastevuyu variable (placeholder), we can write the following line template: 
+	
+	0% came from the south.  
+	
+	Since chastevaya variable corresponds to 0% in this case, any combination of characters that are in the line-in the original part of the left of the character "came from the south." That whoever came from the south - the 
+	raven, Batman, Peter, Marilyn Monroe - our line-pattern will match the line-original.  Now these explanations you may seem very simple, and the use of variables chastevyh - uncomfortable, but these variables you need, 
+	when we discuss the use of flip-flops.  Also, these variables may be necessary to make our aliases and substitution (substitution) more flexible.  Suppose we want to a message that someone (anyone)
+	enters the room (from any direction), highlighted in green.  Using the previous example: Raven came from the south.  
+	
+	Let us make our template string more universal: 
+	
+	0% 1% came from 
+	
+	now we can embed the resulting template line in tsvetovydelitel: 
+	
+	#highlight {green} {%0 %1 flew with} 
+	
+	Now whoever came into the room, and with what you want direction, this message received from the game server will be highlighted in green.  You can make the alias more versatile by adding a goal-setting (target).
+	For example, when you want to open a container, take everything out of it and shut it down, you enter a command similar to the following: 
+	
+	open bag 
+	take all bag 
+	close bag 
+	
+	To automate this operation, create the alias as described in the chapter above, dedicated aliases, that is, enter: 
+	
+	#alias {cc} {open bag; take all bag; close bag} 
+	
+	Now, when you type "cc" to happen the same thing as when you enter three teams above.  	
+	The semicolon is used as a command separator;  commands via a separator can be positioned a few commands on one line.  
+	
+	Next, assume that we want to change this alias so that it works with any container.  This can be done as follows: 
+	
+	#alias {cc} {%0 open; take all 0%; close %0} 
+	
+	Now we can enter commands similar to the following: 
+	
+	cc cc bag purse chest centuries ... and our alias works with any of these containers.  Just remember that chastevye variables (0% or 5% or 3%, etc.) should not be used in any order, as well as to comply 
+	with the following one behind the other pieces of text.   
+	
+4.3) Creating a variable 
+
+	In addition to chastevyh in JMC are common variables, that is, such that the user determines himself and that contain certain values ​​necessary to us.
+	
+	COMMAND: #variable 
+	SYNTAX: #variable {variable name} {variable} 
+	Example: #variable {weapon} {spear} 
+	
+	Using a variable in the JMC objects like aliases, triggers, and so on, you can turn these objects into a universal and very powerful tool in a game.
+	
+4.4) Using a variable 
+
+	All is fine, but it brings the usual useful variables defined by the user, that is us? So, to get the value of the variable (for example, defined in the previous chapter), you need to put the 
+	symbol "$" in front of the variable name, then the JMC will understand how to extract the value. 
+	
+	Let's enter the following command: 
+	arm $weapon 
+	
+	As a result, JMC will display on the screen and sends the game server the following: 
+	Work with the spear arm variable gain importance in later chapters, when we begin to use variables often. Note that if you had before the last example did not create the variable $weapon, the game 
+	server would be sent exactly the sequence of characters, as you wrote, it is "armed with $weapon"; the same is true for any other expressions with variables that you write to send the game server. 
+	Before using a variable, make sure that your variable exists, and she was awarded a value! 
+	
+4.5) Removal of unnecessary variable 
+
+	COMMAND: #unvariable 
+	SYNTAX: #unvariable {variable name} 
+	Example: #unvariable {guns} 
+	
+	with the name of "Weapon" no longer exists and its value ("spear") are also erased.  
+	
+
+
+
+5) Triggers (action)
+-------------------- 
+
+5.1) What is the "trigger" 
+	the "Actions" (the actions), also known as "triggers" are a command (command sequence), which is automatically launched for execution as defined in the trigger string is received from the game server. 
+	Triggers run the command to execute without the participation of the player.
+	
+5.2) Creating a trigger 
+
+	COMMAND: #action 
+	SYNTAX: #action {event} {actions to be executed} 
+	Example: #action {0% gave tips. Peace be upon him} {get coin corpse} 
+	
+	Now, when someone dies in one room with our character, our client for playing MUD will automatically send a command to the game server "to take the corpse of a coin." This trigger will fire whoever gave 
+	tips as 0% - aggregate (ie, matches any sequence of characters; see Chapter 4 of the aggregates "Variables").
+	
+5.3) Securing the trigger 
+
+	Anyone who has played in the MUD, familiar with the phenomenon of the attempts of some players to hurt other players' characters (the victims) with your own triggers victims. That is, when the other players 
+	(or, sometimes, for some unrecorded you when writing a trigger event) make your triggers fire at a moment (or so) when (a) you do not need this. Such use of the evil of your triggers can result in the loss 
+	of your character's equipment, money, and even death. All this means that the ability to write secure the trigger is for the player in MUD necessity. Here are some very important examples that will help understand 
+	why flip-flops may be unsafe for your characters. 
+	
+	Let's say you only want the trigger to fire when the line appears: 
+	
+	Peter gave tips. Peace be upon him! 
+	
+	Write some trigger specifically for this event. The versatile triggers you write, the more problems you may face when the trigger occurs. With the help of a special character, the anchor can be improved trigger safety. 
+	Just enter the symbol "~" in the beginning of the line defined in the trigger as the event at which the trigger fires - this will save the trigger with the sound of players (and some other things), which contain 
+	the text from which your triggers are activated. However, this technique can be used only when the combination of symbols on which the trigger is activated, located in the game from the beginning of the line. 
+	
+	Let's see what this means. 
+	
+	Peter gave the ends. Peace be upon him! 
+	
+	This line, the event received from the game server, launch your trigger if, for example, one of the following events: 
+	
+	Vova said to you, "Peter gave the ends of the world upon him.!" 
+	Aristarchus shouted, "Peter gave the ends of the world upon him.!" 
+	Light screamed: "Peter gave the ends of the world upon him.!" 
+	
+	If you define your line-event like this: 
+	
+	^ Peter gave tips. Peace be upon him! 
+	
+	That your trigger will only work when a character called "Peter" really give the ends, not when this someone yell. 
+	
+	If we define a string-event trigger as follows: 
+	* Peace be upon him! 
+	
+	So our trigger will only work when the game server will return the exact string: 
+	Peace be upon him! 
+	
+	As long as this does not happen, the symbol of the anchor-hold trigger on the trigger, someone would be there that no shouting. Using triggers chastevyh variables (variables of chastevyh see Chapter 4, "Variables")
+	makes the software triggers security is much more difficult. These variables in triggers are also used in substitutions (for "substitutions" see Chapter 6), and aliases. 
+	
+	Let's look at the line-Event: 
+	
+	Here 432 coins. 
+	
+	We can create a trigger that in the event of such an event will automatically divide a pile of coins among the members of the group: 
+	
+	#action {% 0 coins here.} {Split %0} 
+	
+	This trigger helps automate fairly trivial task and at the same time poses a challenge to the player - this trigger and it works on the next line-Event: 
+	
+	Peter said: "Here 4000; quit; coins." 
+	
+	When triggered by this event trigger created by section above 4,000 coins and bring you out of the game, and all because of the fact that the trigger is not tied to the beginning of the line. 
+	
+	Perfecting this trigger: 
+	
+	#action {.^Here% 0 coins} {split %0} 
+	
+	This version only works if the string, the event will begin with the character sequence "Here." The problem may occur even when you use "~" symbol, anchor, if you use it incorrectly. Suppose you 
+	create a trigger, through which you can prisledovat anyone when he leaves the room: 
+	
+	#action {.^%0 %1 left for%} {1} 
+	
+	You may think that once you have used the symbol "^" before the line -Events, the trigger is safe for you. But this is not the case. Chastevye variables% 0,% 1, and so on, as already stated above, correspond 
+	to a sequence of symbols between the relevant parts of the original line. 
+	
+	Let us come from a game server line-Event: 
+	
+	Peter said: "The mouse went to the west." 
+	^^ ----------------^^ 
+	|| _______________ || This is the beginning of the line.  
+	||
+	||This part of the line corresponds to 0%. 
+	
+	Trigger author's mistake is that he thinks that 0% corresponds to only one word. How to patch the hole in the safety trigger for this case? There are three things you can do: 
+		1)	Send all triggers in the trash. 
+		2)	Transform the trigger so that the in-line event has always been the first part, which is plain text, not chastevoy variable. 
+		3)	Use the triggers for writing regular expressions, which will be described later in Chapter 12, "Regular expressions".
+		
+5.4) Removal of unnecessary trigger 
+
+	COMMAND: #unaction 
+	SYNTAX: #unaction {event} 
+	Example: #unaction {^% 0 gave tips! Peace be upon him!} 
+	
+	Now, if someone would give the ends, then your client to play MUD does not automatically execute the command, you specified when creating the trigger. Another way to remove the trigger - by pressing the 
+	white box on the toolbar cause JMC dialogue, choose "Actions" tab, select the list of unwanted trigger and click on the "Remove" button to the right. 
+	
+
+
+
+6) Substitution (substitution)
+----------------------------- 
+
+6.1) What is "substitution" (substitute)
+	All players rather quickly bored some of the standard messages when playing MUD. It would be great if it would be possible to configure the game so that instead of standard messages we saw something more interesting 
+	or funny. In addition, it would be very convenient to somehow highlight the most important posts. We have already discussed tsvetovydeliteli (Chapter 3), which are one of the selection methods. Substitutions - another 
+	one of these methods. You can also combine these two methods to highlight the most important thing.
+	
+6.2) What is a "stub" (gag)
+	In addition to the standard reports bothersome when playing MUD there are messages that we do not want to see. The ability to get rid of some useless information can greatly help us to focus on the really pressing 
+	problems in the game. If you remember right now such cases, you can now "drown out" the unwanted text.
+	
+6.3) Creating a substitution: 
+
+	COMMAND: #substitute 
+	SYNTAX: #substitute {original} {text} 
+	Example: #substitute {powerful blow 0% making you stretch out on the ground.} {----> 0% <---- knocked yOU !!!} 
+	
+	Note: for example: despite the fact that here in the tutorial text, the team moved to the next line, you have a command line client for playing MUD enter the entire command on a single line text. 
+	Now, every time the game from the north will receive a message: 
+	
+	a powerful blow Melkor make you stretch out on the ground. 
+	
+	Instead, you will see: 
+	
+	----> Melkor <---- hit you !!!
+	
+6.4) Create a stub 
+
+	COMMAND: #gag 
+	SYNTAX: #gag {text you want to drown} 
+	Example: #gag {.You do not see anything unusual} 
+	
+	If we, for example, introduce the "scan" command (look around) in the MUD called " Arctic ", then we will quite often get the following (if nothing unusual around visible): 
+	
+	You look to the north: you do not see anything unusual. 
+	You look to the east: You do not see anything unusual. 
+	You look to the south: you do not see anything unusual. 
+	You look to the west: You do not see anything unusual. 
+	You look up: you do not see anything unusual. 
+	You look down: you do not see anything unusual. 
+	
+	But after the establishment of our plug (example above), when we introduce the command "scan", we see the following: 
+	
+	You look to the north: 
+	You look to the east: 
+	You look to the south: 
+	You look to the west: 
+	You look up: 
+	You look down: 
+	
+6.5) Removal of unnecessary substitution: 
+
+	COMMAND: #unsubstitute 
+	SYNTAX: #unsubstitute {line on which a substitution was established} 
+	Example: #unsubstitute {powerful blow 0% making you stretch out on the ground.} 
+	
+	Now that we get from this line, we have a game server it and see, in exactly the same form as before the substitution.  
+	
+6.6) Removal of unnecessary stub 
+
+	COMMAND: #ungag 
+	SYNTAX: #ungag {text that is off the beaten path} 
+	Example: #ungag {You do not see anything unusual.} 
+	
+	Now, this message will again be displayed, for example, when you enter the command "scan" in the MUD entitled "Arctic".  
+	
+	
+	
+	
+7) Team #showme 
+------------------- 
+
+7.1) What is the team #showme 
+
+	#showme command can be used in many ways. You can use it to alert yourself about any developments; You can use it to find errors in your scripts or to show yourself some useful message. 
+	Let's now look at how to use this command in simple tasks. To move within a complex.
+	
+7.2) Use the command #showme 
+
+	COMMAND: #showme 
+	SYNTAX: #showme {color [Not Required]} {text message}
+	EXAMPLES: 
+		#alias {test} {#showme HELLO, FRIEND} 
+		#alias {Test} {#showme {green} {Hello friend!}} 
+		
+	Both of these examples are syntactically correct, but each of them has its pros and cons. 
+	
+	Note for example: this is the first example in which we combine more than one object JMC in the same expression. This is a very simple example, which is very well suited to illustrate this combination. 
+	Now, every time we enter the alias "test", we will get a message: Hello friend! It is obvious that there is no command #showme team-cancellation. In this case, if we do not need an alias created in the example, 
+	it is sufficient to remove the alias as described in Chapter 2 of this tutorial, and then the message "Hello friend!" cease to appear. 
+	
+
+
+
+8) binds together the study together 
+------------------------------- 
+
+8.1) with variable Aliases 
+
+	At this point we have studied the main objects of JMC. Now it will be useful to know how to use these objects, together with each other. Let's look at a few simple examples of how this can be done; consider more complex 
+	examples later. Thus, the variables can be very useful, but what is the hemorrhagic - each time something like: 
+	
+	#variable {guns} {sword} 
+	
+	when we want to change the value of an existing variable. In order to perform this operation quickly, can be used as a team both aliases and variables (combination of multiple objects JMC in the same team is already discussed 
+	in chapter 7). For example, we can do the following: 
+	
+	#alias {ustoruzhie %0} {#variable {guns} {%%0}; #showme {green} 
+	
+	{Now the weapon is installed in the $weapon}} Note: For example: despite the fact that here in the tutorial text, the second part of the team moved to a different line, you must type this command on one line without hyphenation. 
+	Also look closely to the character ";". As already mentioned in section 4, it is called a separator commands. It is used in order to be able to place multiple commands in a single line, as well as the command separator acts as 
+	a substitute for a carriage return (Enter key). What is needed here team #showme? It is used to inform the user to change the variable "weapon", that is to debug our example (#showme about the possibility of using debugging in 
+	Chapter 7). If #showme command message does not appear, we will understand - something went wrong, then you need to check the syntax. Also pay attention to the design of "%%0". Optional percent symbol "%" is difficult to explain. 
+	For starters, the number of characters per cent, "%" is determined depending on whether we want to turn to a variable level. 
+	
+	Let me explain with an example. One of the secondary commands available in JMC - #loop, which implements in the JMC Cycles (previously we have not discussed). 
+	
+	COMMAND: #loop 
+	SYNTAX: #loop {A, B} {%0.chto}
+		
+	a first brackets contain a list of two numbers - A and B. The second brackets contain some text to be transmitted to the game server using a variable chastevoy 0%. #loop command starts the cycle with the number of iterations B. 
+	The counter is ticking on Ones from A to B. 
+		
+	The current value of the counter is contained in the variable chastevoy 0%. 
+		
+	Example: #loop {1,4} {take all %0.trup} 
+
+	As a result, the game server will be sent to the team: take all 1.trup 2.trup take everything take everything take everything 3.trup 4.trup Now that we know how to use #loop team, let's assume that we want to make an example 
+	of the cycle of more flexible, so that it could operate in any container (remember alias "centuries" in chapter 4.2). To do this, will combine in a single command alias and cycle: #alias {cc% 0} {#loop {1,4} {take all% 0 %% 0}.} 
+	Command #loop placed inside #alias team (that is, in this complex team has two levels - internal (or "lower") level #loop team and external (or "top") level #alias team). Theoretically, levels may be more than two. At each level 
+	of 0% chastevaya variable contains different values ​​for the top - the name of the container, on the bottom - the current value of the counter. Therefore, to JMC could discern the value of the variable chastevoy 0% upper and 
+	lower levels, we put a different number of characters percent "%". The greater the percent symbol "%", so at a higher level chastevuyu variable we are referring. Now we introduce, for example: cc chest then the game server 
+	goes as follows: take all 1.sunduk 2.sunduk take everything take everything take everything 3.sunduk 4.sunduk If you have just started to learn the wisdom of the game in multiplayer worlds, all these explanations you may seem 
+	impenetrable. Do not give up, will take a little time and you will realize that this is not so difficult.
+		
+8.2) Aliases that cause run commands happens that 
+
+	In some cases we may need to temporarily triggers. These triggers can be created using aliases, and canceling (off) aliases. We have already talked about running a command using aliases. 
+	Here is another short example: 
+	
+	#alias {ograblenievkl} {#action {% 0 is dead! Peace be upon him.} {Take vse.monety corpse}} 
+	#alias {ograblenievykl} {#unaction {% 0 is dead! Peace be upon him.}} 
+	
+	Type "ograblenievkl" we will create a trigger that will continue to operate automatically without requiring any input from us. If we introduce the "ograblenievykl" command, then trigger automatic corpse robbery will be removed. 
+	The same on-off principle can apply to scripts composed of a plurality of commands. All we need to do is to add the command in the above example, using the command separator. 
+	
+	Example: 
+		#alias {ograblenievkl} {
+			{
+				#action {% 0 is dead! Peace be upon him} {to take vse.monety corpse.}; 
+				#action {^ A handful of steel coins.} {take vse.monety}
+			} 
+		#alias {ograblenievykl} {
+			#unaction {% 0 is dead! Peace be upon him}.; 
+			#unaction {. ^ A handful of steel coins}
+		} 
+		
+		These examples are very simple, but they are catching, you can create more complex scripts, such as PK (Player's Kill - hunting for other players characters and killing them and (or) robbery). At the beginning of the 
+		chapter you want to have a tool with which to a certain point, you would be able to quickly create a series of some triggers and quickly turn them off. Including aliases, switching-off - this is exactly what you need. 
+		
+		
+		
+		
+9) Additional functions JMC 
+------------------------------ 
+
+9.1) Additional window for output (output window)
+	If you - a new user JMC and the first launch the program, it is likely to appear on the screen, and an additional window to display information, and you will not know why you need it. After all, at first glance, it's a 
+	big ugly box only takes place at the top of the screen. But, actually, this window can be very useful. If you are hurried to close it, it does not matter. To reopen it, you need only to enter the drop-down View menu (appearance)
+	and select the "Output window" item. Then you can move this window and resize it as you like. Additional window in the main window looks like the JMC that it is also possible to display text supplied by the game server, but not	
+	directly. This extra window can be represented as your own little notebook, because it can send you only the information you want for yourself. We can make sure that the replica players or players-only members of your group will 
+	be filtered from the main flow of the text received from the game server in an additional window, so they are not lost in the general flow of the game information. This is just one example. Send whatever the text in this window is 
+	quite simple.
+	
+9.2) Create a command to display the information in the additional window 
+
+	COMMAND: #output 
+	SYNTAX: #output {color [Not Required]} {text to display }
+	Example: #output {green} {!UAS} 
+	
+	Enter the command from the example. You will see that there was a green sign "UAS!" In an additional window. If you have created a variable $ weapon, which contains the name of the weapon that you are armed, and you want to get the 
+	message out about this weapon in an additional window, you can enter the following command: 
+	
+	#output (red)(MAIN WEAPON: $ weapon)
+
+	itself this team is almost useless. However, in combination with triggers, it can bring huge benefits. Imagine that you go from one area to another, and each tells you something important. You can easily miss another message 
+	in the spam flow (text describing the rooms, shouting players, etc.). To filter the more important messages from the general flow of the text, let's use a combination of trigger and output in an additional window: 
+	
+	#action {%0 told you '%1} {#output {white} {%0 told you '%1}} 
+	
+	"But there same typo ?! " - You might say. No.You may ask, "why not do so?": 
+	
+	#action {% 0 told you '%1'} {#output {white} {% 0 told you '%1'}} 
+	^ | In fact, this will cause a problem enclosing quote. Chastevaya variable %1 in this case corresponds to a piece of text to the enclosing quotation marks, and the text after it will not be counted. 
+	For example, someone sent you a message: 
+	
+	Lord Soth said to you: 'Ahead -' Dragon's Den '. It is better to go to the east. ' 
+	
+	This is what will be displayed in an additional window if the team used enclosing quote: 
+	
+	Lord Soth said to you: 'Ahead -' 
+	
+	without enclosing quotation marks, as we did at first, chastevaya variable %1 will be representative of the entire report, in spite of possible nested quotes, and a message will be fully displayed in an additional window. 
+	Thus, in an additional window can be filtered Statistics group posts bandmates, screams, cries, etc., that is all you want. Additional window - it is something like a focus in which you select for themselves from the 
+	main stream of various text running in the main window.
+	
+9.3) Using the status bar of the cell 
+
+	to start to find out what the status bar of the cell, and where they are. Cells status bar - window is three small black or gray, designed to display various signals and messages. These cells are located in the lower right 
+	corner of the JMC box to the left of the three icons of windows and display ON / OFF. Basically, each of them is used for storing a single value. For example, one of the players is at the moment your goal, you are tuned to kill (PK), 
+	or in which direction you just went, or what weapon you're currently using, etc., etc. 
+	
+	COMMAND: #status 
+	SYNTAX: {#status cell number: 1,2,3} {message} {color [Not Required]} 
+	Example: #status {1} {!} {UAS green} 
+	
+	Here is an example from which more good. Here's how you can track if your paladin strong enough at the moment is to use the ability to "entrust" or not: 
+	
+	#action {^ You put your hands on the 0% and uttered a prayer.} {#status {1} {laid : spent} {yellow}} 
+	#action {^ you feel that in your hands the power back that allows you to heal #status} {{1} {laid:. RESTORED green} {}} 
+	
+	Let's look at the effect of these commands in detail. It is obvious that when the paladin has just used his ability to "entrust", he can not immediately use it again. We have to wait a certain number of ticks before the paladin can 
+	use it again his ability. As soon as the power is restored to the ability, the game will give specified in the trigger message. Perhaps you are thinking, "Well, if I get a message, why do I need another message in the status box?". 
+	For example, if you are in the middle of a fierce battle and get this message, it is very easy to miss it. Or you can just forget it. The message in the status box will serve as a reminder to you, and at some point will help save the 
+	life of someone.
+	
+9.4) use the sound as a warning signal 
+
+	Many think that this possibility is almost useless. However, some of us and can benefit from this. For example, the end of the second consecutive sleepless night, the player can be half asleep. Learn that something important 
+	had happened, it would be much easier if this alert sounds. 
+	
+	COMMAND: #bell 
+	SYNTAX: #bell EXAMPLE: 
+	#action {^ powerful blow 0% making you stretch out on the ground.} {#bell} 
+	
+	I think everybody understands how it works. If our character knocked down, we get a beep, of course, if our computer is equipped with a sound system. 
+	
+	
+	
+	
+10) Maintain logs 
+------------------ 
+
+10.1) The useful logging 
+
+	When we explore a new area or want to know how to get to the area where we are constantly drags leader convenient to have a text version of all the events in the game, so that later you can analyze it. Also, sometimes you want 
+	to keep the record of the biggest and most exciting battles between players. In all these cases JMC has a team for logging in text files. Please note that while the JMC can not write in your log or substitution posts by #showme 
+	commands or text that will appear in an extra window. What is written in the log files is exactly what comes from the game server without modification.
+	
+10.2) in the log entries 
+
+	Run Make it very simple file. When you have the desire to start writing log passing zone, you obviously want to give it a specific name ravine, in the future it would be possible to quickly find the log among others. Here is 
+	an example: 
+	
+	#log {Podzemele.txt} 
+	
+	After entering this command in the lower right corner of the JMC window in a second window, the icon will open the folder icon, which indicates that the log file is opened and the log is written to the file.
+	
+10.3) Close the log file 
+	is no need to constantly write log or write everything in one file. Therefore, after the zone is passed or the battle was over, the log file can be closed. To do this, you do not need to specify the name of the log file. 
+	You just need to enter: 
+	
+	#log 
+	
+	This command closes the current log file.
+	
+10.4) Where are the logs 
+
+	If you do not specify JMC to put the log files in any particular place, the client will write log files in the directory where it is located. You must know where is this directory, this tutorial will show that you do not. 
+	NOTE: in logging team has a parameter file that defines two ways to write the log to a file: overwrite (overwrite the old log file) and append (by adding a record to the old ravine). If this parameter is not specified, the log 
+	is written way to overwrite. At the same time, if you start to write in the log, the old log file with the same name that already has a previously recorded file will be erased and a new log file will be written on top of it. When 
+	using the method in the case of coincidence append log file names new log will be written to a file with an old log, immediately after the end of the old log. 
+	
+	Here's how to use these methods: 
+	
+	#log Podzemele.txt append 
+	#log Podzemele.txt overwrite 
+	
+	again: overwrite - This is the default value and it is not necessary to enter. 
+	
+	
+	
+	
+11) Conditional expressions 
+----------------------- 
+
+11.1) The expressions with the keyword if (#if command)
+	
+	expressions with the keyword if - a very handy thing. They allow us to run some action only under certain circumstances. Also, these expressions are known as "conditional expression". Remember that the JMC supports 
+	only numeric comparisons.
+	
+11.2)
+	
+	Use conditional expressions 
+	
+	COMMAND: #if 
+	SYNTAX: {#if specified here - the truth} {} 
+	
+	commands for execution prior to analysis of examples need to clarify a few things. Firstly, we need to know how to connect multiple objects JMC with each other. This is certainly true for the other chapters of this tutorial, 
+	but here it is especially important. Below we look at some of the comparison operators, and the differences between them, down to the most insignificant. 
+	
+	You can make direct comparisons, which are indicated by symbols: <> <=> = == = (less than, greater than or equal to, greater than or equal, equal, not equal). 
+	
+	EXAMPLES: 
+		#if {$money> = 50} {divide coins} 
+		#if {$Life <20} {read return roll} 
+		#if {$level == 30} {fun; exit; 4;} 
+		#if mypassword {$ ! PC = 20} {yell} 
+		
+		Note: The common error when using the operator "equal" - instead of "==" people write "=". It is not right. In programming languages, a single character "=" is used as an assignment operator variable value, so as the 
+		operator "is" decided to use the double sign "==". You can use the operator "AND" in the conditional expressions (referred to as "&&"): 
+		
+		#if {$PKrazreshen == 1 && $ money == 0} {growl} 
+		
+		You can also use the operator "OR" (denoted by "||"): 
+		#if {$estavtomaticheski == 1 || $ Hunger == 1} {} 
+		
+		That's all there is another short example of how you can use a conditional expression.  
+		
+		#alias {ograblenievkl} {#variable {loot} {1}} 
+		#alias {ograblenievykl} {#variable {loot} {0}} 
+		
+		Type: 
+		
+		ograblenievkl #action {%0 gave tips! Peace be upon him.} {#if {$Robbery == 1} {take vse.monety corpse}} 
+		
+		Now, due to the fact that we first set the variable "loot" 1 ( "enabled"), when the mob or character dies, our character will automatically steals coins from the corpse of the deceased. If we enter the command 
+		"ograblenievykl", our character will cease to plunder the corpses, because the variable "robbery" would no longer be equal to 1, and the condition in the trigger stop trigger.
+		
+11.3) Mathematics in Mathematics in JMC 
+
+	JMC can be a little not what you expect. However, for anyone who has even a little programming experience, you will not be too difficult to adapt. Those who had not programmed to be a bit more difficult. The basic concept 
+	of mathematics at the JMC is similar to the concept of the integer math in programming languages. For example, if we divide the 3 by 5, we obtain as a result of 0. Then, as in the conventional mathematics will result equals 0.6.
+	 We will not paint you a formula here, but understand that you can get around this problem by applying the multiplication before division to make the appropriate values ​​for integer division.
+	 
+11.4) using mathematical expression 
+
+	COMMAND: #math 
+	SYNTAX: #math {variable} to {result} matem.vyrazhenie 
+	EXAMPLE: 
+	
+		#variable {vsego_monet} {0} 
+		#action {.^Here %0 coins} 
+		{
+			#math {vsego_monet}{$vsego_monet + %%0}
+		} 
+		#alias {stolen coins} 
+		{
+			#Showme {yellow} {aLL cOINS sTOLEN: $vsego_monet}
+		} 
+
+At first glance, it looks a little confusing, but let's see what happens. 
+
+	The first thing we do - is create a variable to store the total number of stolen coins and set it to zero. Then we create a trigger for a message that gives the game after our character was able to knock out the enemy a little coin. 
+	This trigger executes mathematical calculations. So, after the keyword #math in curly brackets we specify the variable for the result of the mathematical expression, and then specify a mathematical expression itself. Here, you can 
+	exclaim: "Wait a minute using the same variable that this mathematical terms, we store the result of this expression." The reason for this is that we want to see each time calculating the expression a new calculation result is written 
+	over and thereby overwrites it. In the last part of the example we create an alias, which simply displays the total number of stolen coins on the screen. 
+	
+	Let's see how it works: 
+
+		99H 99V 99X 99C: N> here 10 coins. 
+		99H 99V 99X 99C: N> stolen coins ALL COINS STOLEN: 10 
+
+
+
+
+
+12) Regular expressions 
+-------------------------- 
+
+12.1) What is "regular expressions" and what they do 
+
+	in the previous chapters, we were quite uncomfortable triggers to create specific text that comes from a game server, and it was quite difficult to figure out how to design a suitable 
+	template for the text to trigger load. In addition, the opportunities by JMC, which we were previously known to adjust the triggers for specific text from the game server, as we know, have a number of deficiencies in terms of 
+	security. Instead of using chastevyh variables like %0, %3, and so on, by JMC allows us to use a completely different method of adjusting the trigger under the target text from the game server - is the use of "regular expressions" 
+	("Regular Expressions", or briefly - "a RegEx "). This is a very accurate and very flexible method of describing the target text.
+	
+12.2) Create simple regular expressions 
+	Regular expressions are mainly used in triggers (#action). 
+	
+		SYNTAX: #action {/regex/ {actions} to be executed} characters slash ( "/") mark the beginning and end of the regular expression. 
+		
+		For example: 
+		
+		#action {/ Street smug cat purrs / {} to Firestorm! Cat} 
+		
+		This is what we could do and without regular expressions. However, regular expressions can be configured more thinly. First, let's examine the concept of special characters. Special characters are usually denoted by a 
+		backslash ("\"). Here are some of the special characters: 
+		
+			\w, 
+			\d, 
+			\s (this is the most well-known). 
+			\W - any alphabetic character that is not a white space (examples: any letter, any digit or an underscore "_"); 
+			\S - any whitespace characters (examples: a space, a tab character); 
+			\D - a digit (examples: 0, 1, 2, etc.). 
+			
+		In addition to a backslash ("\") in regular expressions, there are other signs - for example, the characters "+" and "*". Unlike the backslash, which is placed at the beginning of a special character, these designations 
+		may be placed after any characters. "+" - It means that the symbol is followed by this designation appears in the original line-in this place one or more times in a row; "*" - It means that the symbol is followed by 
+		this designation, if any, will not appear in the original line-in this place, or will one or more times in a row. Okay, now let's see how it is used. 
+		
+		Let's look at another example: 
+		
+		#action {/Here \d+ Coin/} {yell} 
+						^^^ 
+						 | This pattern matches any number of any digits, consecutive (without the decimal point). Special characters \ d means any digit, and oboznachaenie "+" then wildcard means, as has been said above, the 
+		appearance of the character line-the original, which is followed by this designation, one or more times in a row. But what to write, if we want to adjust the trigger for someone entering the room: 
+		
+		#action {/\w+ came up with \w+/} {read the scroll of return} 
+		
+		method that we discussed earlier, we can not describe such a flip-flop so that it takes into account only the characters with names consisting of a single word, instead of two, three, etc. This example of a 
+		regular expression allows for only arrive in character room with a one-word name: 
+		
+		a sequence \w+ would correspond, for example, a character with the name "Peter", but did not mob "Mountain goat", as the phrase "Mountain goat" contains a space character - the gap that separates the name "Mountain goat" 
+		into two words. Now, to highlight certain information contained therein of the target text (as we did using chastevye variables %0, %1, etc.) for future use, it is sufficient to limit this Infomatsiya parentheses: 
+		
+		#action {/Here(\d+)coin/} {split% 0} 
+		
+		This trigger is triggered when a target text from the game server, the information corresponding to the sequence \ d +, dedicated parentheses in the template will be stored in chastevoy variable% 0, and the money will be 
+		divided among the members of the team group "divided" in the second part of the trigger. Consistent application of allocation information in parentheses on the same line-pattern trigger will put this information in chastevye 
+		variables% 1,% 2, and so on, to be able to use this information in the second part of the trigger: 
+		
+		#action {/ (\ w +) came with (\ w +) /} {ggruppa% 0 came with% 1!} 
+		
+		Just as when using chastevyh variables in a string template, we can ensure the safety of our trigger with a special character-anchor "^": 
+		
+		#action {/ ^ (\ w +) came with (\ w +) /} {ggruppa 0% 1% came from !!} 
+		
+		All this is well and good, but the triggers are written earlier using chastevyh variables cope with these problems worse. What better use of regular expressions? Method with regular expressions more flexible. Suppose we 
+		want to trigger, triggered a string containing blank row 2, 4-6 letters, numbers 2, 6 blanks and one more digit. We write the following: 
+		
+		#action {/\s\s\w{4,6}\d\d\s{6}\d/} {yell} 
+		
+		The task that seemed impossible, is solved easily and elegantly. Note: the designation of the form {a, b} works like "*" or "+", except that here given the range of "a" to "b" - the number of times a character can appear, 
+		after which it is designation in the target string. In this example, we set the number of possible occurrences of the character \ w in the target string from 4 to 6 times. Although the techniques of application of regular 
+		expressions, as demonstrated above, problems still remain. Most mobs names comprise more than one word. For example: 
+		
+		"blue giant kender from hell"
+		
+		Six words. How can we distinguish the verbose name of the target line, not knowing in advance how many words it would be? You can use another special character, which is used to indicate the template that you want: 
+		letters, spaces, numbers. This special character - a point ".". Suppose we want to highlight the name of the target string any mob, coming from the west: 
+		
+		#action {/^(.+) came from the west /.} {0% to shout here!} 
+		
+		In this manner, we have identified a sequence of one or more characters and store it in a variable chastevoy 0%, which was used in the second part of the trigger. But what is the point in the end of the sentence? In 
+		general, it will work here, as will correspond to the point, which is placed at the end of the target line. Some characters, such as "[", "]", "\", "(", ")" can not be found in the target string trigger received from the game 
+		server, simply by specifying them as regular characters in the line-pattern trigger. If you try this, you'll get an error message because the shell regular expressions considers them for special symbols teams rather than the plain 
+		text from the game server. What do you do if you still need to adjust trigger a text with such characters? Put in front of such (official) characters backslash "\": \] - such a designation in a row template will match the 
+		character "]" in the original line-received from the game server; \. - Similarly - a designation corresponds to the symbol in the line-pattern "." in-line originally obtained from the server. Remember the backslash in the 
+		notation of special characters such as \ s, \ w, \ d - and it was done to JMC did not confuse ordinary letters "s", "w", "d" with special characters. Suppose you want to adjust your trigger under the following original string from 
+		the game server and save some values ​​from it in chastevyh variables: You have 4141 (6951) of steel coins. This can be done as follows: #action {You (\ d +) \ ((\ d +) \) steel coins \.} {Yell} We hope that by now you have already 
+		received some initial understanding, why do we need and how use regular expressions. To understand sometimes it is not easy to them, and often need to spend some time is to gain practical experience in using them. Despite these difficulties, 
+		do not recline regular expressions aside, they are irreplaceable!12.3) For more information about regular expressions above, we have already seen a few examples that show how you can use regular expressions. In fact, this is 
+		just a small fraction of their capacity. The following examples will show what else we can do with regular expressions. 
+		
+		References: [] Square brackets in regular expressions denote the beginning and end of the container that contains all the options for a character that may appear in this place of the original string received from the server. 
+		Suppose, on the gaming server received the following line: Photon reactor prepared: D Here's how to fine-tune our trigger for this line: 
+		
+		#action {/ Photon reactor prepared: [DN] /} {yell} 
+		
+		This trigger will fire if any appear after the colon " d "or" H ", but it does not work, if there will be" e "or" n "or some other symbol. If the information on the readiness of the reactor need to keep in chastevoy 
+		variable, can be surrounded by round brackets, as we did earlier ([DN]). Designation: {#} or {#} # As you saw in the previous chapter, such a designation determines the range of the number of times a target character can 
+		repeat in a row in this place of the original string received from the server. Here is an example. Suppose you have received from the game server line showing how much ammunition is left in your arms: 
+		
+		Ammunition [XXXXXXXXXX ----] 
+		
+		Suppose you want to get a beep when the munition progressors remain 2-3 division. It can be configured: 
+		
+		#action {/ Ammunition \ [X {2,3} \ - + \] /} {#beep} 
+		
+		Note: The square brackets in this example are preceded by backslash to make it clear by JMC, it is not special characters, and characters of the original string from the game server. Similarly, just in case a hyphen character 
+		is also preceded by a backslash (since I am not sure whether it is a symbol of office). The symbol "+" after the hyphen symbol is, as previously stated, that the hyphen character may appear in the original line-more than once. 
+		Finally, if you like, for example, get a beep when progressors remain exactly 3 points, it would be sufficient in a row template to specify the notation "{3}". Designation: \b This is another special character, which stands for 
+		"border" (in English "border"). Suppose you want to adjust your trigger under the player with the name "bam", but not with the name of "Bamboo". You can do so: 
+		
+		#action {/Bam\b.* standing here /.} {Smile} 
+		
+		Note the Bam ".*" Symbol matches any text between the designation of the border and the words "is here." For example, this trigger would work on following the original line-Bam, the mighty kender is here. Of Bam, male kender 
+		is here. Of Bam is here. But that's not going to work on the original string: Bamboo is here. The symbol-boundary, essentially, does not match any of the characters of the original string, and does not match any of the characters 
+		or punctuation of whitespace. Another great feature of regular expressions - is a pipe character "|". It is necessary to define the list of alternatives. It acts similar to the symbol "||" ( "Or") in programming languages. 
+		For example, you can configure the trigger as follows: 
+		
+		#action {^ There is a tree, hung with ripe (apples | aprelsinami).} {Rob a tree}
+		
+		This trigger would work on line: There is a tree, hung with ripe apples. There is a tree, hung with ripe oranges. Lists of alternatives - a very flexible tool for the analysis of text from the server.
+		
+		
+
+
+
+13) Conclusion 
+--------------- 
+
+Programming with command language JMC - this is a very big topic. This tutorial provides you with a basic knowledge about the tools that can be used in clients to play multiplayer text worlds. Client for these games - it is a 
+very flexible thing, but it might, after all, depends mainly on the strength of the player's imagination. We hope that you will be able to combine all of the techniques mentioned here were told that you were able to build their 
+own unique profiles, which in the end and help you get more enjoyment from the game. Remarks by the book can be made in a special forum thread. 
+
+This site is powered by the TWiki collaboration platform Copyright © reserved for the sponsors. All material on this collaboration platform is their property.

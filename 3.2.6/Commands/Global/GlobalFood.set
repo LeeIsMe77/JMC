@@ -1,4 +1,0 @@
-#var {foodsource}{waybread}
-#var {watersource}{waterskin}
-#action {You are hungry.} {get $foodsource all;eat $foodsource} {5} {default}
-#action {You are thirsty.} {#2 drink $watersource} {5} {default}

@@ -1,9 +1,0 @@
-#var {autoNotifyUruk}{0}};
-#alias {autonotifyuruk}{#if { $autoNotifyUruk==0} 
-    { #action {%0 tells you '%1}
-        { #systemexec {emailMessage.bat 4436225407@vtext.com "%%0" "'%%1" } };#showme {green}{Auto-Notify-Uruk Enabled};#var {autoNotifyUruk}{1} }
-    {#unaction {%0 tells you '%1}
-        { #systemexec {emailMessage.bat 4436225407@vtext.com "%%0" "'%%1" } };#showme {red}{Auto-Notify-Uruk Disabled}; #var {autoNotifyUruk}{0} }
-
-*an Uruk* enters from %0
-*an Orc* enters from %0

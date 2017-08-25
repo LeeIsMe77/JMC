@@ -1,4 +1,0 @@
-1. #logadd command fixed
-2. ticker window is now first in status bar
-3. #unsubstitute command works again
-4. language.ini now has default 'English' section

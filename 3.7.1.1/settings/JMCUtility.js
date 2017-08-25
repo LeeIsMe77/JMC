@@ -8,22 +8,19 @@ if (!String.prototype.cleanString) {
             .replace(/[\u001b]\[\d+m/g, '')
             //...and finally, strip off health status and right angle bracket at beginning of line, if it exists...
             .replace(/^R? ?(?:(?:Mind|Mount|HP|MV|S):[a-zA-Z ]+ ?)*(?:, [a-zA-Z,' ]+:[a-zA-Z ]+)*?>/, '')
-            // .replace(/^(?:(?:HP|MV|S):[a-zA-Z]+ ?)+R?>/, '')
-            //Original BOM/ANSI regex... no bueno.  Too many passes per line.
-            //.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,'')
     }
 }
 
-String.prototype.endsWith = function(searchStr, Position) {
-    // This works much better than >= because
-    // it compensates for NaN:
-    if (!(Position < this.length))
-        Position = this.length;
-    else
-        Position |= 0; // round position
-    return this.substr(Position - searchStr.length,
-        searchStr.length) === searchStr;
-};
+if (!String.prototype.endsWith) {
+    String.prototype.endsWith = function(searchString, position) {
+        // This works much better than >= because it compensates for NaN:
+        if (!(position < this.length))
+            position = this.length;
+        else
+            position |= 0; // round position
+        return this.substr(position - searchString.length, searchString.length) === searchString;
+    };
+}
 
 if (!String.format) {
     String.format = function(format) {
@@ -39,9 +36,11 @@ if (!String.format) {
     };
 }
 
-String.prototype.startsWith = function(searchString, position) {
-    return this.substr(position || 0, searchString.length) === searchString;
-};
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(searchString, position) {
+        return this.substr(position || 0, searchString.length) === searchString;
+    };
+}
 
 if (!String.prototype.toTitleCase) {
     String.prototype.toTitleCase = function() {
@@ -76,6 +75,7 @@ if (!String.prototype.capitalizeFirstLetter) {
         return this.charAt(0).toUpperCase() + this.slice(1);
     }
 }
+
 //*********************************************************************************************************************
 //End Prototypes
 //*********************************************************************************************************************
@@ -95,6 +95,8 @@ var date = new Date();
 //*********************************************************************************************************************
 //Fields
 //*********************************************************************************************************************
+
+//Timers
 var TIMER_STATUS = 0
 var TIMER_AFK = 1
 var TIMER_ARKEN_MOVE = 2
@@ -108,11 +110,11 @@ var _mapOutputWindow = 2;
 var _skillOutputWindow = 3;
 var _exitOutputWindow = 4;
 var _damageReportOutputWindow = 5;
-var _damageOutputWindow = 5;
 var _rescueOutputWindow = 6;
 var _characterStatusOutputWindow = 6;
 var _exceptionOutputWindow = 9;
 
+//Toggle variables
 var _isListeningForRescue = false;
 var _isListeningForScore = false;
 var _isListeningForGroup = false;
@@ -120,21 +122,26 @@ var _isGroupFound = false;
 var _isListeningForSkills = false;
 var _isSkillsFound = false;
 var _isScoreLineFound = false;
-var _isListeningForAutoChill = false;
+var _isListeningForChillRay = false;
+var _isListeningForCurse = false;
+var _isListeningForBash = false;
+var _isListeningForFlee = false;
+var _isListeningForDoors = false;
 
+//Cache
 var _groupMembers = new GroupMemberCollection();
 var _groupMembersTemp = new GroupMemberCollection();
+var _skills = new SkillCollection(0);
 var _maps = new MapCollection();
 var _newMap = null;
-var _skills = new SkillCollection(0);
 var _currentPlayer = null;
 
+//Room Exits
 var _farothExits = CreateFarothExits();
 var _valeExits = CreateValeExits();
-
 var _currentRoomName = "";
 var _currentZone = ZoneTypes.None;
-AutoCharacterStatus(true);
+
 //*********************************************************************************************************************
 //End Fields
 //*********************************************************************************************************************
@@ -142,13 +149,31 @@ AutoCharacterStatus(true);
 
 
 //*********************************************************************************************************************
+//Initialize Settings
+//*********************************************************************************************************************
+AutoAfk(true);
+AutoCharacterStatus(true);
+AutoFlee(true);
+AutoOpen(true);
+//*********************************************************************************************************************
+//End Initialize Settings
+//*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
 //Toggles
 //*********************************************************************************************************************
+var _afkTimerEnabled = false;
+var _statusTimerEnabled = false;
+
 function AutoAfk(isEnabled) {
     if (isEnabled) {
+        _afkTimerEnabled = true;
         jmc.SetTimer(TIMER_AFK, 600);
         jmc.ShowMe("Auto AFK is enabled.", "green");
     } else {
+        _afkTimerEnabled = false;
         jmc.KillTimer(TIMER_AFK);
         jmc.ShowMe("Auto AFK is disabled.", "red");
     }
@@ -172,12 +197,39 @@ function AutoCharacterStatus(isEnabled) {
     }
 }
 
+function AutoBash(isEnabled) {
+    _isListeningForBash = isEnabled;
+    if (isEnabled) {
+        jmc.ShowMe("Auto Bash is enabled.", "green");
+    } else {
+        jmc.ShowMe("Auto Bash is disabled.", "red");
+    }
+}
+
 function AutoChill(isEnabled) {
-    _isListeningForAutoChill = isEnabled;
+    _isListeningForChillRay = isEnabled;
     if (isEnabled) {
         jmc.ShowMe("Auto Chill Ray is enabled.", "green");
     } else {
         jmc.ShowMe("Auto Chill Ray is disabled.", "red");
+    }
+}
+
+function AutoCurse(isEnabled) {
+    _isListeningForCurse = isEnabled;
+    if (isEnabled) {
+        jmc.ShowMe("Auto Curse is enabled.", "green");
+    } else {
+        jmc.ShowMe("Auto Curse is disabled.", "red");
+    }
+}
+
+function AutoOpen(isEnabled) {
+    _isListeningForDoors = isEnabled;
+    if (isEnabled) {
+        jmc.ShowMe("Auto Open Doors is enabled.", "green");
+    } else {
+        jmc.ShowMe("Auto Open Doors is disabled.", "red");
     }
 }
 
@@ -200,6 +252,15 @@ function AutoExits(zoneType) {
             break;
     }
     WriteEmptyLineToWindow(_exitOutputWindow);
+}
+
+function AutoFlee(isEnabled) {
+    _isListeningForFlee = isEnabled;
+    if (isEnabled) {
+        jmc.ShowMe("Auto Flee is enabled.", "green");
+    } else {
+        jmc.ShowMe("Auto Flee is disabled.", "red");
+    }
 }
 
 function AutoGroupStatistics(isEnabled) {
@@ -231,9 +292,11 @@ function AutoRescue(isEnabled) {
 
 function AutoStatus(isEnabled) {
     if (isEnabled) {
+        _statusTimerEnabled = true;
         jmc.SetTimer(TIMER_STATUS, 100);
         jmc.ShowMe("Auto status is enabled.", "green");
     } else {
+        _statusTimerEnabled = false;
         jmc.KillTimer(TIMER_STATUS);
         jmc.ShowMe("Auto status is disabled.", "red");
     }
@@ -396,16 +459,7 @@ function ShowExit(exitName) {
 //End Exit Commands
 //*********************************************************************************************************************
 
-function CalculateColor(currentValue, maximumValue) {
-    var percentage = (parseFloat(currentValue) / parseFloat(maximumValue)) * 100.00;
-    if (percentage >= 66) {
-        return AnsiColors.ForegroundGreen;
-    } else if (percentage >= 33) {
-        return AnsiColors.ForegroundYellow;
-    } else {
-        return AnsiColors.ForegroundRed;
-    }
-}
+
 
 //*********************************************************************************************************************
 //Character Status Commands
@@ -731,44 +785,80 @@ function RegisterSkills() {
 
 function ParseLine(incomingLine) {
     var cleanLine = incomingLine.cleanString();
+
+    //Character Maintenance...
     ParseForLogin(cleanLine);
     ParseForInformation(cleanLine);
-    ParseForChillLine(cleanLine);
-    ParseForMap(cleanLine);
-    ParseForRescue(cleanLine);
-    ParseForSocial(cleanLine);
-    ParseForScoreLine(cleanLine);
-    ParseForStatisticsLine(cleanLine);
-    ParseForRoomName(cleanLine);
+    ParseForKill(cleanLine);
+    ParseForScore(cleanLine);
+    ParseForStatistics(cleanLine);
+
+    //Group Management....
     ParseForGroupMember(cleanLine);
     ParseForGroupMemberDamage(cleanLine);
-    ParseForGroupMemberMutilate(cleanLine);
+
+    //Mapping...
+    ParseForMap(cleanLine);
+
+    //Socials...
+    ParseForSocial(cleanLine);
+
+    //Navigation...
+    ParseForDoor(cleanLine);
+    ParseForRoomName(cleanLine);
+
+    //Skill Lists...
     ParseForSkill(cleanLine);
-    ParseForKill(cleanLine);
+
+
+    //Character Skills....
+    ParseForBash(cleanLine);
+    ParseForChillRay(cleanLine);
+    ParseForCurse(cleanLine);
+    ParseForFlee(cleanLine);
+    ParseForRescue(cleanLine);
+
 }
 
 function ParseForKill(incomingLine) {
     if (_currentPlayer === null) return;
     if (incomingLine === "") return;
+
+    //If the current character receives a leveled up message...
     if (incomingLine === "You feel more powerful!") {
+        //...increment the characters level.
         _currentPlayer.Level++;
+        //Store the XP remainder in a variable...
+        var xpRemainder = parseInt(_currentPlayer.XPNeeded);
         var currentLevelPlusOne = parseInt(_currentPlayer.Level) + 1;
-        _currentPlayer.XPNeeded = (currentLevelPlusOne * currentLevelPlusOne * 1500) - (_currentPlayer.Level * _currentPlayer.Level * 1500)
+        //...and calculate how much XP the character needs at the current level...
+        _currentPlayer.XPNeeded = (currentLevelPlusOne * currentLevelPlusOne * 1500) - (_currentPlayer.Level * _currentPlayer.Level * 1500);
+        //...and if the remainder is a negative number...
+        if (xpRemainder < 0) {
+            //...credit the player with the remainder.
+            _currentPlayer.XPNeeded += xpRemainder;
+        }
+        //...and return out of the function.
         return;
     }
 
+    //If the current character receives experience points...
     var matches = incomingLine.match(/^You receive your share of experience -- (\d+) points\.$/);
     if (matches !== null) {
-
+        //...parse the experience points into an integer.
         var parsedExperience = parseInt(matches[1]);
         //If the experience gained exceeds the experience cap....
         if (parsedExperience >= 7500) {
             //...set the actual value gained to the experience cap.
             parsedExperience = 7500;
         }
+        //Increment the characters XP Gained counter...
         _currentPlayer.XPGained += parsedExperience;
-        _currentPlayer.XPNeeded = parseInt(_currentPlayer.XPNeeded) - parsedExperience;
+        //and deduct the XP gained from the XP needed...
+        _currentPlayer.XPNeeded -= parsedExperience;
+        //Send a loot coin command to the mud...
         jmc.Send("get coin all.cor");
+        //...and return out of the function.
         return;
     }
 
@@ -784,8 +874,17 @@ function ParseForKill(incomingLine) {
     }
 }
 
-function ParseForChillLine(incomingLine) {
-    if (!_isListeningForAutoChill) return;
+function ParseForBash(incomingLine) {
+    if (!_isListeningForBash) return;
+
+    if (/^.* has recovered from a bash!$/.test(incomingLine)) {
+        jmc.Send("bash");
+        return;
+    }
+}
+
+function ParseForChillRay(incomingLine) {
+    if (!_isListeningForChillRay) return;
 
     if (incomingLine === "Your victim is not here!") return;
     if (incomingLine === "You could not concentrate anymore!" || incomingLine === "You lost your concentration!") {
@@ -793,12 +892,53 @@ function ParseForChillLine(incomingLine) {
         return;
     }
 
-    var matches = incomingLine.match(/^[a-zA-Z\- ']+ shudders as your chill ray strikes (?:him|her|it).$/g);
+    var matches = incomingLine.match(/^[a-zA-Z\- ']+ shudders as your chill ray strikes (?:him|her|it)\.$/g);
     if (matches !== null) {
         jmc.Send("cast chill");
         return;
     }
 
+}
+
+function ParseForCurse(incomingLine) {
+    if (!_isListeningForCurse) return;
+    if (incomingLine === "") return;
+    if (incomingLine === "Your victim is not here!") return;
+
+    if (incomingLine.startsWith("You force your Will against")) {
+        jmc.Send("cast curse");
+        return;
+    }
+
+    if (incomingLine === "You could not concentrate anymore!" || incomingLine === "You lost your concentration!") {
+        jmc.Send("cast curse");
+        return;
+    }
+
+    var matches = incomingLine.match(/^You couldn't reach [a-zA-Z'\-, ]+ mind.$/);
+    if (matches !== null) {
+        jmc.Send("cast curse");
+        return;
+    }
+
+}
+
+function ParseForDoor(incomingLine) {
+    if (!_isListeningForDoors) return;
+    if (incomingLine === "") return;
+
+    var matches = incomingLine.match(/^The ([a-z]+) seems to be closed\.$/);
+    if (matches !== null) {
+        jmc.Send("open " + matches[1]);
+    }
+
+}
+
+function ParseForFlee(incomingLine) {
+    if (!_isListeningForFlee) return;
+    if (incomingLine === "PANIC!  You couldn't escape!") {
+        jmc.Send("flee");
+    }
 }
 
 function ParseForGroupMember(incomingLine) {
@@ -859,55 +999,8 @@ function ParseForGroupMember(incomingLine) {
 }
 
 function ParseForGroupMemberDamage(incomingLine) {
-    //TODO: Complete new regex for parsing damage.
-
     //If our group member collection hasn't been initialized.... don't bother checking the incoming line.
     if (_groupMembers.Count() === 0) return;
-
-    // var theOneRegexToRuleThemAll = /^([a-zA-Z ']+?) (?:(miss|scratch|barely|lightly|deeply|severely|MUTILATE|stab|hit|slash|pound|smite|crush|whip|flail|pierce|stab|cleave)(s|es)?) (?:[a-zA-Z ']+?)\b(\.|!|!!|hard|very|extremely|lightly)/;
-    // var matches = incomingLine.match(theOneRegexToRuleThemAll);
-    // if (matches === null) return;
-
-    // var damageType = "";
-    // switch (matches[2].toLowerCase()){
-    //     case "miss":
-    //         damage = 0.0;
-    //         break;
-    //     case "scratch":
-    //         damage = 1.0;
-    //         break;
-    //     case "barely":
-    //         damage = 2.5;
-    //         break;
-    //     case "lightly":
-    //         damage = 5.0;
-    //         break;
-    //     case "":
-    //         damage = 9.0;
-    //         break;
-    //     case "deeply":
-    //         damage = 47;
-    //         break;
-    //     case "severely":
-    //         damage = 75;
-    //         break;
-    //     case "mutilate":
-    //         damage = 105;
-    //         break;
-    //     default:
-    //         switch (matches[3]){
-
-    //         case "hard":
-    //             damage = 14.5;
-    //             break;
-    //         case "very hard":
-    //             damage = 21;
-    //             break;
-    //         case "extremely hard":
-    //             damage = 29;
-    //             break;
-    //         }
-    // }
 
     //First check for the really hard or really weak hits...
     var matches = incomingLine.match(/^([a-zA-Z ']+) (miss|scratch|barely|lightly|deeply|severely|MUTILATE).*(?:\.|!|!!)$/);
@@ -962,34 +1055,11 @@ function ParseForGroupMemberDamage(incomingLine) {
             break;
         case "mutilate":
             damage = 105;
+            groupMember.MutilateCount++;
             break;
     }
     groupMember.HitCount++;
     groupMember.Damage += damage;
-}
-
-function ParseForGroupMemberMutilate(incomingLine) {
-    try {
-        if (_groupMembers.Count() === 0) return;
-        var cleanLine = incomingLine;
-        var memberName = "";
-        var matches = cleanLine.match(/^(You|[a-zA-Z* ]+) MUTILATES?.*with (?:your|his|her|its) deadly (?:cleave|pierce|stab|cleave|crush|smite|slash)!!$/);
-        if (matches !== null) {
-            var memberName = matches[1];
-            if (memberName === "You") {
-                memberName = jmc.GetVar("me");
-            }
-
-            if (memberName === "" || _groupMembers.IndexOf(memberName) === -1) {
-                return;
-            }
-            _groupMembers.GetMember(memberName).MutilateCount++;
-            jmc.ShowMe("Mutilate registered by: " + memberName);
-        }
-    } catch (caught) {
-        WriteExceptionToStream("Failure parsing mutilate line: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing mutilate line: " + caught, "red", true, true);
-    }
 }
 
 function ParseForMap(incomingLine) {
@@ -1086,7 +1156,7 @@ function ParseForRoomName(incomingLine) {
     }
 }
 
-function ParseForScoreLine(incomingLine) {
+function ParseForScore(incomingLine) {
     if (_currentPlayer === null) return;
     try {
 
@@ -1251,7 +1321,7 @@ function ParseForSocial(incomingLine) {
     }
 }
 
-function ParseForStatisticsLine(incomingLine) {
+function ParseForStatistics(incomingLine) {
     if (_currentPlayer === null) return;
     try {
         //Perform a regex test on the incoming line to verify it is a statistics line...
@@ -1313,7 +1383,7 @@ function ParseForInformation(incomingLine) {
     try {
         //Right off the bat, run this regex.  He will set the _player object to a new instance.
         //You are Atomos test test ,.,12.398 test, an evil (-100) male Uruk-Lhuth.
-        var matches = incomingLine.match(/^You are ([A-Za-z]*) .*, an? (?:good|evil|neutral) \((-?\d+)\) (male|female) ([a-zA-Z-]*)\.$/);
+        var matches = incomingLine.match(/^You are ([A-Za-z]*) .*, an? (?:good|evil|neutral) \((-?\d+)\) (male|female) ([a-zA-Z- ]*)\.$/);
         if (matches !== null) {
 
             var playerName = matches[1];
@@ -1425,6 +1495,7 @@ function ParseForInformation(incomingLine) {
 //*********************************************************************************************************************
 
 function ProcessTimer(timerID) {
+    if (!jmc.IsConnected) return;
     switch (timerID) {
         case TIMER_STATUS:
             OnStatusTimer();
@@ -1496,6 +1567,17 @@ function OnCharacterStatisticsTimer() {
 //*********************************************************************************************************************
 //Helper Functions
 //*********************************************************************************************************************
+
+function CalculateColor(currentValue, maximumValue) {
+    var percentage = (parseFloat(currentValue) / parseFloat(maximumValue)) * 100.00;
+    if (percentage >= 66) {
+        return AnsiColors.ForegroundGreen;
+    } else if (percentage >= 33) {
+        return AnsiColors.ForegroundYellow;
+    } else {
+        return AnsiColors.ForegroundRed;
+    }
+}
 
 function CleanGroupMemberName(memberName) {
     var emptyString = "";

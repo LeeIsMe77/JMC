@@ -2,8 +2,5 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/3.2.6/Convers.exe
-/3.2.6/conv.bat
-/3.2.6/INSTALL.LOG
-/3.2.6/UNWISE.EXE
 *.dat
+/Source/RotS

@@ -1,7 +1,0 @@
-#hot {F1} {#connect rotsmud.dyndns.org 3791} {default}
-#comment #hot {F2} {#systemexec jmc.exe} {default}
-#hot {F7} {#action {PANIC!  You couldn't escape!}{flee}} {default}
-#hot {F9} {#unaction {PANIC!  You couldn't escape!}} {default}
-#hot {Ctrl+B} {bash} {default}
-#hot {Ctrl+D} {dismount} {default}
-#hot {Ctrl+R} {ride} {default}

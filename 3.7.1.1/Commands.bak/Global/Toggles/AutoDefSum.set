@@ -1,5 +1,0 @@
-#var {defSum}{0};
-#var {autoDefSumOn}{1};
-
-#action {^OB: %0, DB: %1, PB: %2, Speed: %3, Gold: %4, XP Needed: %5.} {#math {defSum}{%%1 + %%2};#showme {green}{Defense Sum: $defSum};};
-#alias {autodefSum}{#if { $autoDefSumOn==0} { #action {^OB: %0, DB: %1, PB: %2, Speed: %3, Gold: %4, XP Needed: %5.} {#math {defSum}{%%1 + %%2};#showme {green}{Defense Sum: $defSum};};#var {autoDefSumOn}{1};#showme {green}{Auto-DefSum Enabled};}{#unaction {^OB: %0, DB: %1, PB: %2, Speed: %3, Gold: %4, XP Needed: %5.} {#math {defSum}{%%1 + %%2};#showme {green}{Defense Sum: $defSum};};#var {autoDefSumOn}{0};#showme {red}{Auto-DefSum Disabled};};}

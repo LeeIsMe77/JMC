@@ -1,5 +1,0 @@
-#action {^$leader attacks}{assist $leader}
-#action {^$leader leaps at %0, and hits %1 extremely hard!}{assist $leader}
-#hot {ctrl+P}{of assist Shooter}
-#alias {o}{am troll}
-#alias {p}{am wolf}

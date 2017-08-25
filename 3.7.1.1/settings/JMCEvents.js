@@ -1,10 +1,9 @@
-
 //*********************************************************************************************************************
 //Event Registering
 //*********************************************************************************************************************
-jmc.RegisterHandler("Connected", "OnConnected()")
-jmc.RegisterHandler("Input", "OnInput()")
-jmc.RegisterHandler("Incoming", "OnIncoming()")
+jmc.RegisterHandler("Connected", "OnConnected()");
+jmc.RegisterHandler("Input", "OnInput()");
+jmc.RegisterHandler("Incoming", "OnIncoming()");
 jmc.RegisterHandler("Timer", "OnTimer()");
 //*********************************************************************************************************************
 //End Event Registering
@@ -16,22 +15,25 @@ jmc.RegisterHandler("Timer", "OnTimer()");
 //Events
 //*********************************************************************************************************************
 function OnConnected() {
-	//Note: Not currently utilized.    
+    //Note: Not currently utilized.    
 }
 
 function OnIncoming() {
-	ParseLine(jmc.Event);	
+    ParseLine(jmc.Event);
 }
 
 function OnInput() {
-	//Note: Not currently utilized.    
+    if (_afkTimerEnabled) {
+        jmc.SetTimer(TIMER_AFK, 600);
+    }
+    if (_statusTimerEnabled) {
+        jmc.SetTimer(TIMER_STATUS, 100);
+    }
 }
 
 function OnTimer() {
-	ProcessTimer(parseInt(jmc.Event));	
+    ProcessTimer(parseInt(jmc.Event));
 }
 //*********************************************************************************************************************
 //End Events
 //*********************************************************************************************************************
-
-

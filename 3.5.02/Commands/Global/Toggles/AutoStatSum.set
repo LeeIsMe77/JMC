@@ -1,4 +1,0 @@
-#var {statSum}{0};
-#var {autoStatSumOn}{1};
-#action {^Str: %0/%0, Int: %1/%1, Wil: %2/%2, Dex: %3/%3, Con: %4/%4, Lea: %5/%5.}{#math {statSum}{%%0 + %%1 + %%2 + %%3 + %%4 + %%5};#showme {red}{Stat Sum: $statSum};};
-#alias {autostatsum}{#if {$autoStatSumOn==0} {#action {^Str: %0/%0, Int: %1/%1, Wil: %2/%2, Dex: %3/%3, Con: %4/%4, Lea: %5/%5.}{#math {statSum}{%%0 + %%1 + %%2 + %%3 + %%4 + %%5};#showme {red}{Stat Sum: $statSum};};#var {autoStatSumOn}{1};#showme {green}{Auto-StatSum Enabled};}{#unaction {^Str: %0/%0, Int: %1/%1, Wil: %2/%2, Dex: %3/%3, Con: %4/%4, Lea: %5/%5.}{#math {statSum}{%%0 + %%1 + %%2 + %%3 + %%4 + %%5};#showme {red}{Stat Sum: $statSum};};#var {autoStatSumOn}{0};#showme {red}{Auto-StatSum Disabled};};}

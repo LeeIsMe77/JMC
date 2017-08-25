@@ -19,8 +19,8 @@
 #group local default
 #ticksize 30
 #tickoff
-#hotkey {Ctrl+F11}{ #read {Commands/Mystic/Triggers/SpiritTriggers.set};}
-#hotkey {Ctrl+F12}{ #read {Commands/Mystic/Triggers/ArkenTriggers.set};}
-#hotkey {F12}{reset_login}
-#alias {reset_login}{#killall;#spit {Default.set} {%0} {ns};info};
+#hotkey {Ctrl+F11}{ #spit {Commands/Mystic/Triggers/SpiritTriggers.set} {%0} {ns};}
+#hotkey {Ctrl+F12}{ #spit {Commands/Mystic/Triggers/ArkenTriggers.set} {%0} {ns};}
+#hotkey {F12}{#killall;#read {Default.set};info}
+
 #spit {Commands/Main.set} {%0} {ns}

@@ -14,7 +14,6 @@
 #alias {cold} {#var {target} {cold} } {default}
 #alias {cowled} {#var {target} {cowled} } {default}
 #alias {croc} {#var {target} {croc} } {default}
-#alias {cure} {cast 'cure self'} {default}
 #alias {dark} {#var {target} {dark} } {default}
 #alias {demon} {#var {target} {demon} } {default}
 #alias {demonic} {#var {target} {demonic} } {default}
@@ -115,3 +114,4 @@
 #alias {woman} {#var {target} {woman} } {default}
 #alias {worm} {#var {target} {worm} } {default}
 #alias {wraith} {#var {target} {wraith} } {default}
+

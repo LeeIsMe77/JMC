@@ -2,13 +2,13 @@
 #var {foodsource}{meat}
 
 #var {isWearingArmor}{0}
-#hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-leather}{ #var {isWearingArmor}{0};leather-cotton } }
+#hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-chain}{ #var {isWearingArmor}{0};chain-cotton } }
 
 #var {isWieldingStaff}{1}
 #hotkey {F9}{ #if {$isWieldingStaff==0}{ #var {isWieldingStaff}{1};rem shadowy;wield staff}{ #var {isWieldingStaff}{0};rem staff;wield shadowy} }
 
-#alias {leather-cotton} {rem all.etched;wea supple;wea all.cotton}
-#alias {cotton-leather} {rem all.cotton;rem supple;wea all.etched} {default}
+#alias {chain-cotton} {rem all.chain;wea supple;wea all.cotton}
+#alias {cotton-chain} {rem all.cotton;rem supple;wea all.chain} {default}
 
 #alias {p}{cast 'black arrow'}
 #hotkey {Ctrl+P}{prep 'black arrow'}

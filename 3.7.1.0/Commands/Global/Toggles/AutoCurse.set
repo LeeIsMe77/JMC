@@ -1,2 +1,0 @@
-#var {autoCurseOn}{0}
-#alias {autocurse}{#if { $autoCurseOn==0}{ #action {You lost your concentration!}{!};#action {You couldn't reach %0 mind.}{cast curse};#var {autoCurseOn}{1};#showme {green}{Auto-Curse Enabled};}{ #unaction {You lost your concentration!};#unaction {You couldn't reach %0 mind.}; #var {autoCurseOn}{0};#showme {red}{Auto-Curse Disabled};};}

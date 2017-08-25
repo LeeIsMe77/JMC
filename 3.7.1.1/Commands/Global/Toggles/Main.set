@@ -1,4 +1,1 @@
-#spit {Commands/Global/Toggles/AutoBash.set} {%0} {ns}
-#spit {Commands/Global/Toggles/AutoCurse.set} {%0} {ns}
-#spit {Commands/Global/Toggles/AutoFlee.set} {%0} {ns}
 #spit {Commands/Global/Toggles/AutoNotifyTells.set} {%0} {ns}
