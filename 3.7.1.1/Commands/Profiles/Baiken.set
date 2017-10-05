@@ -1,6 +1,9 @@
 #var {isWieldingDagger}{1}
 #hotkey {F10}{ #if {$isWieldingDagger==0}{ #var {isWieldingDagger}{1};rem sword;wield claw}{ #var {isWieldingDagger}{0};rem claw;wield sword } }
 
+#var {isWearingArmor}{0}
+#hotkey {F11}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
+
 #var {watersource}{flask}
 #var {foodsource}{waybread}
 

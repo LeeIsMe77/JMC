@@ -76,6 +76,11 @@ if (!String.prototype.capitalizeFirstLetter) {
     }
 }
 
+if (!String.prototype.splice) {
+    String.prototype.splice = function(startIndex, charactersToRemove, stringToInsert) {
+        return this.slice(0, startIndex) + stringToInsert + this.slice(startIndex + Math.abs(charactersToRemove));
+    };
+}
 //*********************************************************************************************************************
 //End Prototypes
 //*********************************************************************************************************************
@@ -90,7 +95,14 @@ var date = new Date();
 //End Logging
 //*********************************************************************************************************************
 
+function SendTextMessage(description, message) {
+    var batchArguments = [];
+    batchArguments.push(description);
+    batchArguments.push(message);
 
+    var wScriptShell = new ActiveXObject("WScript.Shell");
+    wScriptShell.Run("C:\\jmc\\3.7.1.1\\emailMessage.bat " + "4436225407@vtext.com \"" + description + "\" \"" + message + "\" }", 0, false);
+}
 
 //*********************************************************************************************************************
 //Fields
@@ -127,6 +139,15 @@ var _isListeningForCurse = false;
 var _isListeningForBash = false;
 var _isListeningForFlee = false;
 var _isListeningForDoors = false;
+var _isListeningForInfo = false;
+var _isInfoFound = false;
+//TODO: Create function to toggle this variable.
+var _notifyTells = false;
+var _howManySearchPattern = "";
+var _isListeningForHowMany = false;
+var _howManyFound = false;
+var _howManyItemsFound = 0;
+var _howManyContainer = "";
 
 //Cache
 var _groupMembers = new GroupMemberCollection();
@@ -149,31 +170,17 @@ var _currentZone = ZoneTypes.None;
 
 
 //*********************************************************************************************************************
-//Initialize Settings
-//*********************************************************************************************************************
-AutoAfk(true);
-AutoCharacterStatus(true);
-AutoFlee(true);
-AutoOpen(true);
-//*********************************************************************************************************************
-//End Initialize Settings
-//*********************************************************************************************************************
-
-
-
-//*********************************************************************************************************************
 //Toggles
 //*********************************************************************************************************************
 var _afkTimerEnabled = false;
 var _statusTimerEnabled = false;
 
 function AutoAfk(isEnabled) {
+    _afkTimerEnabled = isEnabled;
     if (isEnabled) {
-        _afkTimerEnabled = true;
         jmc.SetTimer(TIMER_AFK, 600);
         jmc.ShowMe("Auto AFK is enabled.", "green");
     } else {
-        _afkTimerEnabled = false;
         jmc.KillTimer(TIMER_AFK);
         jmc.ShowMe("Auto AFK is disabled.", "red");
     }
@@ -189,7 +196,7 @@ function AutoArkenMoveTimer(isEnabled) {
 
 function AutoCharacterStatus(isEnabled) {
     if (isEnabled) {
-        jmc.SetTimer(TIMER_CHARACTER_STATISTICS, 10);
+        jmc.SetTimer(TIMER_CHARACTER_STATISTICS, 30);
         jmc.ShowMe("Auto Character Statistics is enabled.", "green");
     } else {
         jmc.KillTimer(TIMER_CHARACTER_STATISTICS);
@@ -265,7 +272,7 @@ function AutoFlee(isEnabled) {
 
 function AutoGroupStatistics(isEnabled) {
     if (isEnabled) {
-        jmc.SetTimer(TIMER_GROUP_STATISTICS, 10);
+        jmc.SetTimer(TIMER_GROUP_STATISTICS, 30);
         jmc.ShowMe("Auto Group Statistics is enabled.", "green");
     } else {
         jmc.KillTimer(TIMER_GROUP_STATISTICS);
@@ -293,7 +300,7 @@ function AutoRescue(isEnabled) {
 function AutoStatus(isEnabled) {
     if (isEnabled) {
         _statusTimerEnabled = true;
-        jmc.SetTimer(TIMER_STATUS, 100);
+        jmc.SetTimer(TIMER_STATUS, 200);
         jmc.ShowMe("Auto status is enabled.", "green");
     } else {
         _statusTimerEnabled = false;
@@ -333,7 +340,7 @@ function ListExits() {
         }
         WriteEmptyLineToWindow(_exitOutputWindow);
     } catch (caught) {
-        WriteExceptionToStream("Failure listing exits: " + caught);
+        //WriteExceptionToStream("Failure listing exits: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure listing exits: ", "red", false, true);
         WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
     }
@@ -364,7 +371,7 @@ function NavigateToExit(exitType) {
         jmc.Parse(exit.ExitDirections);
 
     } catch (caught) {
-        WriteExceptionToStream("Failure navigating to " + exitType + ": " + caught);
+        //WriteExceptionToStream("Failure navigating to " + exitType + ": " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure navigating to " + exitType, "red", false, true);
         WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
     }
@@ -392,7 +399,7 @@ function SayExit(exitName) {
         }
         jmc.Send("gt " + message);
     } catch (caught) {
-        WriteExceptionToStream("Failure listing exits: " + caught);
+        //WriteExceptionToStream("Failure listing exits: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure listing exits:", "red", false, true);
         WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
     }
@@ -420,7 +427,7 @@ function SayExits() {
             jmc.Send("gt " + exit.ExitType + ": " + exit.ExitDirections);
         }
     } catch (caught) {
-        WriteExceptionToStream("Failure saying exits: " + caught);
+        //WriteExceptionToStream("Failure saying exits: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure saying exits:", "red", false, true);
         WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
     }
@@ -449,7 +456,7 @@ function ShowExit(exitName) {
         }
         WriteEmptyLineToWindow(_exitOutputWindow);
     } catch (caught) {
-        WriteExceptionToStream("Failure showing exit: " + caught);
+        //WriteExceptionToStream("Failure showing exit: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure showing exit:", "red", false, true);
         WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
     }
@@ -478,27 +485,20 @@ function DisplayCharacterStatus() {
         characterLine = "Logon Time: " + _currentPlayer.LogonTime.toTimeString().substring(0, 8);
         WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", true, false);
 
-        var ansiColor = CalculateColor(_currentPlayer.CurrentHitPoints, _currentPlayer.MaxHitPoints);
-        characterLine = "Hit Points: " + ansiColor + _currentPlayer.CurrentHitPoints + "/" + _currentPlayer.MaxHitPoints;
+        var totalPreparations = _currentPlayer.SuccessfulPreparations + _currentPlayer.FailedPreparations;
+        var successfulColor = CalculateColor(_currentPlayer.SuccessfulPreparations, totalPreparations);
+
+        // characterLine = "Preparations: " + totalPreparations;
+        // characterLine = characterLine + ", Successful: " + _currentPlayer.SuccessfulPreparations;
+        // characterLine = characterLine + ", Failed: " + _currentPlayer.FailedPreparations;
+        // characterLine = characterLine + ", Ratio: " + successfulColor + _currentPlayer.SuccessfulPreparationRatio() + AnsiColors.Default + ".";
+        // WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", true, false);
+
+        characterLine = "Warrior: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.WarriorLevel + AnsiColors.Default;
+        characterLine = characterLine + ", Ranger: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.RangerLevel + AnsiColors.Default;
+        characterLine = characterLine + ", Mystic: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.MysticLevel + AnsiColors.Default;
+        characterLine = characterLine + ", Mage: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.MageLevel + AnsiColors.Default;
         WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", false, false);
-
-        ansiColor = CalculateColor(_currentPlayer.CurrentStamina, _currentPlayer.MaxStamina);
-        characterLine = "Magic Points: " + ansiColor + _currentPlayer.CurrentStamina + "/" + _currentPlayer.MaxStamina;
-        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", false, false);
-
-        ansiColor = CalculateColor(_currentPlayer.CurrentMoves, _currentPlayer.MaxMoves);
-        characterLine = "Move Points: " + ansiColor + _currentPlayer.CurrentMoves + "/" + _currentPlayer.MaxMoves;
-        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", false, false);
-
-        ansiColor = CalculateColor(_currentPlayer.Spirit, 5000); //It is assumed 5k is a nice round number for spirit.
-        characterLine = "Spirit: " + ansiColor + _currentPlayer.Spirit;
-        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", true, false);
-
-        characterLine = "OB: " + _currentPlayer.OffensiveBonus + ", DB: " + _currentPlayer.DodgeBonus + ", PB: " + _currentPlayer.ParryBonus + ", Speed: " + _currentPlayer.AttackSpeed + ".";
-        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", false, false);
-
-        characterLine = "Defense Sum: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.DefenseSum() + ".";
-        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", true, false);
 
         var statColor = CalculateColor(_currentPlayer.CurrentStrength, _currentPlayer.MaxStrength);
         characterLine = "Str: " + statColor + _currentPlayer.CurrentStrength + "/" + _currentPlayer.MaxStrength + AnsiColors.Default;
@@ -523,7 +523,33 @@ function DisplayCharacterStatus() {
         characterLine = "Stat Sum: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.StatSum() + ".";
         WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", true, false);
 
-        characterLine = "XP Gained: " + AnsiColors.ForegroundBlue + _currentPlayer.XPGained + AnsiColors.Default + ".";
+        var ansiColor = CalculateColor(_currentPlayer.CurrentHitPoints, _currentPlayer.MaxHitPoints);
+        characterLine = "Hit Points: " + ansiColor + _currentPlayer.CurrentHitPoints + "/" + _currentPlayer.MaxHitPoints;
+        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", false, false);
+
+        ansiColor = CalculateColor(_currentPlayer.CurrentStamina, _currentPlayer.MaxStamina);
+        characterLine = "Magic Points: " + ansiColor + _currentPlayer.CurrentStamina + "/" + _currentPlayer.MaxStamina;
+        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", false, false);
+
+        ansiColor = CalculateColor(_currentPlayer.CurrentMoves, _currentPlayer.MaxMoves);
+        characterLine = "Move Points: " + ansiColor + _currentPlayer.CurrentMoves + "/" + _currentPlayer.MaxMoves;
+        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", false, false);
+
+        ansiColor = CalculateColor(_currentPlayer.Spirit, 5000); //It is assumed 5k is a nice round number for spirit.
+        characterLine = "Spirit: " + ansiColor + _currentPlayer.Spirit;
+        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", true, false);
+
+        characterLine = "OB: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.OffensiveBonus + AnsiColors.Default;
+        characterLine = characterLine + ", DB: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.DodgeBonus + AnsiColors.Default;
+        characterLine = characterLine + ", PB: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.ParryBonus + AnsiColors.Default;
+        characterLine = characterLine + ", Speed: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.AttackSpeed + AnsiColors.Default;
+        characterLine = characterLine + ".";
+        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", false, false);
+
+        characterLine = "Defense Sum: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.DefenseSum() + ".";
+        WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", true, false);
+
+        characterLine = "XP Gained: " + AnsiColors.ForegroundBrightBlue + _currentPlayer.XPGained + AnsiColors.Default + ".";
         WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", false, false);
 
         var currentLevelPlusOne = parseInt(_currentPlayer.Level) + 1;
@@ -534,7 +560,7 @@ function DisplayCharacterStatus() {
 
 
     } catch (caught) {
-        WriteExceptionToStream("Failure showing character status: " + caught);
+        //WriteExceptionToStream("Failure showing character status: " + caught);
         WriteToWindow(_mapOutputWindow, "Failure showing character status: " + caught, "red", true, true);
     }
 }
@@ -553,12 +579,12 @@ function HealGroup(healingSpells, leaderOnly) {
         //If no healing spells provided, set a default set of healing spells to be cast.
         healingSpells = ["regeneration", "vitality", "curing", "insight"];
     }
-    for (var index = 0; index < _groupMembers.length; index++) {
-        var currentMember = _groupMembers[index];
+    for (var index = 0; index < _groupMembers.GroupMembers.length; index++) {
+        var currentMember = _groupMembers.GroupMembers[index];
         if (leaderOnly && !currentMember.IsLeader) continue;
-        jmc.ShowMe("Healing " + currentMember.Name);
+        jmc.ShowMe("Healing " + currentMember.MemberName);
         for (var spellIndex = 0; spellIndex < healingSpells.length; spellIndex++) {
-            jmc.Send("cast '" + healingSpells[spellIndex] + "' " + currentMember.Name);
+            jmc.Send("cast '" + healingSpells[spellIndex] + "' " + currentMember.MemberName);
         }
     }
 }
@@ -579,7 +605,7 @@ function ShowHits() {
             _groupMembers.ListMutilates();
         }
     } catch (caught) {
-        WriteExceptionToStream("Failure showing hits: " + caught);
+        //WriteExceptionToStream("Failure showing hits: " + caught);
         WriteToWindow(_mapOutputWindow, "Failure showing hits: " + caught, "red", true, true);
     }
 }
@@ -603,7 +629,7 @@ function DamageReport() {
         }
         WriteEmptyLineToWindow(_damageReportOutputWindow);
     } catch (caught) {
-        WriteExceptionToStream("Failure showing hits: " + caught);
+        //WriteExceptionToStream("Failure showing hits: " + caught);
         WriteToWindow(_mapOutputWindow, "Failure showing damage report: " + caught, "red", true, true);
     }
 }
@@ -623,7 +649,7 @@ function AddMap(mapName, variableName) {
         _newMap = _maps.Add(mapName.toTitleCase(), variableName);
         jmc.Send("exa " + _newMap.VariableName);
     } catch (caught) {
-        WriteExceptionToStream("Failure adding map: " + caught);
+        //WriteExceptionToStream("Failure adding map: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure adding map: " + caught, "red", true, true);
     }
 }
@@ -633,7 +659,7 @@ function ClearMaps() {
         ClearWindow(_mapOutputWindow);
         _maps.Clear();
     } catch (caught) {
-        WriteExceptionToStream("Failure clearing maps: " + caught);
+        //WriteExceptionToStream("Failure clearing maps: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure clearing maps: " + caught, "red", true, true);
     }
 }
@@ -646,7 +672,7 @@ function DeleteMapByName(mapName) {
         }
         ShowMaps();
     } catch (caught) {
-        WriteExceptionToStream("Failure deleting map by name: " + caught);
+        //WriteExceptionToStream("Failure deleting map by name: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure deleting map by name: " + caught, "red", true, true);
     }
 }
@@ -659,7 +685,7 @@ function DeleteMapByIndex(mapIndex) {
         }
         ShowMaps();
     } catch (caught) {
-        WriteExceptionToStream("Failure deleting map by index: " + caught);
+        //WriteExceptionToStream("Failure deleting map by index: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure deleting map by index: " + caught, "red", true, true);
     }
 }
@@ -680,7 +706,7 @@ function ShowMapByName(mapName) {
             ShowMap(map);
         }
     } catch (caught) {
-        WriteExceptionToStream("Failure showing map by name: " + caught);
+        //WriteExceptionToStream("Failure showing map by name: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure showing map: " + caught, "red", true, true);
     }
 }
@@ -693,7 +719,7 @@ function ShowMapByIndex(mapIndex) {
             ShowMap(map);
         }
     } catch (caught) {
-        WriteExceptionToStream("Failure showing map by index: " + caught);
+        //WriteExceptionToStream("Failure showing map by index: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure showing map by index: " + caught, "red", true, true);
     }
 }
@@ -707,7 +733,7 @@ function ShowMaps() {
         }
         WriteEmptyLineToWindow(_mapOutputWindow);
     } catch (caught) {
-        WriteExceptionToStream("Failure showing maps: " + caught);
+        //WriteExceptionToStream("Failure showing maps: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure showing maps: " + caught, "red", true, true);
     }
 }
@@ -741,8 +767,8 @@ function DisplaySkills() {
         );
 
         //Write informative information about how many skills and how many remaining sessions you have to the defined output window....
-        WriteToWindow(_skillOutputWindow, "Registered skills: " + skills.length, "blue", false, true);
-        WriteToWindow(_skillOutputWindow, "Sessions Remaining: " + _skills.SessionsRemaining, _skills.SessionsRemaining >= 0 ? "green" : "red", false, true);
+        WriteToWindow(_skillOutputWindow, "Registered skills: " + skills.length, "blue", false, false);
+        WriteToWindow(_skillOutputWindow, "Sessions Remaining: " + _skills.SessionsRemaining, _skills.SessionsRemaining >= 0 ? "green" : "red", false, false);
         for (var index = 0; index < skills.length; index++) {
             //...and for each skill, form a message containing the skill name and skill level....
             var skill = skills[index];
@@ -759,11 +785,11 @@ function DisplaySkills() {
                 message = message + " (" + additional + ")";
             }
             //...and write the skill to the defined output window.
-            WriteToWindow(_skillOutputWindow, message, "normal", false, true);
+            WriteToWindow(_skillOutputWindow, message, "normal", false, false);
         }
         WriteEmptyLineToWindow(_skillOutputWindow);
     } catch (caught) {
-        WriteExceptionToStream("Failure displaying skills: " + caught);
+        //WriteExceptionToStream("Failure displaying skills: " + caught);
         WriteToWindow(_exceptionOutputWindow, "Failure displaying skills: " + caught, "red", true, true);
     }
 }
@@ -779,6 +805,35 @@ function RegisterSkills() {
 //End Skill Commands
 //*********************************************************************************************************************
 
+
+
+//*********************************************************************************************************************
+//HowMany
+//*********************************************************************************************************************
+function HowMany(searchPattern, container) {
+    try {
+        if (searchPattern === "") {
+            throw "The search pattern cannot be blank.";
+        }
+        if (container === "") {
+            throw "The container cannot be blank.";
+        }
+        _howManySearchPattern = searchPattern;
+        _howManyContainer = container;
+        _isListeningForHowMany = true;
+        jmc.Send("examine " + container);
+    } catch (caught) {
+        var message = "Failure Counting How Many: " + caught + " - " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+    }
+}
+//*********************************************************************************************************************
+//End HowMany
+//*********************************************************************************************************************
+
+
+
 //*********************************************************************************************************************
 //Line Parsing
 //*********************************************************************************************************************
@@ -789,7 +844,7 @@ function ParseLine(incomingLine) {
     //Character Maintenance...
     ParseForLogin(cleanLine);
     ParseForInformation(cleanLine);
-    ParseForKill(cleanLine);
+    ParseForLevel(cleanLine);
     ParseForScore(cleanLine);
     ParseForStatistics(cleanLine);
 
@@ -817,133 +872,242 @@ function ParseLine(incomingLine) {
     ParseForCurse(cleanLine);
     ParseForFlee(cleanLine);
     ParseForRescue(cleanLine);
+    // ParseForPreparation(cleanLine);
 
+    //NOTE: This function changes the jmc.Event line, and could therefore interfere with other functions.  Keep this at the end.
+    ParseForHowMany(cleanLine);
 }
 
-function ParseForKill(incomingLine) {
+function ParseForPreparation(incomingLine) {
+    if (_currentPlayer === null) return;
+    try {
+        if (incomingLine === "") return;
+        if (incomingLine === "You completed your preparations.") {
+            _currentPlayer.SuccessfulPreparations++;
+        }
+        if (incomingLine === "You fumbled with your preparations.") {
+            _currentPlayer.FailedPreparations++;
+        }
+    } catch (caught) {
+        var message = "Failure parsing for preparation: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+    }
+}
+
+function ParseForLevel(incomingLine) {
     if (_currentPlayer === null) return;
     if (incomingLine === "") return;
-
-    //If the current character receives a leveled up message...
-    if (incomingLine === "You feel more powerful!") {
-        //...increment the characters level.
-        _currentPlayer.Level++;
-        //Store the XP remainder in a variable...
-        var xpRemainder = parseInt(_currentPlayer.XPNeeded);
-        var currentLevelPlusOne = parseInt(_currentPlayer.Level) + 1;
-        //...and calculate how much XP the character needs at the current level...
-        _currentPlayer.XPNeeded = (currentLevelPlusOne * currentLevelPlusOne * 1500) - (_currentPlayer.Level * _currentPlayer.Level * 1500);
-        //...and if the remainder is a negative number...
-        if (xpRemainder < 0) {
-            //...credit the player with the remainder.
-            _currentPlayer.XPNeeded += xpRemainder;
+    try {
+        //If the current character receives a leveled up message...
+        if (incomingLine === "You feel more powerful!") {
+            //...increment the characters level.
+            _currentPlayer.Level++;
+            //Store the XP remainder in a variable...
+            var xpRemainder = parseInt(_currentPlayer.XPNeeded);
+            var currentLevelPlusOne = parseInt(_currentPlayer.Level) + 1;
+            //...and calculate how much XP the character needs at the current level...
+            _currentPlayer.XPNeeded = (currentLevelPlusOne * currentLevelPlusOne * 1500) - (_currentPlayer.Level * _currentPlayer.Level * 1500);
+            //...and if the remainder is a negative number...
+            if (xpRemainder < 0) {
+                //...credit the player with the remainder.
+                _currentPlayer.XPNeeded += xpRemainder;
+            }
+            //...and return out of the function.
+            return;
         }
-        //...and return out of the function.
-        return;
-    }
 
-    //If the current character receives experience points...
-    var matches = incomingLine.match(/^You receive your share of experience -- (\d+) points\.$/);
-    if (matches !== null) {
-        //...parse the experience points into an integer.
-        var parsedExperience = parseInt(matches[1]);
-        //If the experience gained exceeds the experience cap....
-        if (parsedExperience >= 7500) {
-            //...set the actual value gained to the experience cap.
-            parsedExperience = 7500;
+        if (incomingLine === "You lose a level!") {
+            //Get lost level code.
+            return;
         }
-        //Increment the characters XP Gained counter...
-        _currentPlayer.XPGained += parsedExperience;
-        //and deduct the XP gained from the XP needed...
-        _currentPlayer.XPNeeded -= parsedExperience;
-        //Send a loot coin command to the mud...
-        jmc.Send("get coin all.cor");
-        //...and return out of the function.
-        return;
-    }
 
-    matches = incomingLine.match(/^Your spirit increases by (\d+)\.$/);
-    if (matches !== null) {
-        _currentPlayer.Spirit = _currentPlayer.Spirit + parseInt(matches[1]);
-        return;
-    }
+        //Class Levels
+        if (incomingLine === "You have become better at combat!") {
+            _currentPlayer.WarriorLevel++;
+            return;
+        }
 
-    matches = incomingLine.match(/^You force your Will against [a-zA-Z '-]+'s concentration!$/);
-    if (matches !== null) {
-        _currentPlayer.Spirit += 2;
+        if (incomingLine === "You feel more agile!") {
+            _currentPlayer.RangerLevel++;
+            return;
+        }
+
+        if (incomingLine === "Your spirit grows stronger!") {
+            _currentPlayer.MysticLevel++;
+            return;
+        }
+
+        if (incomingLine === "You feel more adept in magic!") {
+            _currentPlayer.MageLevel++;
+            return;
+        }
+
+        //Stats Hikes    
+        if (incomingLine === "Great strength flows through you!") {
+            _currentPlayer.MaxStrength++;
+            _currentPlayer.CurrentStrength++;
+            return;
+        }
+        if (incomingLine === "Your intelligence has improved!") {
+            _currentPlayer.MaxIntelligence++;
+            _currentPlayer.CurrentIntelligence++;
+            return;
+        }
+        if (incomingLine === "Your hands feel quicker!") {
+            _currentPlayer.MaxDexterity++;
+            _currentPlayer.CurrentDexterity++;
+            return;
+        }
+        if (incomingLine === "You feel your mental resolve harden!") {
+            _currentPlayer.MaxWill++;
+            _currentPlayer.CurrentWill++;
+            return;
+        }
+        if (incomingLine === "You feel much more health!") {
+            _currentPlayer.MaxConstitution++;
+            _currentPlayer.CurrentConstitution++;
+            return;
+        }
+        if (incomingLine === "You seem more learned!") {
+            _currentPlayer.MaxLearningAbility++;
+            _currentPlayer.CurrentLearningAbility++;
+            return;
+        }
+
+        //If the current character receives experience points...
+        var matches = incomingLine.match(/^You receive your share of experience -- (\d+) points\.$/);
+        if (matches !== null) {
+            //...parse the experience points into an integer.
+            var parsedExperience = parseInt(matches[1]);
+            //If the experience gained exceeds the experience cap....
+            if (parsedExperience >= 7000) {
+                //...set the actual value gained to the experience cap.
+                parsedExperience = 7500;
+            }
+            //Increment the characters XP Gained counter...
+            _currentPlayer.XPGained += parsedExperience;
+            //and deduct the XP gained from the XP needed...
+            _currentPlayer.XPNeeded -= parsedExperience;
+            //Send a loot coin command to the mud...
+            jmc.Send("get coin all.cor");
+            //...and return out of the function.
+            return;
+        }
+
+        matches = incomingLine.match(/^Your spirit increases by (\d+)\.$/);
+        if (matches !== null) {
+            _currentPlayer.Spirit += parseInt(matches[1]);
+            return;
+        }
+
+        matches = incomingLine.match(/^You force your Will against [a-zA-Z '-]+'s concentration!$/);
+        if (matches !== null) {
+            _currentPlayer.Spirit += 2;
+            return;
+        }
+    } catch (caught) {
+        var message = "Failure parsing for level: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
 function ParseForBash(incomingLine) {
     if (!_isListeningForBash) return;
-
-    if (/^.* has recovered from a bash!$/.test(incomingLine)) {
-        jmc.Send("bash");
-        return;
+    try {
+        if (/^.* has recovered from a bash!$/.test(incomingLine)) {
+            jmc.Send("bash");
+            return;
+        }
+    } catch (caught) {
+        var message = "Failure parsing for bash: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
 function ParseForChillRay(incomingLine) {
     if (!_isListeningForChillRay) return;
-
     if (incomingLine === "Your victim is not here!") return;
-    if (incomingLine === "You could not concentrate anymore!" || incomingLine === "You lost your concentration!") {
-        jmc.Send("cast chill");
-        return;
-    }
+    try {
+        if (incomingLine === "You could not concentrate anymore!" || incomingLine === "You lost your concentration!") {
+            jmc.Send("cast chill");
+            return;
+        }
 
-    var matches = incomingLine.match(/^[a-zA-Z\- ']+ shudders as your chill ray strikes (?:him|her|it)\.$/g);
-    if (matches !== null) {
-        jmc.Send("cast chill");
-        return;
-    }
+        var matches = incomingLine.match(/^[a-zA-Z\- ']+ shudders as your chill ray strikes (?:him|her|it)\.$/g);
+        if (matches !== null) {
+            jmc.Send("cast chill");
+            return;
+        }
 
+    } catch (caught) {
+        var message = "Failure parsing for chill-ray: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+    }
 }
 
 function ParseForCurse(incomingLine) {
     if (!_isListeningForCurse) return;
     if (incomingLine === "") return;
     if (incomingLine === "Your victim is not here!") return;
+    try {
+        if (incomingLine.startsWith("You force your Will against")) {
+            jmc.Send("cast curse");
+            return;
+        }
 
-    if (incomingLine.startsWith("You force your Will against")) {
-        jmc.Send("cast curse");
-        return;
+        if (incomingLine === "You could not concentrate anymore!" || incomingLine === "You lost your concentration!") {
+            jmc.Send("cast curse");
+            return;
+        }
+
+        var matches = incomingLine.match(/^You couldn't reach [a-zA-Z'\-, ]+ mind.$/);
+        if (matches !== null) {
+            jmc.Send("cast curse");
+            return;
+        }
+
+    } catch (caught) {
+        var message = "Failure parsing for curse: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-
-    if (incomingLine === "You could not concentrate anymore!" || incomingLine === "You lost your concentration!") {
-        jmc.Send("cast curse");
-        return;
-    }
-
-    var matches = incomingLine.match(/^You couldn't reach [a-zA-Z'\-, ]+ mind.$/);
-    if (matches !== null) {
-        jmc.Send("cast curse");
-        return;
-    }
-
 }
 
 function ParseForDoor(incomingLine) {
     if (!_isListeningForDoors) return;
     if (incomingLine === "") return;
-
-    var matches = incomingLine.match(/^The ([a-z]+) seems to be closed\.$/);
-    if (matches !== null) {
-        jmc.Send("open " + matches[1]);
+    try {
+        var matches = incomingLine.match(/^The ([a-z]+) seems to be closed\.$/);
+        if (matches !== null) {
+            jmc.Send("open " + matches[1]);
+        }
+    } catch (caught) {
+        var message = "Failure parsing for door: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-
 }
 
 function ParseForFlee(incomingLine) {
     if (!_isListeningForFlee) return;
-    if (incomingLine === "PANIC!  You couldn't escape!") {
-        jmc.Send("flee");
+    try {
+        if (incomingLine === "PANIC!  You couldn't escape!") {
+            jmc.Send("flee");
+        }
+    } catch (caught) {
+        var message = "Failure parsing for flee: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
 function ParseForGroupMember(incomingLine) {
+    if (!_isListeningForGroup) return;
     try {
-        if (!_isListeningForGroup) return;
         if (!_isGroupFound) {
             if (incomingLine === "Your group consists of:") {
                 _isGroupFound = true;
@@ -972,11 +1136,11 @@ function ParseForGroupMember(incomingLine) {
                 }
                 //Loop through all members in the new group member collection...
                 for (var index = 0; index < _groupMembersTemp.Count(); index++) {
-                    var foundMember = _groupMembersTemp.GroupMembers[index];
+                    var potentialNewMember = _groupMembersTemp.GroupMembers[index];
                     //...and if the group member does not exist in the running collection...
-                    if (_groupMembers.IndexOf(foundMember.MemberName) === -1) {
+                    if (_groupMembers.IndexOf(potentialNewMember.MemberName) === -1) {
                         //...push him through.
-                        _groupMembers.GroupMembers.push(foundMember);
+                        _groupMembers.GroupMembers.push(potentialNewMember);
                     }
                 }
             } else {
@@ -993,73 +1157,128 @@ function ParseForGroupMember(incomingLine) {
             }
         }
     } catch (caught) {
-        WriteExceptionToStream("Failure parsing group line: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing group line: " + caught, "red", true, true);
+        var message = "Failure parsing for group-member: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
 function ParseForGroupMemberDamage(incomingLine) {
     //If our group member collection hasn't been initialized.... don't bother checking the incoming line.
     if (_groupMembers.Count() === 0) return;
+    try {
+        //First check for the really hard or really weak hits...
+        var matches = incomingLine.match(/^([a-zA-Z ']+) (miss|scratch|barely|lightly|deeply|severely|MUTILATE).*(?:\.|!|!!)$/);
+        if (matches === null) {
+            //If that fails... search for the average hits...
+            //NOTE: This regex is not 100% accurate.  Must add specific mob types (spider, for example) to the regex where the mob has no body parts.
+            matches = incomingLine.match(/^([a-zA-Z ']+) (?:stab|hit|slash|pound|smite|crush|whip|flail|pierce|stab|cleave).*(?:head|body|foot|leg|arm|hand|wing|spider|rat) *(hard|very hard|extremely hard)?\.$/);
+        }
+        //If we still don't have any matches... return out of the function.
+        if (matches === null) return;
 
-    //First check for the really hard or really weak hits...
-    var matches = incomingLine.match(/^([a-zA-Z ']+) (miss|scratch|barely|lightly|deeply|severely|MUTILATE).*(?:\.|!|!!)$/);
-    if (matches === null) {
-        //If that fails... search for the average hits...
-        //NOTE: This regex is not 100% accurate.  Must add specific mob types (spider, for example) to the regex where the mob has no body parts.
-        matches = incomingLine.match(/^([a-zA-Z ']+) (?:stab|hit|slash|pound|smite|crush|whip|flail|pierce|stab|cleave).*(?:head|body|foot|leg|arm|hand|wing|spider|rat) *(hard|very hard|extremely hard)?\.$/);
+        var damageDoer = matches[1];
+        if (damageDoer === "You") {
+            damageDoer = jmc.GetVar("me");
+        }
+        if (damageDoer === "") return;
+
+        var groupMember = _groupMembers.GetMember(damageDoer);
+        if (groupMember === null) return;
+
+        var damage = 0;
+        switch (matches[2].toLowerCase()) {
+            case "miss":
+                damage = 0.0;
+                break;
+            case "scratch":
+                damage = 1.0;
+                break;
+            case "barely":
+                damage = 2.5;
+                break;
+            case "lightly":
+                damage = 5.0;
+                break;
+            case "":
+                damage = 9.0;
+                break;
+            case "hard":
+                damage = 14.5;
+                break;
+            case "very hard":
+                damage = 21;
+                break;
+            case "extremely hard":
+                damage = 29;
+                break;
+            case "deeply":
+                damage = 47;
+                break;
+            case "severely":
+                damage = 75;
+                break;
+            case "mutilate":
+                damage = 105;
+                groupMember.MutilateCount++;
+                break;
+        }
+        groupMember.HitCount++;
+        groupMember.Damage += damage;
+
+    } catch (caught) {
+        var message = "Failure parsing for group-member damage: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-    //If we still don't have any matches... return out of the function.
-    if (matches === null) return;
+}
 
-    var damageDoer = matches[1];
-    if (damageDoer === "You") {
-        damageDoer = jmc.GetVar("me");
+function ParseForHowMany(incomingLine) {
+    //^[a-z]+ \((?:here|carried)\) : $
+    if (!_isListeningForHowMany || _howManySearchPattern === "") return;
+    try {
+        if (!_howManyFound) {
+            if (incomingLine === "") return;
+            if (/^[a-z]+ \((?:here|carried)\) : $/.test(incomingLine)) {
+                _howManyFound = true;
+            }
+            return;
+        } else if (incomingLine === "") {
+            var message = "The pattern '" + AnsiColors.ForegroundBrightBlue + _howManySearchPattern + AnsiColors.Default;
+            message = message + "' has been found " + AnsiColors.ForegroundBrightBlue + _howManyItemsFound + AnsiColors.Default;
+            message = message + " time(s) in the " + AnsiColors.ForegroundBrightBlue + _howManyContainer + AnsiColors.Default + ".";
+            jmc.ShowMe(message); //Write to the main window.
+            _howManyLineFound = _isListeningForHowMany = false;
+            _howManySearchPattern = "";
+            _howManyItemsFound = 0;
+            return;
+        } else {
+            var matches;
+            var toChange = [];
+            var regExp = new RegExp(_howManySearchPattern, "g");
+            while ((matches = regExp.exec(incomingLine)) !== null) {
+                _howManyItemsFound++;
+                var stopIndex = regExp.lastIndex;
+                var startIndex = matches.index;
+                toChange.push({
+                    StartIndex: startIndex,
+                    StopIndex: stopIndex
+                });
+            }
+
+            var lineToChange = incomingLine;
+            for (var index = toChange.length - 1; index >= 0; index--) {
+                var itemIndex = toChange[index];
+                lineToChange = lineToChange.splice(itemIndex.StopIndex, 0, AnsiColors.Default);
+                lineToChange = lineToChange.splice(itemIndex.StartIndex, 0, AnsiColors.ForegroundBrightRed);
+            }
+            jmc.Event = lineToChange;
+        }
+    } catch (caught) {
+        var message = "Failure parsing for how-many: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-    if (damageDoer === "") return;
-
-    var groupMember = _groupMembers.GetMember(damageDoer);
-    if (groupMember === null) return;
-
-    var damage = 0;
-    switch (matches[2].toLowerCase()) {
-        case "miss":
-            damage = 0.0;
-            break;
-        case "scratch":
-            damage = 1.0;
-            break;
-        case "barely":
-            damage = 2.5;
-            break;
-        case "lightly":
-            damage = 5.0;
-            break;
-        case "":
-            damage = 9.0;
-            break;
-        case "hard":
-            damage = 14.5;
-            break;
-        case "very hard":
-            damage = 21;
-            break;
-        case "extremely hard":
-            damage = 29;
-            break;
-        case "deeply":
-            damage = 47;
-            break;
-        case "severely":
-            damage = 75;
-            break;
-        case "mutilate":
-            damage = 105;
-            groupMember.MutilateCount++;
-            break;
-    }
-    groupMember.HitCount++;
-    groupMember.Damage += damage;
 }
 
 function ParseForMap(incomingLine) {
@@ -1102,14 +1321,15 @@ function ParseForMap(incomingLine) {
             return;
         }
     } catch (caught) {
-        WriteExceptionToStream("Failure parsing map line: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing map line: " + caught, "red", true, true);
+        var message = "Failure parsing for map: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
 function ParseForRescue(incomingLine) {
+    if (!_isListeningForRescue) return;
     try {
-        if (!_isListeningForRescue) return;
         var matches = incomingLine.match(/^(.*) turns to fight ([a-zA-Z]*)!$/);
         if (matches !== null) {
             var target = matches[1].toLowerCase();
@@ -1125,8 +1345,9 @@ function ParseForRescue(incomingLine) {
             WriteToWindow(_rescueOutputWindow, matches[0], "green", true, true);
         }
     } catch (caught) {
-        WriteExceptionToStream("Failure parsing social: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing social: " + caught, "red", true, true);
+        var message = "Failure parsing for rescue: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -1151,8 +1372,9 @@ function ParseForRoomName(incomingLine) {
             jmc.Event = jmc.Event + " | " + room.GetExitString();
         }
     } catch (caught) {
-        WriteExceptionToStream("Failure parsing exit line: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing exit line: " + caught, "red", true, true);
+        var message = "Failure parsing for room name: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -1162,27 +1384,27 @@ function ParseForScore(incomingLine) {
 
         //Perform a regex test on the incoming line to verify it is a score line...
         var matchesFound = false;
-        var matches = incomingLine.match(/^You have ([0-9]+)\/([0-9]+) hit, ([0-9]+)\/([0-9]+) stamina, ([0-9]+)\/([0-9]+) moves, ([0-9]+) spirit\.$/);
+        var matches = incomingLine.match(/^You have (-?[0-9]+)\/([0-9]+) hit, (-?[0-9]+)\/([0-9]+) stamina, (-?[0-9]+)\/([0-9]+) moves, ([0-9]+) spirit\.$/);
         if (matches !== null) {
             matchesFound = true;
             _isScoreLineFound = true;
-            _currentPlayer.CurrentHitPoints = matches[1];
-            _currentPlayer.MaxHitPoints = matches[2];
-            _currentPlayer.CurrentStamina = matches[3];
-            _currentPlayer.MaxStamina = matches[4];
-            _currentPlayer.CurrentMoves = matches[5];
-            _currentPlayer.MaxMoves = matches[6];
-            _currentPlayer.Spirit = matches[7];
+            _currentPlayer.CurrentHitPoints = parseInt(matches[1]);
+            _currentPlayer.MaxHitPoints = parseInt(matches[2]);
+            _currentPlayer.CurrentStamina = parseInt(matches[3]);
+            _currentPlayer.MaxStamina = parseInt(matches[4]);
+            _currentPlayer.CurrentMoves = parseInt(matches[5]);
+            _currentPlayer.MaxMoves = parseInt(matches[6]);
+            _currentPlayer.Spirit = parseInt(matches[7]);
         }
 
         if (!matchesFound && _isScoreLineFound) {
             matches = incomingLine.match(/^OB: (-?[\d]+), DB: (-?[\d]+), PB: (-?[\d]+), Speed: ([\d]+), Gold: ([\d]+), XP Needed: ([\d]+K?)\.$/);
             if (matches !== null) {
                 matchesFound = true;
-                _currentPlayer.OffensiveBonus = matches[1];
-                _currentPlayer.DodgeBonus = matches[2];
-                _currentPlayer.ParryBonus = matches[3];
-                _currentPlayer.AttackSpeed = matches[4];
+                _currentPlayer.OffensiveBonus = parseInt(matches[1]);
+                _currentPlayer.DodgeBonus = parseInt(matches[2]);
+                _currentPlayer.ParryBonus = parseInt(matches[3]);
+                _currentPlayer.AttackSpeed = parseInt(matches[4]);
 
                 //If score XP is a k less than _currentPlayer.XPNeeded, update. If doesn't end in K, update.
                 var tnl = matches[6];
@@ -1219,8 +1441,9 @@ function ParseForScore(incomingLine) {
 
         }
     } catch (caught) {
-        WriteExceptionToStream(caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing status line: " + caught, "red", true, true);
+        var message = "Failure parsing for score: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -1229,72 +1452,77 @@ function ParseForScore(incomingLine) {
 function ParseForSkill(incomingLine) {
     //If not listening for skills, do not execute any code.
     if (!_isListeningForSkills) return;
-
-    //If the skills section has not been located yet...
-    if (!_isSkillsFound) {
-        //If you are sleeping...
-        if (incomingLine == "In your dreams, or what?") {
-            //...stop listening for skills...
-            _isListeningForSkills = false;
-            //...and alert that it is not possible to display skills while asleep
-            jmc.ShowMe("Cannot load skills while you are asleep.", "red");
-            jmc.DropEvent();
-            //...and re-display skills...
-            DisplaySkills();
-            //...and return out of this function.
+    try {
+        //If the skills section has not been located yet...
+        if (!_isSkillsFound) {
+            //If you are sleeping...
+            if (incomingLine == "In your dreams, or what?") {
+                //...stop listening for skills...
+                _isListeningForSkills = false;
+                //...and alert that it is not possible to display skills while asleep
+                jmc.ShowMe("Cannot load skills while you are asleep.", "red");
+                jmc.DropEvent();
+                //...and re-display skills...
+                DisplaySkills();
+                //...and return out of this function.
+                return;
+            }
+            //Otherwise, check the incoming line for the practice session indicator.
+            var matches = incomingLine.match(/^You have (-?\d+) practice sessions left$/);
+            //If matches are found...
+            if (matches !== null) {
+                //...set _isSkillsFound to true....
+                _isSkillsFound = true;
+                //...and reset the skills collection.
+                _skills = new SkillCollection(matches[1]);
+                //...and set the remaining sessions on the skills collection.
+                _skills.SessionsRemaining = matches[1];
+                jmc.DropEvent();
+            }
+            //And regardless of the outcome, return out of the function as all processing for this line has been completed.
             return;
         }
-        //Otherwise, check the incoming line for the practice session indicator.
-        var matches = incomingLine.match(/^You have (-?\d+) practice sessions left$/);
-        //If matches are found...
+        //If the incoming line is blank space....
+        if (incomingLine === "") {
+            //...chances are we have found exactly what we were looking for, or nothing at all.  Reset variables...
+            _isListeningForSkills = false;
+            _isSkillsFound = false;
+            jmc.DropEvent();
+            //...and display the skills.
+            DisplaySkills();
+            return;
+        }
+
+        //^([a-z ]+) *\(?(\d+%|[a-zA-Z ]+)\)?.*(?:\( *(\d+ time)(?:, *(\d+ (?:stamina|spirit)))?\))?$
+        //INCLUDES PERCENTAGES
+
+        //If the incoming line does not meet any of the previous criteria, chances are it's a practice session!
+        var matches = incomingLine.match(/^([a-z -/]+) *\(([a-zA-Z ]+)\) *(?:\( *(\d+ time)(?:, *(\d+ (?:stamina|spirit)))?\))?$/);
+        //If the line matches the regex....
         if (matches !== null) {
-            //...set _isSkillsFound to true....
-            _isSkillsFound = true;
-            //...and reset the skills collection.
-            _skills = new SkillCollection(matches[1]);
-            //...and set the remaining sessions on the skills collection.
-            _skills.SessionsRemaining = matches[1];
+            //...add the skill to the collection....
+            _skills.Add(
+                matches[1].trim().toTitleCase(),
+                matches[2].trim().toTitleCase(),
+                matches[3].trim().toTitleCase(),
+                matches[4].trim().toTitleCase()
+            );
+            //...and drop the event.
             jmc.DropEvent();
         }
-        //And regardless of the outcome, return out of the function as all processing for this line has been completed.
-        return;
-    }
-    //If the incoming line is blank space....
-    if (incomingLine === "") {
-        //...chances are we have found exactly what we were looking for, or nothing at all.  Reset variables...
-        _isListeningForSkills = false;
-        _isSkillsFound = false;
-        jmc.DropEvent();
-        //...and display the skills.
-        DisplaySkills();
-        return;
-    }
-
-    //^([a-z ]+) *\(?(\d+%|[a-zA-Z ]+)\)?.*(?:\( *(\d+ time)(?:, *(\d+ (?:stamina|spirit)))?\))?$
-    //INCLUDES PERCENTAGES
-
-    //If the incoming line does not meet any of the previous criteria, chances are it's a practice session!
-    var matches = incomingLine.match(/^([a-z -]+) *\(([a-zA-Z ]+)\) *(?:\( *(\d+ time)(?:, *(\d+ (?:stamina|spirit)))?\))?$/);
-    //If the line matches the regex....
-    if (matches !== null) {
-        //...add the skill to the collection....
-        _skills.Add(
-            matches[1].trim().toTitleCase(),
-            matches[2].trim().toTitleCase(),
-            matches[3].trim().toTitleCase(),
-            matches[4].trim().toTitleCase()
-        );
-        //...and drop the event.
-        jmc.DropEvent();
+    } catch (caught) {
+        var message = "Failure parsing for skill: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
 function ParseForSocial(incomingLine) {
     try {
-        var socialRegex = /^(?:[a-zA-Z]*) (chat|chats|narrate|narrates|tell|yell|yells|tells|sing|sings|say|says|group-say|group-says|petition|wiznet|wiznets|whispers)(?:[a-zA-Z, ]+)'(.*)'$/;
+        var socialRegex = /^([a-zA-Z ]*) (chat|chats|narrate|narrates|tell|yell|yells|tells|sing|sings|say|says|group-say|group-says|petition|wiznet|wiznets|whispers) ?(?:[a-zA-Z, ]+)'(.*)'$/;
         var matches = incomingLine.match(socialRegex);
         if (matches !== null) {
-            var social = matches[1].replace(/s$/, "");
+            var social = matches[2].replace(/s$/, "");
             var color = "normal";
             switch (social) {
                 case "chat":
@@ -1313,11 +1541,16 @@ function ParseForSocial(incomingLine) {
                     break;
             }
             WriteToWindow(_socialOutputWindow, matches[0], color, true, true);
-            WriteSocialToStream(matches[0]);
+            // && social === "tell" && matches[1] !== "You"
+            if (_notifyTells) {
+                SendTextMessage(matches[1], matches[0]);
+                // jmc.Parse("#systemexec {emailMessage.bat 4436225407@vtext.com \"" + matches[1] + "\" \"" + matches[0] + "\" }");
+            }
         }
     } catch (caught) {
-        WriteExceptionToStream("Failure parsing social: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing social: " + caught, "red", true, true);
+        var message = "Failure parsing for social: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -1337,22 +1570,23 @@ function ParseForStatistics(incomingLine) {
         if (matches !== null) {
             matchesFound = true;
 
-            _currentPlayer.CurrentStrength = matches[1];
-            _currentPlayer.MaxStrength = matches[2];
-            _currentPlayer.CurrentIntelligence = matches[3];
-            _currentPlayer.MaxIntelligence = matches[4];
-            _currentPlayer.CurrentWill = matches[5];
-            _currentPlayer.MaxWill = matches[6];
-            _currentPlayer.CurrentDexterity = matches[7];
-            _currentPlayer.MaxDexterity = matches[8];
-            _currentPlayer.CurrentConstitution = matches[9];
-            _currentPlayer.MaxConstitution = matches[10];
-            _currentPlayer.CurrentLearningAbility = matches[11];
-            _currentPlayer.MaxLearningAbility = matches[12];
+            _currentPlayer.CurrentStrength = parseInt(matches[1]);
+            _currentPlayer.MaxStrength = parseInt(matches[2]);
+            _currentPlayer.CurrentIntelligence = parseInt(matches[3]);
+            _currentPlayer.MaxIntelligence = parseInt(matches[4]);
+            _currentPlayer.CurrentWill = parseInt(matches[5]);
+            _currentPlayer.MaxWill = parseInt(matches[6]);
+            _currentPlayer.CurrentDexterity = parseInt(matches[7]);
+            _currentPlayer.MaxDexterity = parseInt(matches[8]);
+            _currentPlayer.CurrentConstitution = parseInt(matches[9]);
+            _currentPlayer.MaxConstitution = parseInt(matches[10]);
+            _currentPlayer.CurrentLearningAbility = parseInt(matches[11]);
+            _currentPlayer.MaxLearningAbility = parseInt(matches[12]);
         }
     } catch (caught) {
-        WriteExceptionToStream(caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing statistics line: " + caught, "red", true, true);
+        var message = "Failure parsing for statistics: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -1363,42 +1597,75 @@ function ParseForLogin(incomingLine) {
         if (incomingLine === "") return;
         if (incomingLine === "Here we go..." || incomingLine === "Reconnecting.") {
             //Do Post-Login commands.
+            _isListeningForInfo = true;
             jmc.Send("info");
             return;
         }
 
         var matches = incomingLine.match(/^[a-zA-Z -]+ stores your belongings and helps you into your private chamber\.$/);
         if (matches !== null) {
-            _currentPlayer = null;
+            var playerName = "Unknown";
+            if (_currentPlayer !== null) {
+                playerName = _currentPlayer.Name;
+                _currentPlayer = null;
+            }
+            WriteToWindow(_socialOutputWindow, "Logout: " + playerName, "blue", true, true);
         }
     } catch (caught) {
-        WriteExceptionToStream(caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing login line: " + caught, "red", true, true);
+        var message = "Failure parsing for login: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
 //This function will begin looking for an information return from the server, which consists of several lines which start with
 //You or Your, with the oddball being Strength and Constitution.
+//TODO: Attempt to rework this method to prevent from evaluating _isListeningForInfo/_isInfoFound so often.
 function ParseForInformation(incomingLine) {
     try {
+
+        if (_isListeningForInfo && _isInfoFound && incomingLine === "") {
+            _isListeningForInfo = false;
+            _isInfoFound = false;
+            jmc.DropEvent();
+            return;
+        }
+
         //Right off the bat, run this regex.  He will set the _player object to a new instance.
         //You are Atomos test test ,.,12.398 test, an evil (-100) male Uruk-Lhuth.
         var matches = incomingLine.match(/^You are ([A-Za-z]*) .*, an? (?:good|evil|neutral) \((-?\d+)\) (male|female) ([a-zA-Z- ]*)\.$/);
         if (matches !== null) {
-
+            _isInfoFound = true;
             var playerName = matches[1];
             if (_currentPlayer === null || _currentPlayer.Name !== playerName) {
+                _currentPlayer = new Player(playerName, matches[2], matches[3], matches[4]);
+
                 jmc.Parse("#spit {Commands/Profiles/" + playerName + ".set} {%0} {ns}");
-                jmc.Parse("blow eye");
                 jmc.SetVar("me", playerName);
-                _currentPlayer = new Player(matches[1], matches[2], matches[3], matches[4]);
-                return;
+
+                switch (_currentPlayer.Race) {
+                    case RaceTypes.Beorning:
+                    case RaceTypes.Dwarf:
+                    case RaceTypes.Hobbit:
+                    case RaceTypes.Human:
+                    case RaceTypes.WoodElf:
+                        jmc.Send("blow eye");
+                        break;
+                }
+
+            } else {
+                _currentPlayer.Name = playerName;
+                _currentPlayer.Alignment = matches[2];
+                _currentPlayer.Gender = matches[3];
+                _currentPlayer.Race = matches[4];
             }
-            _currentPlayer.Name = matches[1];
-            _currentPlayer.Alignment = matches[2];
-            _currentPlayer.Gender = matches[3];
-            _currentPlayer.Race = matches[4];
+
+            if (_isListeningForInfo) {
+                jmc.DropEvent();
+            }
+
             return;
+
         }
 
         if (_currentPlayer === null) return;
@@ -1408,79 +1675,127 @@ function ParseForInformation(incomingLine) {
             //You have reached level 24.
             matches = incomingLine.match(/^You have reached level (\d+)\.$/);
             if (matches !== null) {
-                _currentPlayer.Level = matches[1];
+                _currentPlayer.Level = parseInt(matches[1]);
+
+                if (_isListeningForInfo) {
+                    jmc.DropEvent();
+                }
+
                 return;
             }
 
             //You are level 4 Warrior, 3 Ranger, 7 Mystic, and 29 Mage.
             matches = incomingLine.match(/^You are level (\d+) Warrior, (\d+) Ranger, (\d+) Mystic, and (\d+) Mage\.$/);
             if (matches !== null) {
-                _currentPlayer.WarriorLevel = matches[1];
-                _currentPlayer.RangerLevel = matches[2];
-                _currentPlayer.MysticLevel = matches[3];
-                _currentPlayer.MageLevel = matches[4];
+                _currentPlayer.WarriorLevel = parseInt(matches[1]);
+                _currentPlayer.RangerLevel = parseInt(matches[2]);
+                _currentPlayer.MysticLevel = parseInt(matches[3]);
+                _currentPlayer.MageLevel = parseInt(matches[4]);
+
+                if (_isListeningForInfo) {
+                    jmc.DropEvent();
+                }
+
                 return;
             }
 
             matches = incomingLine.match(/^You are specialized in ([a-z ]+)\.$/);
             if (matches !== null) {
                 _currentPlayer.Specialization = matches[1].toTitleCase();
+
+                if (_isListeningForInfo) {
+                    jmc.DropEvent();
+                }
+
                 return;
             }
 
             matches = incomingLine.match(/^You have (-?\d+)\/(\d+) hit points, (-?\d+)\/(\d+) stamina, (-?\d+)\/(\d+) moves and (-?\d+) spirit\.$/);
             if (matches !== null) {
-                _currentPlayer.CurrentHitPoints = matches[1];
-                _currentPlayer.MaxHitPoints = matches[2];
-                _currentPlayer.CurrentStamina = matches[3];
-                _currentPlayer.MaxStamina = matches[4];
-                _currentPlayer.CurrentMoves = matches[5];
-                _currentPlayer.MaxMoves = matches[6];
-                _currentPlayer.Spirit = matches[7];
+                _currentPlayer.CurrentHitPoints = parseInt(matches[1]);
+                _currentPlayer.MaxHitPoints = parseInt(matches[2]);
+                _currentPlayer.CurrentStamina = parseInt(matches[3]);
+                _currentPlayer.MaxStamina = parseInt(matches[4]);
+                _currentPlayer.CurrentMoves = parseInt(matches[5]);
+                _currentPlayer.MaxMoves = parseInt(matches[6]);
+                _currentPlayer.Spirit = parseInt(matches[7]);
+
+                if (_isListeningForInfo) {
+                    jmc.DropEvent();
+                }
+
                 return;
             }
 
             matches = incomingLine.match(/^Your OB is (-?\d+), dodge is (-?\d+), parry (-?\d+), and your attack speed is (-?\d+)\.$/);
             if (matches !== null) {
-                _currentPlayer.OffensiveBonus = matches[1];
-                _currentPlayer.DodgeBonus = matches[2];
-                _currentPlayer.ParryBonus = matches[3];
-                _currentPlayer.AttackSpeed = matches[4];
+                _currentPlayer.OffensiveBonus = parseInt(matches[1]);
+                _currentPlayer.DodgeBonus = parseInt(matches[2]);
+                _currentPlayer.ParryBonus = parseInt(matches[3]);
+                _currentPlayer.AttackSpeed = parseInt(matches[4]);
+
+                if (_isListeningForInfo) {
+                    jmc.DropEvent();
+                }
+
                 return;
             }
 
             matches = incomingLine.match(/^You have scored (\d+) experience points, and need (\d+) more to advance\.$/);
             if (matches !== null) {
                 _currentPlayer.XPNeeded = parseInt(matches[2]);
+
+                if (_isListeningForInfo) {
+                    jmc.DropEvent();
+                }
+
                 return;
             }
 
         } else if (incomingLine.startsWith("Strength:")) {
             matches = incomingLine.match(/^Strength: (-?\d+)\/(\d+), Intelligence: (-?\d+)\/(\d+), Will: (-?\d+)\/(\d+), Dexterity: (-?\d+)\/(\d+)$/);
             if (matches !== null) {
-                _currentPlayer.CurrentStrength = matches[1];
-                _currentPlayer.MaxStrength = matches[2];
-                _currentPlayer.CurrentIntelligence = matches[3];
-                _currentPlayer.MaxIntelligence = matches[4];
-                _currentPlayer.CurrentWill = matches[5];
-                _currentPlayer.MaxWill = matches[6];
-                _currentPlayer.CurrentDexterity = matches[7];
-                _currentPlayer.MaxDexterity = matches[8];
+                _currentPlayer.CurrentStrength = parseInt(matches[1]);
+                _currentPlayer.MaxStrength = parseInt(matches[2]);
+                _currentPlayer.CurrentIntelligence = parseInt(matches[3]);
+                _currentPlayer.MaxIntelligence = parseInt(matches[4]);
+                _currentPlayer.CurrentWill = parseInt(matches[5]);
+                _currentPlayer.MaxWill = parseInt(matches[6]);
+                _currentPlayer.CurrentDexterity = parseInt(matches[7]);
+                _currentPlayer.MaxDexterity = parseInt(matches[8]);
+
+                if (_isListeningForInfo) {
+                    jmc.DropEvent();
+                }
+
                 return;
             }
 
         } else if (incomingLine.startsWith("             Constitution:")) {
             matches = incomingLine.match(/^             Constitution: (-?\d+)\/(\d+), Learning Ability: (-?\d+)\/(\d+).$/);
             if (matches !== null) {
-                _currentPlayer.CurrentConstitution = matches[1];
-                _currentPlayer.MaxConstitution = matches[2];
-                _currentPlayer.CurrentLearningAbility = matches[3];
-                _currentPlayer.MaxLearningAbility = matches[4];
+                _currentPlayer.CurrentConstitution = parseInt(matches[1]);
+                _currentPlayer.MaxConstitution = parseInt(matches[2]);
+                _currentPlayer.CurrentLearningAbility = parseInt(matches[3]);
+                _currentPlayer.MaxLearningAbility = parseInt(matches[4]);
+
+                if (_isListeningForInfo) {
+                    jmc.DropEvent();
+                }
+
+                return;
+
             }
         }
+
+        if (_isListeningForInfo && _isInfoFound) {
+            jmc.DropEvent();
+        }
+
     } catch (caught) {
-        WriteExceptionToStream(caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure parsing information line: " + caught, "red", true, true);
+        var message = "Failure parsing for information: " + caught + "\nLine: " + jmc.Event;
+        //WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -1579,15 +1894,6 @@ function CalculateColor(currentValue, maximumValue) {
     }
 }
 
-function CleanGroupMemberName(memberName) {
-    var emptyString = "";
-    if (memberName === null) return emptyString;
-    memberName = memberName.replace(" (Head of group)", emptyString);
-    if (memberName === "someone") return emptyString;
-    if (memberName.indexOf(" ") !== -1) return emptyString;
-    return memberName;
-}
-
 //*********************************************************************************************************************
 //Helper Functions
 //*********************************************************************************************************************
@@ -1615,19 +1921,19 @@ function WriteToWindow(windowNumber, message, color, newLine, includeTimestamp) 
     }
 }
 
-function WriteExceptionToStream(caught) {
-    var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
-    var errorLogFileName = "C:\\jmc\\3.7.1.1\\Logs\\Debug Logs\\Error - " + date.toFriendlyDateString() + ".txt";
-    var errorStream = fileSystem.OpenTextFile(errorLogFileName, 8, true);
-    errorStream.WriteLine(GetTimestamp() + ": " + caught);
-}
+// function WriteExceptionToStream(caught) {
+//     var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+//     var errorLogFileName = "C:\\jmc\\3.7.1.1\\Logs\\Debug Logs\\Error - " + date.toFriendlyDateString() + ".txt";
+//     var errorStream = fileSystem.OpenTextFile(errorLogFileName, 8, true);
+//     errorStream.WriteLine(GetTimestamp() + ": " + caught);
+// }
 
-function WriteSocialToStream(social) {
-    // var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
-    // var socialLogsFileName = "C:\\jmc\\3.7.1.1\\Logs\\Social Logs\\Social - " + date.toFriendlyDateString() + ".txt";
-    // var socialStream = fileSystem.OpenTextFile(socialLogsFileName, 8, true);
-    // socialStream.WriteLine(GetTimestamp() + ": " + social);
-}
+// function WriteSocialToStream(social) {
+//     var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+//     var socialLogsFileName = "C:\\jmc\\3.7.1.1\\Logs\\Social Logs\\Social - " + date.toFriendlyDateString() + ".txt";
+//     var socialStream = fileSystem.OpenTextFile(socialLogsFileName, 8, true);
+//     socialStream.WriteLine(GetTimestamp() + ": " + social);
+// }
 
 function GetTimestamp() {
     return new Date().toTimeString().substring(0, 8);
@@ -1635,4 +1941,17 @@ function GetTimestamp() {
 
 //*********************************************************************************************************************
 //Writing to Windows and Status Bars
+//*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
+//Initialize Settings
+//*********************************************************************************************************************
+AutoAfk(true);
+AutoCharacterStatus(true);
+AutoFlee(true);
+AutoOpen(true);
+//*********************************************************************************************************************
+//End Initialize Settings
 //*********************************************************************************************************************

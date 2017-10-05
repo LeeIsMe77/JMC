@@ -8,6 +8,19 @@ ExitTypes = {
     Mumak: "Mumak"
 }
 
+RaceTypes = {
+    Boerning: "Boerning",
+    Dwarf: "Dwarf",
+    Haradrim: "Haradrim",
+    Hobbit: "Hobbit",
+    Human: "Human",
+    OrcHai: "Orc-Hai",
+    Troll: "Troll",
+    UrukHai: "Uruk-Hai",
+    UrukLhuth: "Uruk-Lhuth",
+    WoodElf: "Wood Elf"
+}
+
 ZoneTypes = {
     None: "None",
     Faroth: "Faroth",
@@ -223,6 +236,18 @@ function Player(name, alignment, gender, race) {
     this.DodgeBonus = 0;
     this.ParryBonus = 0;
     this.AttackSpeed = 0;
+
+    this.SuccessfulPreparations = 0;
+    this.FailedPreparations = 0;
+
+    this.SuccessfulPreparationRatio = function() {
+        //These are intended to be integers, but parse as floats to obtain a nice decimal ratio.
+        var failedPreps = parseFloat(this.FailedPreparations);
+        var successfulPreps = parseFloat(this.SuccessfulPreparations);
+        var totalPrepations = failedPreps + successfulPreps;
+        if (totalPrepations === 0) return "N/A";
+        return ((successfulPreps / totalPrepations) * 100).toFixed(3);
+    }
 
     this.DefenseSum = function() {
         return parseInt(this.ParryBonus) + parseInt(this.DodgeBonus);
@@ -2133,6 +2158,8 @@ function CreateFarothExits() {
     room = new Room("Eryn Lasgalien");
     exit = new Exit(ExitTypes.Entrance, "ensewnssen");
     room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "s");
+    room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Eryn Vorn");
@@ -2595,6 +2622,8 @@ function CreateFarothExits() {
 
     room = new Room("Sleepy Forest");
     exit = new Exit(ExitTypes.Entrance, "wewwen");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "e");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 

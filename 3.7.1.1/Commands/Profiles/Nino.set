@@ -1,0 +1,16 @@
+#hot {Ctrl+Q} {cast confuse} {default}
+#hot {Ctrl+I} {cast poison $target} {default}
+#hot {Ctrl+O} {cast insight $target} {default}
+#hot {Ctrl+P} {cast hallucinate $target} {default}
+#hot {Ctrl+F} {cast curse $target} {default}
+#hot {Ctrl+J} {cast curse $target} {default}
+#hot {Ctrl+L} {cast fear $target} {default}
+#hot {Ctrl+H} {cast dispel $target} {default}
+
+#var {watersource}{waterskin}
+#var {foodsource}{waybread}
+
+#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea padded;wea circlet}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem boots;rem circlet;wea all.mail} {default}
+#alias {pracresetGuardian}{tell angel pracreset;spec guardian;#6 {prac revive;prac fear;prac curse;prac insight;prac prag;prac regen;prac curing;prac vit;prac slow;prac rest;prac remove;prac poison;prac guardian;prac div;prac sanc;prac hal};#2 prac pick;prac swim;#12 prac ride}
+#alias {pracresetConfuse}{tell angel pracreset;spec illusion;#6 {prac revive;prac fear;prac curse;prac insight;prac prag;prac regen;prac curing;prac vit;prac slow;prac rest;prac remove;prac poison;prac confuse;prac div;prac sanc;prac hal};#2 prac pick;prac swim;#12 prac ride}

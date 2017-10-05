@@ -1,7 +1,8 @@
 #var leader {self}
 #alias {set_leader} { #var leader {%%0};#action {$leader mounts} {ride};#action {$leader stops riding} {dism} }
 #alias {unset_leader} { #unaction {$leader mounts};#unaction {$leader stops riding};#var leader {self} }
-#action {^You now follow %1.} {set_leader %1}
-#action {^You stop following %1.} {unset_leader %1}
-#action {^$leader says 'rest'} {rest} {5} {default}
-#action {^$leader says 'stand'} {stand} {5} {default}
+#COMMENT Removed anchor to accomodate for errors in spam (until relocated to JScript)
+#action {You now follow %1.} {set_leader %1}
+#action {You stop following %1.} {unset_leader %1}
+#action {$leader says 'rest'} {rest} {5} {default}
+#action {$leader says 'stand'} {stand} {5} {default}

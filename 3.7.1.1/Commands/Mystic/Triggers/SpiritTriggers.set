@@ -4,7 +4,7 @@
 #echo on
 #alias {lookRoom} {#tickoff;targetMe;look;#wait 10;kill $target} {default}
 #alias {reviveMe} {#action {You try to revive $me.}{cast 'revive' $me};#action {Your spell does no good to %1.}{#tickon;#unaction {You try to revive $me.};#unaction {Your spell does no good to %1.}};cast 'revive' $me} {default}
-#alias {buffMe} {cast 'infravision';cast slow $me;cast insight $me} {default}
+#alias {buffMe} {cast 'infravision';cast slow $me;cast insight $me;cast insight wolf} {default}
 #alias {targetMe} {#var {target}{$me}} {default}
 #alias {whoAmI} {#action {You are %1 %2, a %3 (%4) %5 %6.}{#var {me}{%%1};#unaction {You are %1 %2, a %3 (%4) %5 %6.}};info;} {default}
 #action {   Ghostly chills and wails can be heard constantly here, filling the tunnels} {w} {5} {default}
@@ -28,8 +28,8 @@
 #action {   This part of the mines comes to a dead end.  Large piles of earth lie} {open brokenhatch;d} {5} {default}
 #action {   This place is filled with the sounds of screaming and crying.  Large heaps} {s} {5} {default}
 #action {You are thirsty.} {drink waterskin} {5} {default}
-#action {It's empty.}{get waterskin all} {5} {default}
-#action {You are hungry.} {get waybread all;eat waybread} {5} {default}
+#action {It's empty.}{get $watersource all} {5} {default}
+#action {You are hungry.} {get $foodsource all;eat $foodsource} {5} {default}
 #action {You feel the time passing by.} {lookRoom} {5} {default}
 #action {You contemplate yourself for a little while.} {#tickon;examine} {5} {default}
 #action {Whom do you want to press?} {#tickon} {5} {default}
@@ -44,8 +44,8 @@
 #action {Your mind is not ready yet.} {#WAIT 30;!} {5} {default}
 #action {You hit yourself...OUCH!.} {set mental on;lookRoom} {5} {default}
 #action {You lost your concentration!} {!} {5} {default}
-#variable {me} {Nina}
-#variable {target} {Nina}
+#variable {me} {$me}
+#variable {target} {$me}
 #gag {You feel the time passing by.}
 #substitute {#10 seconds till TICK} { }
 #substitute {#TICK} {You feel the time passing by.}

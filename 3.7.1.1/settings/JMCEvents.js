@@ -27,7 +27,7 @@ function OnInput() {
         jmc.SetTimer(TIMER_AFK, 600);
     }
     if (_statusTimerEnabled) {
-        jmc.SetTimer(TIMER_STATUS, 100);
+        jmc.SetTimer(TIMER_STATUS, 200);
     }
 }
 
