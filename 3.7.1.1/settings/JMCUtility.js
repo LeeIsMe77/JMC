@@ -86,11 +86,19 @@ if (!String.prototype.splice) {
 //*********************************************************************************************************************
 
 
-
 //*********************************************************************************************************************
 //Logging
 //*********************************************************************************************************************
 var date = new Date();
+var errorStream = new ActiveXObject("Scripting.FileSystemObject");
+var errorLogFileName = "C:\\jmc\\3.7.1.1\\Logs\\Debug Logs\\Error - " + date.toFriendlyDateString() + ".txt";
+var errorStream = errorStream.OpenTextFile(errorLogFileName, 8, true);
+
+var _connectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=jmcMudClient;Data Source=RotS;Initial Catalog=RotS";
+var connection = new ActiveXObject("ADODB.Connection");
+connection.ConnectionString = _connectionString;
+connection.Open();
+
 //*********************************************************************************************************************
 //End Logging
 //*********************************************************************************************************************
@@ -151,7 +159,6 @@ var _howManyContainer = "";
 
 //Cache
 var _groupMembers = new GroupMemberCollection();
-var _groupMembersTemp = new GroupMemberCollection();
 var _skills = new SkillCollection(0);
 var _maps = new MapCollection();
 var _newMap = null;
@@ -166,8 +173,6 @@ var _currentZone = ZoneTypes.None;
 //*********************************************************************************************************************
 //End Fields
 //*********************************************************************************************************************
-
-
 
 //*********************************************************************************************************************
 //Toggles
@@ -189,8 +194,28 @@ function AutoAfk(isEnabled) {
 function AutoArkenMoveTimer(isEnabled) {
     if (isEnabled) {
         jmc.SetTimer(TIMER_ARKEN_MOVE, 50);
+        jmc.ShowMe("Auto Arken Move Timer is enabled.", "green");
     } else {
         jmc.KillTimer(TIMER_ARKEN_MOVE);
+        //jmc.ShowMe("Auto Arken Move Timer is disabled.", "red");
+    }
+}
+
+function AutoArkenWaitTimer(isEnabled) {
+    if (isEnabled) {
+        jmc.SetTimer(TIMER_ARKEN_WAIT, 2500);
+        jmc.ShowMe("Auto Arken Wait Timer is enabled.", "green");
+    } else {
+        jmc.KillTimer(TIMER_ARKEN_WAIT);
+    }
+}
+
+function AutoBash(isEnabled) {
+    _isListeningForBash = isEnabled;
+    if (isEnabled) {
+        jmc.ShowMe("Auto Bash is enabled.", "green");
+    } else {
+        jmc.ShowMe("Auto Bash is disabled.", "red");
     }
 }
 
@@ -201,15 +226,6 @@ function AutoCharacterStatus(isEnabled) {
     } else {
         jmc.KillTimer(TIMER_CHARACTER_STATISTICS);
         jmc.ShowMe("Auto Character Statistics is disabled.", "red");
-    }
-}
-
-function AutoBash(isEnabled) {
-    _isListeningForBash = isEnabled;
-    if (isEnabled) {
-        jmc.ShowMe("Auto Bash is enabled.", "green");
-    } else {
-        jmc.ShowMe("Auto Bash is disabled.", "red");
     }
 }
 
@@ -228,15 +244,6 @@ function AutoCurse(isEnabled) {
         jmc.ShowMe("Auto Curse is enabled.", "green");
     } else {
         jmc.ShowMe("Auto Curse is disabled.", "red");
-    }
-}
-
-function AutoOpen(isEnabled) {
-    _isListeningForDoors = isEnabled;
-    if (isEnabled) {
-        jmc.ShowMe("Auto Open Doors is enabled.", "green");
-    } else {
-        jmc.ShowMe("Auto Open Doors is disabled.", "red");
     }
 }
 
@@ -280,11 +287,12 @@ function AutoGroupStatistics(isEnabled) {
     }
 }
 
-function AutoArkenWaitTimer(isEnabled) {
+function AutoOpen(isEnabled) {
+    _isListeningForDoors = isEnabled;
     if (isEnabled) {
-        jmc.SetTimer(TIMER_ARKEN_WAIT, 1500);
+        jmc.ShowMe("Auto Open Doors is enabled.", "green");
     } else {
-        jmc.KillTimer(TIMER_ARKEN_WAIT);
+        jmc.ShowMe("Auto Open Doors is disabled.", "red");
     }
 }
 
@@ -332,7 +340,7 @@ function ListExits() {
                 break;
         }
 
-        if (room === null) throw "Unable to load room \"" + _currentRoomName + "\"";
+        if (room === null) throw new ParameterException("Unable to load room \"" + _currentRoomName + "\"");
         WriteToWindow(_exitOutputWindow, _currentRoomName, "blue", false, true);
         for (var index = 0; index < room.Exits.length; index++) {
             var exit = room.Exits[index];
@@ -340,14 +348,15 @@ function ListExits() {
         }
         WriteEmptyLineToWindow(_exitOutputWindow);
     } catch (caught) {
-        //WriteExceptionToStream("Failure listing exits: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure listing exits: ", "red", false, true);
-        WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
+        var message = "Failure Listing Exits: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
     }
 }
 
 function NavigateToExit(exitType) {
     try {
+
         if (_currentRoomName === "") return;
 
         var room = null;
@@ -360,20 +369,66 @@ function NavigateToExit(exitType) {
                 break;
         }
 
-        if (room === null) throw "Unable to load room " + _currentRoomName;
+        if (room === null) throw new ParameterException("Unable to load room " + _currentRoomName);
 
         var exit = room.GetExit(exitType);
-        if (exit === null) throw "The exit \"" + exitType + "\" doesn't exist for room \"" + _currentRoomName + "\".";
+        if (exit === null) throw new ParameterException("The exit \"" + exitType + "\" doesn't exist for room \"" + _currentRoomName + "\".");
 
-        if (exit.ExitDirections === "") throw "No exits exist.  Are you at the " + exitType + "?";
+        if (exit.ExitDirections === "") throw new ParameterException("No exits exist.  Are you at the " + exitType + "?");
 
         WriteToWindow(_exitOutputWindow, "Navigating to \"" + exitType + "\"...", "green", true, true);
         jmc.Parse(exit.ExitDirections);
 
     } catch (caught) {
-        //WriteExceptionToStream("Failure navigating to " + exitType + ": " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure navigating to " + exitType, "red", false, true);
-        WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
+        var message = "Failure Navigating: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+    }
+}
+
+function RetrieveExit(roomName, zoneType) {
+
+    var command = new ActiveXObject("ADODB.Command");
+    var recordSet = new ActiveXObject("ADODB.Recordset");
+
+    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + GetTimestamp() + ": Opening Connection.");
+    try {
+        jmc.ShowMe(AnsiColors.ForegroundBrightBlue + GetTimestamp() + ": Connection opened...");
+
+        command.ActiveConnection = connection;
+        command.CommandType = 4;
+        command.CommandText = "dbo.[GetRoom]";
+
+        jmc.ShowMe("Creating parameters...");
+        command.Parameters.Append(command.CreateParameter("@RoomName", 200, 1, 100, roomName));
+        command.Parameters.Append(command.CreateParameter("@ZoneType", 200, 1, 20, zoneType));
+
+        jmc.ShowMe("Executing");
+        recordSet = command.Execute();
+
+        jmc.ShowMe(AnsiColors.ForegroundBrightBlue + GetTimestamp() + ": Data set retrieved... Showing...");
+
+        var message = "Room Name: " + recordSet.Fields("RoomName");
+        message = message + ", Front Entrance: " + recordSet.Fields("Exit1");
+        message = message + ", Back Entrance: " + recordSet.Fields("Exit2");
+        message = message + ", Swamp: " + recordSet.Fields("Exit3");
+
+        jmc.ShowMe(AnsiColors.ForegroundRed + GetTimestamp() + ": " + message);
+
+    } catch (caught) {
+        var message = "Failure Retrieving Exit: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+    } finally {
+        // clean up  
+        if (recordSet.State === 1) {
+            recordSet.Close();
+        }
+        // if (connection.State === 1) {
+        //     connection.Close();
+        // }
+        // connection = null;
+        recordSet = null;
     }
 }
 
@@ -399,9 +454,9 @@ function SayExit(exitName) {
         }
         jmc.Send("gt " + message);
     } catch (caught) {
-        //WriteExceptionToStream("Failure listing exits: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure listing exits:", "red", false, true);
-        WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
+        var message = "Failure Listing Exits: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -419,7 +474,7 @@ function SayExits() {
                 break;
         }
 
-        if (room === null) throw "Unable to load room \"" + _currentRoomName + "\"";
+        if (room === null) throw new ParameterException("Unable to load room \"" + _currentRoomName + "\"");
         //jmc.Parse("#wclear {" + farothOutputWindow + "}");       
         jmc.Send("gt " + _currentRoomName);
         for (var index = 0; index < room.Exits.length; index++) {
@@ -427,9 +482,9 @@ function SayExits() {
             jmc.Send("gt " + exit.ExitType + ": " + exit.ExitDirections);
         }
     } catch (caught) {
-        //WriteExceptionToStream("Failure saying exits: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure saying exits:", "red", false, true);
-        WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
+        var message = "Failure Saying Exits: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -447,7 +502,7 @@ function ShowExit(exitName) {
                 break;
         }
 
-        if (room === null) throw "Unable to load room \"" + exitName + "\"";
+        if (room === null) throw new ParameterException("Unable to load room \"" + exitName + "\"");
 
         WriteToWindow(_exitOutputWindow, exitName, "blue", false, true);
         for (var index = 0; index < room.Exits.length; index++) {
@@ -456,9 +511,9 @@ function ShowExit(exitName) {
         }
         WriteEmptyLineToWindow(_exitOutputWindow);
     } catch (caught) {
-        //WriteExceptionToStream("Failure showing exit: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure showing exit:", "red", false, true);
-        WriteToWindow(_exceptionOutputWindow, caught, "red", true, true);
+        var message = "Failure Showing Exit: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -560,11 +615,12 @@ function DisplayCharacterStatus() {
 
 
     } catch (caught) {
-        //WriteExceptionToStream("Failure showing character status: " + caught);
-        WriteToWindow(_mapOutputWindow, "Failure showing character status: " + caught, "red", true, true);
+        var message = "Failure Displaying Status: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_mapOutputWindow, message, "red", true, true);
     }
 }
-//*********************************************************************************************************************
+//********************************************************************************************************************
 //End Character Status Commands
 //*********************************************************************************************************************
 
@@ -591,54 +647,13 @@ function HealGroup(healingSpells, leaderOnly) {
 
 function ResetGroup() {
     _isListeningForGroup = true;
-    _groupMembersTemp.Clear();
+    _groupMembers.Clear();
     jmc.Send("group");
 }
 
 function ListGroupMembers() {
     jmc.Send("gt Group Members: " + _groupMembers.ListMembers());
 }
-
-function ShowHits() {
-    try {
-        if (_groupMembers !== null) {
-            _groupMembers.ListMutilates();
-        }
-    } catch (caught) {
-        //WriteExceptionToStream("Failure showing hits: " + caught);
-        WriteToWindow(_mapOutputWindow, "Failure showing hits: " + caught, "red", true, true);
-    }
-}
-
-function DamageReport() {
-    ClearWindow(_damageReportOutputWindow);
-    if (_groupMembers === null || _groupMembers.Count() === 0) return;
-    try {
-        WriteToWindow(_damageReportOutputWindow, "Damage Report:", "green", true, false);
-        for (var index = 0; index < _groupMembers.Count(); index++) {
-            var groupMember = _groupMembers.GroupMembers[index];
-            var message = String.format(
-                "{0}: Hits: {1}, Total Damage: {2}, Average Damage: {3}, Mutilates: {4}",
-                groupMember.MemberName,
-                groupMember.HitCount,
-                groupMember.Damage,
-                groupMember.AverageDamage(),
-                groupMember.MutilateCount
-            );
-            WriteToWindow(_damageReportOutputWindow, message, "normal", false, false);
-        }
-        WriteEmptyLineToWindow(_damageReportOutputWindow);
-    } catch (caught) {
-        //WriteExceptionToStream("Failure showing hits: " + caught);
-        WriteToWindow(_mapOutputWindow, "Failure showing damage report: " + caught, "red", true, true);
-    }
-}
-
-//*********************************************************************************************************************
-//End Group Commands
-//*********************************************************************************************************************
-
-
 
 //*********************************************************************************************************************
 //Mapping Commands
@@ -649,8 +664,9 @@ function AddMap(mapName, variableName) {
         _newMap = _maps.Add(mapName.toTitleCase(), variableName);
         jmc.Send("exa " + _newMap.VariableName);
     } catch (caught) {
-        //WriteExceptionToStream("Failure adding map: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure adding map: " + caught, "red", true, true);
+        var message = "Failure Adding Map: " + caught.Message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -659,8 +675,9 @@ function ClearMaps() {
         ClearWindow(_mapOutputWindow);
         _maps.Clear();
     } catch (caught) {
-        //WriteExceptionToStream("Failure clearing maps: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure clearing maps: " + caught, "red", true, true);
+        var message = "Failure Clearing Maps: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -672,8 +689,9 @@ function DeleteMapByName(mapName) {
         }
         ShowMaps();
     } catch (caught) {
-        //WriteExceptionToStream("Failure deleting map by name: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure deleting map by name: " + caught, "red", true, true);
+        var message = "Failure Deleting Map By Name: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -685,8 +703,9 @@ function DeleteMapByIndex(mapIndex) {
         }
         ShowMaps();
     } catch (caught) {
-        //WriteExceptionToStream("Failure deleting map by index: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure deleting map by index: " + caught, "red", true, true);
+        var message = "Failure Deleting Map By Index: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -706,8 +725,9 @@ function ShowMapByName(mapName) {
             ShowMap(map);
         }
     } catch (caught) {
-        //WriteExceptionToStream("Failure showing map by name: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure showing map: " + caught, "red", true, true);
+        var message = "Failure Showing Map By Name: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -719,8 +739,9 @@ function ShowMapByIndex(mapIndex) {
             ShowMap(map);
         }
     } catch (caught) {
-        //WriteExceptionToStream("Failure showing map by index: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure showing map by index: " + caught, "red", true, true);
+        var message = "Failure Deleting Map By Index: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -733,8 +754,9 @@ function ShowMaps() {
         }
         WriteEmptyLineToWindow(_mapOutputWindow);
     } catch (caught) {
-        //WriteExceptionToStream("Failure showing maps: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure showing maps: " + caught, "red", true, true);
+        var message = "Failure Showing Maps: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -789,8 +811,9 @@ function DisplaySkills() {
         }
         WriteEmptyLineToWindow(_skillOutputWindow);
     } catch (caught) {
-        //WriteExceptionToStream("Failure displaying skills: " + caught);
-        WriteToWindow(_exceptionOutputWindow, "Failure displaying skills: " + caught, "red", true, true);
+        var message = "Failure Displaying Skills: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
@@ -813,18 +836,18 @@ function RegisterSkills() {
 function HowMany(searchPattern, container) {
     try {
         if (searchPattern === "") {
-            throw "The search pattern cannot be blank.";
+            throw new ParameterException("The search pattern cannot be blank.");
         }
         if (container === "") {
-            throw "The container cannot be blank.";
+            throw new ParameterException("The container cannot be blank.");
         }
         _howManySearchPattern = searchPattern;
         _howManyContainer = container;
         _isListeningForHowMany = true;
         jmc.Send("examine " + container);
     } catch (caught) {
-        var message = "Failure Counting How Many: " + caught + " - " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure Counting HowMany: " + caught.message;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -850,7 +873,6 @@ function ParseLine(incomingLine) {
 
     //Group Management....
     ParseForGroupMember(cleanLine);
-    ParseForGroupMemberDamage(cleanLine);
 
     //Mapping...
     ParseForMap(cleanLine);
@@ -878,22 +900,22 @@ function ParseLine(incomingLine) {
     ParseForHowMany(cleanLine);
 }
 
-function ParseForPreparation(incomingLine) {
-    if (_currentPlayer === null) return;
-    try {
-        if (incomingLine === "") return;
-        if (incomingLine === "You completed your preparations.") {
-            _currentPlayer.SuccessfulPreparations++;
-        }
-        if (incomingLine === "You fumbled with your preparations.") {
-            _currentPlayer.FailedPreparations++;
-        }
-    } catch (caught) {
-        var message = "Failure parsing for preparation: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
-        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
-    }
-}
+// function ParseForPreparation(incomingLine) {
+//     if (_currentPlayer === null) return;
+//     try {
+//         if (incomingLine === "") return;
+//         if (incomingLine === "You completed your preparations.") {
+//             _currentPlayer.SuccessfulPreparations++;
+//         }
+//         if (incomingLine === "You fumbled with your preparations.") {
+//             _currentPlayer.FailedPreparations++;
+//         }
+//     } catch (caught) {
+//         var message = "Failure parsing for preparation: " + caught.message + "\nLine: " + jmc.Event;
+//         WriteExceptionToStream(message);
+//         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+//     }
+// }
 
 function ParseForLevel(incomingLine) {
     if (_currentPlayer === null) return;
@@ -990,7 +1012,7 @@ function ParseForLevel(incomingLine) {
             //and deduct the XP gained from the XP needed...
             _currentPlayer.XPNeeded -= parsedExperience;
             //Send a loot coin command to the mud...
-            jmc.Send("get coin all.cor");
+            jmc.Send("get coin all.corpse");
             //...and return out of the function.
             return;
         }
@@ -1007,8 +1029,8 @@ function ParseForLevel(incomingLine) {
             return;
         }
     } catch (caught) {
-        var message = "Failure parsing for level: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for level: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1021,8 +1043,8 @@ function ParseForBash(incomingLine) {
             return;
         }
     } catch (caught) {
-        var message = "Failure parsing for bash: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for bash: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1043,8 +1065,8 @@ function ParseForChillRay(incomingLine) {
         }
 
     } catch (caught) {
-        var message = "Failure parsing for chill-ray: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for chill-ray: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1071,8 +1093,8 @@ function ParseForCurse(incomingLine) {
         }
 
     } catch (caught) {
-        var message = "Failure parsing for curse: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for curse: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1081,13 +1103,13 @@ function ParseForDoor(incomingLine) {
     if (!_isListeningForDoors) return;
     if (incomingLine === "") return;
     try {
-        var matches = incomingLine.match(/^The ([a-z]+) seems to be closed\.$/);
+        var matches = incomingLine.match(/^The ([A-Za-z]+) seems to be closed\.$/);
         if (matches !== null) {
             jmc.Send("open " + matches[1]);
         }
     } catch (caught) {
-        var message = "Failure parsing for door: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for door: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1099,139 +1121,147 @@ function ParseForFlee(incomingLine) {
             jmc.Send("flee");
         }
     } catch (caught) {
-        var message = "Failure parsing for flee: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for flee: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
 function ParseForGroupMember(incomingLine) {
+    //If we're not listening for a group, abort this function...
     if (!_isListeningForGroup) return;
+
     try {
+        //...otherwise, if the group isn't found yet...
         if (!_isGroupFound) {
+            //..check to see if the line is the indicator for the beginning of thr group.
             if (incomingLine === "Your group consists of:") {
-                _isGroupFound = true;
+                //...and if so, mark the group as found, abort the event, and return from the function.
                 jmc.DropEvent();
-            } else if (incomingLine === "But you are not the member of a group!") {
-                var memberName = jmc.GetVar("me");
-                if (_groupMembersTemp.IndexOf(memberName) === -1) {
-                    _groupMembersTemp.Add(memberName, true);
-                }
                 _isGroupFound = true;
-                jmc.DropEvent();
+                return;
             }
-        } else {
+
+            //...if we discover we are not the member of a group...
+            if (incomingLine === "But you are not the member of a group!") {
+                //...and set myself as the only member of the group!
+                var myName = jmc.GetVar("me");
+                if (_groupMembers.IndexOf(myName) === -1) {
+                    _groupMembers.Add(myName, true);
+                }
+                //..and stop looking for groups and return out of the function.
+                jmc.DropEvent();
+                _isListeningForGroup = false;
+                return;
+            }
+            //...and if the line is empty...
             if (incomingLine === "") {
-                //All group members have been located.  Time to merge the collections...
-                _isListeningForGroup = _isGroupFound = false;
-                //Loop through each member currently grouped...
-                for (var index = 0; index < _groupMembers.Count(); index++) {
-                    var existingMemberName = _groupMembers.GroupMembers[index].MemberName;
-                    //If the member in temp does not exist....
-                    var memberInTemp = _groupMembersTemp.GetMember(existingMemberName);
-                    if (memberInTemp === null) {
-                        //Remove the member from the live collection.
-                        _groupMembers.Remove(existingMemberName);
-                    }
-                }
-                //Loop through all members in the new group member collection...
-                for (var index = 0; index < _groupMembersTemp.Count(); index++) {
-                    var potentialNewMember = _groupMembersTemp.GroupMembers[index];
-                    //...and if the group member does not exist in the running collection...
-                    if (_groupMembers.IndexOf(potentialNewMember.MemberName) === -1) {
-                        //...push him through.
-                        _groupMembers.GroupMembers.push(potentialNewMember);
-                    }
-                }
-            } else {
-                var matches = incomingLine.match(/^HP: *\w+, *S: *\w+, *MV: *\w+ *-- ([\w -]+)( \(Head of group\))?$/);
-                if (matches !== null) {
-                    var memberName = matches[1].capitalizeFirstLetter();
-                    if (memberName !== "Someone") {
-                        if (_groupMembersTemp.IndexOf(memberName) === -1) {
-                            _groupMembersTemp.Add(memberName, matches[2] !== "");
-                        }
+                //...drop the event and return from the function.
+                jmc.DropEvent();
+                return;
+            }
+            //If the group is found....
+        } else {
+            //...and the incoming line is an empty string...
+            if (incomingLine === "") {
+                //...stop looking for groups and return from the function.
+                _isListeningForGroup = false;
+                _isGroupFound = false;
+                jmc.DropEvent();
+                return;
+            }
+            //...otherwise, parse the line with regular expressions to discover if this line contains a group member...
+            var matches = incomingLine.match(/^HP: *\w+, *S: *\w+, *MV: *\w+ *-- ([\w -]+)( \(Head of group\))?$/);
+            //...and if there are matches....
+            if (matches !== null) {
+                //...retrieve the friendly name of the player (capitalized first letter)
+                var memberName = matches[1].capitalizeFirstLetter();
+                //...and if the person is known to be in the room and not hidden...
+                if (memberName !== "Someone") {
+                    //...add them to the group as well.
+                    if (_groupMembers.IndexOf(memberName) === -1) {
+                        _groupMembers.Add(memberName, matches[2] !== "");
                     }
                 }
                 jmc.DropEvent();
             }
         }
     } catch (caught) {
-        var message = "Failure parsing for group-member: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for group-member: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
-function ParseForGroupMemberDamage(incomingLine) {
-    //If our group member collection hasn't been initialized.... don't bother checking the incoming line.
-    if (_groupMembers.Count() === 0) return;
-    try {
-        //First check for the really hard or really weak hits...
-        var matches = incomingLine.match(/^([a-zA-Z ']+) (miss|scratch|barely|lightly|deeply|severely|MUTILATE).*(?:\.|!|!!)$/);
-        if (matches === null) {
-            //If that fails... search for the average hits...
-            //NOTE: This regex is not 100% accurate.  Must add specific mob types (spider, for example) to the regex where the mob has no body parts.
-            matches = incomingLine.match(/^([a-zA-Z ']+) (?:stab|hit|slash|pound|smite|crush|whip|flail|pierce|stab|cleave).*(?:head|body|foot|leg|arm|hand|wing|spider|rat) *(hard|very hard|extremely hard)?\.$/);
-        }
-        //If we still don't have any matches... return out of the function.
-        if (matches === null) return;
+// function ParseForGroupMemberDamage(incomingLine) {
+//     //If our group member collection hasn't been initialized.... don't bother checking the incoming line.
+//     if (_groupMembers.Count() === 0) return;
+//     try {
+//         //First check for the really hard or really weak hits...
+//         var matches = incomingLine.match(/^([a-zA-Z ']+) (miss|scratch|barely|lightly|deeply|severely|MUTILATE).*(?:\.|!|!!)$/);
+//         if (matches === null) {
+//             //If that fails... search for the average hits...
+//             //NOTE: This regex is not 100% accurate.  Must add specific mob types (spider, for example) to the regex where the mob has no body parts.
+//             matches = incomingLine.match(/^([a-zA-Z ']+) (?:stab|hit|slash|pound|smite|crush|whip|flail|pierce|stab|cleave).*(?:head|body|foot|leg|arm|hand|wing|spider|rat) *(hard|very hard|extremely hard)?\.$/);
+//         }
+//         //If we still don't have any matches... return out of the function.
+//         if (matches === null) return;
 
-        var damageDoer = matches[1];
-        if (damageDoer === "You") {
-            damageDoer = jmc.GetVar("me");
-        }
-        if (damageDoer === "") return;
+//         var damageDoer = matches[1];
+//         if (damageDoer === "You") {
+//             damageDoer = jmc.GetVar("me");
+//         }
+//         if (damageDoer === "") return;
 
-        var groupMember = _groupMembers.GetMember(damageDoer);
-        if (groupMember === null) return;
+//         var groupMember = _groupMembers.GetMember(damageDoer);
+//         if (groupMember === null) return;
 
-        var damage = 0;
-        switch (matches[2].toLowerCase()) {
-            case "miss":
-                damage = 0.0;
-                break;
-            case "scratch":
-                damage = 1.0;
-                break;
-            case "barely":
-                damage = 2.5;
-                break;
-            case "lightly":
-                damage = 5.0;
-                break;
-            case "":
-                damage = 9.0;
-                break;
-            case "hard":
-                damage = 14.5;
-                break;
-            case "very hard":
-                damage = 21;
-                break;
-            case "extremely hard":
-                damage = 29;
-                break;
-            case "deeply":
-                damage = 47;
-                break;
-            case "severely":
-                damage = 75;
-                break;
-            case "mutilate":
-                damage = 105;
-                groupMember.MutilateCount++;
-                break;
-        }
-        groupMember.HitCount++;
-        groupMember.Damage += damage;
+//         var damage = 0;
+//         switch (matches[2].toLowerCase()) {
+//             case "miss":
+//                 damage = 0.0;
+//                 break;
+//             case "scratch":
+//                 damage = 1.0;
+//                 break;
+//             case "barely":
+//                 damage = 2.5;
+//                 break;
+//             case "lightly":
+//                 damage = 5.0;
+//                 break;
+//             case "":
+//                 damage = 9.0;
+//                 break;
+//             case "hard":
+//                 damage = 14.5;
+//                 break;
+//             case "very hard":
+//                 damage = 21;
+//                 break;
+//             case "extremely hard":
+//                 damage = 29;
+//                 break;
+//             case "deeply":
+//                 damage = 47;
+//                 break;
+//             case "severely":
+//                 damage = 75;
+//                 break;
+//             case "mutilate":
+//                 damage = 105;
+//                 groupMember.MutilateCount++;
+//                 break;
+//         }
+//         groupMember.HitCount++;
+//         groupMember.Damage += damage;
 
-    } catch (caught) {
-        var message = "Failure parsing for group-member damage: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
-        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
-    }
-}
+//     } catch (caught) {
+//         var message = "Failure parsing for group-member damage: " + caught.message + "\nLine: " + jmc.Event;
+//         //WriteExceptionToStream(message);
+//         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+//     }
+// }
 
 function ParseForHowMany(incomingLine) {
     //^[a-z]+ \((?:here|carried)\) : $
@@ -1275,8 +1305,8 @@ function ParseForHowMany(incomingLine) {
             jmc.Event = lineToChange;
         }
     } catch (caught) {
-        var message = "Failure parsing for how-many: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for how-many: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1321,8 +1351,8 @@ function ParseForMap(incomingLine) {
             return;
         }
     } catch (caught) {
-        var message = "Failure parsing for map: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for map: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1345,8 +1375,8 @@ function ParseForRescue(incomingLine) {
             WriteToWindow(_rescueOutputWindow, matches[0], "green", true, true);
         }
     } catch (caught) {
-        var message = "Failure parsing for rescue: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for rescue: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1372,8 +1402,8 @@ function ParseForRoomName(incomingLine) {
             jmc.Event = jmc.Event + " | " + room.GetExitString();
         }
     } catch (caught) {
-        var message = "Failure parsing for room name: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for room name: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1441,8 +1471,8 @@ function ParseForScore(incomingLine) {
 
         }
     } catch (caught) {
-        var message = "Failure parsing for score: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for score: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1511,15 +1541,15 @@ function ParseForSkill(incomingLine) {
             jmc.DropEvent();
         }
     } catch (caught) {
-        var message = "Failure parsing for skill: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for skill: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
 
 function ParseForSocial(incomingLine) {
     try {
-        var socialRegex = /^([a-zA-Z ]*) (chat|chats|narrate|narrates|tell|yell|yells|tells|sing|sings|say|says|group-say|group-says|petition|wiznet|wiznets|whispers) ?(?:[a-zA-Z, ]+)'(.*)'$/;
+        var socialRegex = /^([a-zA-Z ]*) (chat|chats|narrate|narrates|tell|yell|yells|tells|sing|sings|say|says|group-say|group-says|petition|petitions|wiznet|wiznets|whispers) ?(?:[a-zA-Z, ]+)'(.*)'$/;
         var matches = incomingLine.match(socialRegex);
         if (matches !== null) {
             var social = matches[2].replace(/s$/, "");
@@ -1548,8 +1578,8 @@ function ParseForSocial(incomingLine) {
             }
         }
     } catch (caught) {
-        var message = "Failure parsing for social: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for social: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1566,7 +1596,7 @@ function ParseForStatistics(incomingLine) {
         }
 
         // if (!matchesFound) {
-        matches = incomingLine.match(/^Str: *(\d+)\/ *(\d+), Int: *(\d+)\/ *(\d+), Wil: *(\d+)\/ *(\d+), Dex: *(\d+)\/ *(\d+), Con: *(\d+)\/ *(\d+), Lea: *(\d+)\/ *(\d+)\.$/);
+        matches = incomingLine.match(/^Str: *(\d+)\/ *(\d+), Int: *(\d+)\/ *(\d+), Wil: *(\d+)\/ *(\d+), Dex: *(\d+)\/ *(\d+), Con: *(\d+)\/ *(\d+), Lea: *(\d+)\/ *(\d+)\.?$/);
         if (matches !== null) {
             matchesFound = true;
 
@@ -1584,8 +1614,8 @@ function ParseForStatistics(incomingLine) {
             _currentPlayer.MaxLearningAbility = parseInt(matches[12]);
         }
     } catch (caught) {
-        var message = "Failure parsing for statistics: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for statistics: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1612,8 +1642,8 @@ function ParseForLogin(incomingLine) {
             WriteToWindow(_socialOutputWindow, "Logout: " + playerName, "blue", true, true);
         }
     } catch (caught) {
-        var message = "Failure parsing for login: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for login: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1793,8 +1823,8 @@ function ParseForInformation(incomingLine) {
         }
 
     } catch (caught) {
-        var message = "Failure parsing for information: " + caught + "\nLine: " + jmc.Event;
-        //WriteExceptionToStream(message);
+        var message = "Failure parsing for information: " + caught.message + "\nLine: " + jmc.Event;
+        WriteExceptionToStream(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 }
@@ -1851,7 +1881,7 @@ function OnAfkTimer() {
 
 //Once this function is fired, send a command to the client indicating it is time to move.
 function OnArkenMoveTimer() {
-    jmc.Send("lookRoom");
+    jmc.Parse("lookRoom");
 }
 
 //Once this function is hit, turn itself off and re-engage the movement timer.
@@ -1898,6 +1928,39 @@ function CalculateColor(currentValue, maximumValue) {
 //Helper Functions
 //*********************************************************************************************************************
 
+function MessageBox(text, value) {
+    try {
+        //This is a very crappy implementation of an input box...
+        // Create Internet Explorer application object.
+        var internetExplorerActiveX = new ActiveXObject("InternetExplorer.Application");
+        internetExplorerActiveX.navigate("about:blank"); // Empty HTML document 
+        internetExplorerActiveX.Visible = 0; // Keep Internet Explorer invisible.
+
+        while (internetExplorerActiveX.Busy) {} // Important: Wait until Internet 
+        // Explorer is ready.
+
+        var script = internetExplorerActiveX.Document.Script; // Get scripting object.
+        var userInput = script.prompt(text, value); // Open prompt window.
+        internetExplorerActiveX.Quit(); // Close Internet Explorer object.
+        return userInput;
+    } catch (caught) {
+        throw new ParameterException("Failure Opening IE: " + caught.message);
+    }
+}
+
+function Login() {
+    try {
+        var wshShell = new ActiveXObject("WScript.Shell")
+        var characterName = MessageBox("Select a character name...", "Character Name");
+        jmc.Send(characterName);
+
+    } catch (caught) {
+        var message = "Failure Logging In: " + caught.message;
+        WriteExceptionToStream(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+    }
+}
+
 
 //*********************************************************************************************************************
 //Writing to Windows and Status Bars
@@ -1921,12 +1984,9 @@ function WriteToWindow(windowNumber, message, color, newLine, includeTimestamp) 
     }
 }
 
-// function WriteExceptionToStream(caught) {
-//     var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
-//     var errorLogFileName = "C:\\jmc\\3.7.1.1\\Logs\\Debug Logs\\Error - " + date.toFriendlyDateString() + ".txt";
-//     var errorStream = fileSystem.OpenTextFile(errorLogFileName, 8, true);
-//     errorStream.WriteLine(GetTimestamp() + ": " + caught);
-// }
+function WriteExceptionToStream(caughtMessage) {
+    errorStream.WriteLine(GetTimestamp() + ": " + caughtMessage);
+}
 
 // function WriteSocialToStream(social) {
 //     var fileSystem = new ActiveXObject("Scripting.FileSystemObject");

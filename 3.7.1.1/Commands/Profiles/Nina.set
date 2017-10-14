@@ -12,3 +12,6 @@
 
 #alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea padded;wea circlet}
 #alias {cotton-mail} {rem all.cotton;rem shiny;rem boots;rem circlet;wea all.mail} {default}
+
+#var {isWearingArmor}{0}
+#hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }

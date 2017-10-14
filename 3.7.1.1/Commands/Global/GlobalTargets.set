@@ -43,6 +43,7 @@
 #alias {icy} {#var {target} {icy} } {default}
 #alias {interloper} {#var {target} {interloper} } {default}
 #alias {kabaal} {#var {target} {kabaal} } {default}
+#alias {karugh} {#var {target} {karugh} } {default}
 #alias {karvok} {#var {target} {karvok} } {default}
 #alias {kraken} {#var {target} {kraken} } {default}
 #alias {lazora} {#var {target} {lazora} } {default}

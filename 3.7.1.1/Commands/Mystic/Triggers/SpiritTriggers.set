@@ -27,9 +27,7 @@
 #action {   This part of the mines comes to a complete halt, due to the large mass of} {ss} {5} {default}
 #action {   This part of the mines comes to a dead end.  Large piles of earth lie} {open brokenhatch;d} {5} {default}
 #action {   This place is filled with the sounds of screaming and crying.  Large heaps} {s} {5} {default}
-#action {You are thirsty.} {drink waterskin} {5} {default}
 #action {It's empty.}{get $watersource all} {5} {default}
-#action {You are hungry.} {get $foodsource all;eat $foodsource} {5} {default}
 #action {You feel the time passing by.} {lookRoom} {5} {default}
 #action {You contemplate yourself for a little while.} {#tickon;examine} {5} {default}
 #action {Whom do you want to press?} {#tickon} {5} {default}
@@ -44,7 +42,6 @@
 #action {Your mind is not ready yet.} {#WAIT 30;!} {5} {default}
 #action {You hit yourself...OUCH!.} {set mental on;lookRoom} {5} {default}
 #action {You lost your concentration!} {!} {5} {default}
-#variable {me} {$me}
 #variable {target} {$me}
 #gag {You feel the time passing by.}
 #substitute {#10 seconds till TICK} { }

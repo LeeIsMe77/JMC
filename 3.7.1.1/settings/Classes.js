@@ -84,18 +84,30 @@ AnsiColors = {
 
 
 //*********************************************************************************************************************
+//Custom Exceptions
+//*********************************************************************************************************************
+function ParameterException(_message) {
+    this.message = _message;
+}
+//*********************************************************************************************************************
+//End Custom Exceptions
+//*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
 //Group Classes
 //*********************************************************************************************************************
 function GroupMember(memberName, isLeader) {
     this.MemberName = memberName;
     this.IsLeader = isLeader;
-    this.MutilateCount = 0;
-    this.HitCount = 0;
-    this.Damage = 0.0;
-    this.AverageDamage = function() {
-        if (this.HitCount === 0) return 0;
-        return (this.Damage / this.HitCount).toFixed(3);
-    }
+    // this.MutilateCount = 0;
+    // this.HitCount = 0;
+    // this.Damage = 0.0;
+    // this.AverageDamage = function() {
+    //     if (this.HitCount === 0) return 0;
+    //     return (this.Damage / this.HitCount).toFixed(3);
+    // }
     this.FriendlyName = function() {
         if (this.IsLeader) {
             return this.MemberName + " (Leader)";
@@ -138,16 +150,15 @@ function GroupMemberCollection() {
 
     //Retrieve the ordinal index of a member name in the group members collection.
     this.IndexOf = function(memberName) {
-        for (var index = 0; index < this.GroupMembers.length; index++) {
-            var currentMember = this.GroupMembers[index];
-            if (currentMember.MemberName === memberName) {
-                return index;
+            for (var index = 0; index < this.GroupMembers.length; index++) {
+                var currentMember = this.GroupMembers[index];
+                if (currentMember.MemberName === memberName) {
+                    return index;
+                }
             }
+            return -1;
         }
-        return -1;
-    }
-
-    //List all group member names in a comma delimited format.
+        //List all group member names in a comma delimited format.
     this.ListMembers = function() {
         var stringArray = new Array();
         for (var index = 0; index < this.Count(); index++) {
@@ -166,13 +177,13 @@ function GroupMemberCollection() {
         }
     }
 
-    this.ListMutilates = function() {
-        jmc.Send("gt Mutilate Statistics:")
-        for (var index = 0; index < this.GroupMembers.length; index++) {
-            var currentMember = this.GroupMembers[index];
-            jmc.Send("gt " + currentMember.MemberName + ": " + currentMember.MutilateCount);
-        }
-    }
+    // this.ListMutilates = function() {
+    //     jmc.Send("gt Mutilate Statistics:")
+    //     for (var index = 0; index < this.GroupMembers.length; index++) {
+    //         var currentMember = this.GroupMembers[index];
+    //         jmc.Send("gt " + currentMember.MemberName + ": " + currentMember.MutilateCount);
+    //     }
+    // }
 }
 //*********************************************************************************************************************
 //End Group Classes
