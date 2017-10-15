@@ -104,12 +104,9 @@ connection.Open();
 //*********************************************************************************************************************
 
 function SendTextMessage(description, message) {
-    var batchArguments = [];
-    batchArguments.push(description);
-    batchArguments.push(message);
-
-    var wScriptShell = new ActiveXObject("WScript.Shell");
-    wScriptShell.Run("C:\\jmc\\3.7.1.1\\emailMessage.bat " + "4436225407@vtext.com \"" + description + "\" \"" + message + "\" }", 0, false);
+	var MY_PHONE_NUMBER_EMAIL_ADDRESS = "ENTER_PHONE_NUMBER_HERE_EMAIL_ADDRESS_HERE";
+	var wScriptShell = new ActiveXObject("WScript.Shell");
+	wScriptShell.Run("C:\\jmc\\3.7.1.1\\emailMessage.bat " + MY_PHONE_NUMBER_EMAIL_ADDRESS + " \"" + description + "\" \"" + message + "\" }", 0, false);
 }
 
 //*********************************************************************************************************************
@@ -1574,7 +1571,6 @@ function ParseForSocial(incomingLine) {
             // && social === "tell" && matches[1] !== "You"
             if (_notifyTells) {
                 SendTextMessage(matches[1], matches[0]);
-                // jmc.Parse("#systemexec {emailMessage.bat 4436225407@vtext.com \"" + matches[1] + "\" \"" + matches[0] + "\" }");
             }
         }
     } catch (caught) {
