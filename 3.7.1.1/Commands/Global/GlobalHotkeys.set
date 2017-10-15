@@ -1,0 +1,4 @@
+#hot {F1} {#connect rotsmud.dyndns.org 3791} {default}
+#hot {Ctrl+B} {bash} {default}
+#hot {Ctrl+D} {dismount} {default}
+#hot {Ctrl+R} {ride} {default}

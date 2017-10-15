@@ -1,0 +1,17 @@
+#var {isWearingArmor}{0}
+#hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
+#var {isWieldingStaff}{1}
+#hotkey {F9}{ #if {$isWieldingStaff==0}{ #var {isWieldingStaff}{1};rem sword;wield staff}{ #var {isWieldingStaff}{0};rem staff;wield sword} }
+
+#var {watersource}{flask}
+#var {foodsource}{flesh}
+
+#alias {mail-cotton} {rem all.mail;wea shiny;wea soft;wea all.cotton}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem soft;wea all.mail} {default}
+
+#hotkey {Ctrl+P}{cast dark}
+#hotkey {Ctrl+Q}{cast magic}
+
+#hotkey {Ctrl+O}{cast chill}
+#hotkey {Ctrl+I}{cast searing}
+#hotkey {Ctrl+J}{cast cone}

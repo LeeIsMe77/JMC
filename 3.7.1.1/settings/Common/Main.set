@@ -1,0 +1,7 @@
+#use {Common/Character.js}
+#use {Common/Exit.js}
+#use {Common/GroupMember.js}
+#use {Common/Map.js}
+#use {Common/Room.js}
+#use {Common/Skill.js}
+#use {Common/Zone.js}
