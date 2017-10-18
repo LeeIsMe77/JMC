@@ -1,4 +1,5 @@
 #use {Common/Character.js}
+#use {Common/CharacterCollection.js}
 #use {Common/Exit.js}
 #use {Common/GroupMember.js}
 #use {Common/Map.js}

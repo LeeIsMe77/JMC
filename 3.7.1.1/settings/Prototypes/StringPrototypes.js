@@ -1,3 +1,9 @@
+if (!String.prototype.capitalizeFirstLetter) {
+    String.prototype.capitalizeFirstLetter = function() {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+    }
+}
+
 if (!String.prototype.cleanString) {
     String.prototype.cleanString = function() {
         return this
@@ -33,6 +39,38 @@ if (!String.format) {
     };
 };
 
+if (!String.prototype.padLeft) {
+    String.prototype.padLeft = function(paddingChar, length) {
+        var returnString = String(this);
+        if (paddingChar !== null && paddingChar.length > 0) {
+            var paddingCharacter = new String(paddingChar.charAt(0));
+            if (returnString.length < length) {
+                var desiredLength = length - returnString.length;
+                for (var index = 0; index < desiredLength; index++) {
+                    returnString = paddingCharacter.concat(returnString);
+                }
+            }
+        }
+        return returnString;
+    };
+}
+
+if (!String.prototype.padRight) {
+    String.prototype.padRight = function(paddingChar, length) {
+        var returnString = new String(this);
+        if (paddingChar !== null && paddingChar.length > 0) {
+            var paddingCharacter = new String(paddingChar.charAt(0));
+            if (returnString.length < length) {
+                var desiredLength = length - returnString.length;
+                for (var index = 0; index < desiredLength; index++) {
+                    returnString = returnString.concat(paddingCharacter);
+                }
+            }
+        }
+        return returnString;
+    };
+}
+
 if (!String.prototype.startsWith) {
     String.prototype.startsWith = function(searchString, position) {
         return this.substr(position || 0, searchString.length) === searchString;
@@ -66,12 +104,6 @@ if (!String.prototype.toFriendlyDateString) {
         return [year, month, day].join('-');
     }
 };
-
-if (!String.prototype.capitalizeFirstLetter) {
-    String.prototype.capitalizeFirstLetter = function() {
-        return this.charAt(0).toUpperCase() + this.slice(1);
-    }
-}
 
 if (!String.prototype.splice) {
     String.prototype.splice = function(startIndex, charactersToRemove, stringToInsert) {

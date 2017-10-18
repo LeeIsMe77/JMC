@@ -2,3 +2,5 @@
 #use {Types/ExitTypes.js}
 #use {Types/RaceTypes.js}
 #use {Types/ZoneTypes.js}
+#use {Types/ADODBParameterDirection.js}
+#use {Types/ADODBParameterType.js}

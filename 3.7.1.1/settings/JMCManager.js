@@ -1,13 +1,222 @@
 //*********************************************************************************************************************
 //SQL Connection
 //*********************************************************************************************************************
-var _connectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=jmcMudClient;Data Source=RotS;Initial Catalog=RotS";
-var connection = new ActiveXObject("ADODB.Connection");
-connection.ConnectionString = _connectionString;
-connection.Open();
+var connection = null;
 //*********************************************************************************************************************
 //End SQL Connection
 //*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
+//Login
+//*********************************************************************************************************************
+function Login() {
+    try {
+        //Only allow login if the player is currently not signed in.
+        if (_currentCharacter !== null) return;
+
+        var shell = new ActiveXObject("WScript.Shell");
+        var wshShellExec = shell.Exec("wscript.exe //Nologo C:\\jmc\\3.7.1.1\\settings\\Controls\\CharacterNameInputBox.vbs");
+        var characterName = "";
+        while (!wshShellExec.StdOut.AtEndOfStream) {
+            characterName = wshShellExec.StdOut.ReadLine();
+        }
+
+        if (characterName === null || characterName === "") return;
+        var targetCharacter = CharacterCollection.Enumerate().GetCharacter(characterName);
+
+        if (targetCharacter === null) {
+            //A new character must be created.
+            _currentCharacter = CharacterCollection.Add(characterName);
+        } else {
+            _currentCharacter = Character.Initialize(targetCharacter.CharacterID);
+        }
+        jmc.Send(_currentCharacter.CharacterName);
+        if (_currentCharacter.Password !== null && _currentCharacter.Password !== "") {
+            jmc.Parse("#daa " + _currentCharacter.Password + ";1");
+        }
+
+    } catch (caught) {
+        var message = "Failure Logging In: " + caught.message;
+        // JMCException.LogException(message);
+        JMCException.LogException(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+    }
+}
+//*********************************************************************************************************************
+//End Login
+//*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
+//Cascaded Event Handlers (From JMCEvents)
+//*********************************************************************************************************************
+function DisplayCharacters() {
+    try {
+        var characterCollection = CharacterCollection.Enumerate();
+        if (characterCollection.Characters.length > 0) {
+            jmc.ShowMe("+" + "-".padRight("-", 149) + "+")
+            jmc.ShowMe("| Character Name".padRight(" ", 30) + "| Race".padRight(" ", 30) + "| Level".padRight(" ", 30) + "| XP Needed To Level".padRight(" ", 30) + "| Last Logon".padRight(" ", 30) + "|");
+            jmc.ShowMe("+" + "-".padRight("-", 149) + "+")
+            for (var index = 0; index < characterCollection.Characters.length; index++) {
+                var character = characterCollection.Characters[index];
+                var dateString = new Date(character.LastLogon).toDateString();
+                jmc.ShowMe("| " + character.CharacterName.padRight(" ", 28) + "| " + character.Race.padRight(" ", 28) + "| " + character.Level.padRight(" ", 28) + "| " + character.XPNeededToLevel.padRight(" ", 28) + "| " + dateString.padRight(" ", 28) + "|");
+            }
+            jmc.ShowMe("+" + "-".padRight("-", 149) + "+")
+        }
+    } catch (caught) {
+        throw new JMCException("Failure Displaying Characters: " + caught.message);
+    }
+}
+
+function OnConnected() {
+    try {
+        //TODO: this object is actually not currently being used as I don't like the idea of maintaining an open connection.
+        //This may be useful for handling maze-like zones for room exits, or if I ever make this aware to every room.
+        if (connection === null) {
+            // connection = new ActiveXObject("ADODB.Connection");
+            // connection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
+            // connection.Open();
+        }
+        DisplayCharacters();
+
+    } catch (caught) {
+        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
+        JMCException.LogException(caught.message);
+    }
+}
+
+function OnConnectionLost() {
+    try {
+        if (_currentCharacter !== null) {
+            _currentCharacter.Update();
+            _currentCharacter = null;
+        }
+    } catch (caught) {
+        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
+        JMCException.LogException(caught.message);
+    } finally {
+        try {
+            if (connection !== null) {
+                connection.Close();
+                connection = null;
+            }
+        } catch (caught) {
+            WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
+        }
+    }
+}
+
+function OnDisconnected() {
+    try {
+        if (_currentCharacter !== null) {
+            _currentCharacter.Update();
+            _currentCharacter = null;
+        }
+    } catch (caught) {
+        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
+        JMCException.LogException(caught.message);
+    } finally {
+        try {
+            if (connection !== null) {
+                connection.Close();
+                connection = null;
+            }
+        } catch (caught) {
+            WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
+        }
+    }
+}
+
+function OnIncoming(incomingLine) {
+    try {
+        var cleanLine = incomingLine.cleanString();
+
+        //Character Maintenance...
+        ParseForLogin(cleanLine);
+        ParseForInformation(cleanLine);
+        ParseForLevel(cleanLine);
+        ParseForScore(cleanLine);
+        ParseForStatistics(cleanLine);
+
+        //Group Management....
+        ParseForGroupMember(cleanLine);
+
+        //Mapping...
+        ParseForMap(cleanLine);
+
+        //Socials...
+        ParseForSocial(cleanLine);
+
+        //Navigation...
+        ParseForDoor(cleanLine);
+        ParseForRoomName(cleanLine);
+
+        //Skill Lists...
+        ParseForSkill(cleanLine);
+
+
+        //Character Skills....
+        ParseForBash(cleanLine);
+        ParseForChillRay(cleanLine);
+        ParseForCurse(cleanLine);
+        ParseForFlee(cleanLine);
+        ParseForRescue(cleanLine);
+        // ParseForPreparation(cleanLine);
+
+        //NOTE: This function changes the jmc.Event line, and could therefore interfere with other functions.  Keep this at the end.
+        ParseForHowMany(cleanLine);
+    } catch (caught) {
+        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
+    }
+}
+
+function OnInput(playerInput) {
+    if (_afkTimerEnabled) {
+        jmc.SetTimer(TIMER_AFK, 600);
+    }
+    if (_statusTimerEnabled) {
+        jmc.SetTimer(TIMER_STATUS, 200);
+    }
+}
+
+function OnTimer(timerID) {
+
+    if (timerID !== TIMER_CHARACTER_STATISTICS && (!jmc.IsConnected || _currentCharacter === null)) {
+        return;
+    }
+
+    switch (timerID) {
+        case TIMER_STATUS:
+            OnStatusTimer();
+            break;
+        case TIMER_AFK:
+            OnAfkTimer();
+            break;
+        case TIMER_ARKEN_MOVE:
+            OnArkenMoveTimer();
+            break;
+        case TIMER_ARKEN_WAIT:
+            OnArkenWaitTimer();
+            break;
+        case TIMER_GROUP_STATISTICS:
+            OnGroupStatisticsTimer();
+            break;
+        case TIMER_CHARACTER_STATISTICS:
+            OnCharacterStatisticsTimer();
+            break;
+        default:
+            return;
+    }
+}
+//*********************************************************************************************************************
+//End Cascaded Event Handlers (From JMCEvents)
+//*********************************************************************************************************************
+
+
 
 //*********************************************************************************************************************
 //Fields
@@ -72,130 +281,6 @@ var _currentZone = ZoneTypes.None;
 //End Fields
 //*********************************************************************************************************************
 
-
-
-//*********************************************************************************************************************
-//Cascaded Event Handlers (From JMCEvents)
-//*********************************************************************************************************************
-
-function OnConnected() {}
-
-function OnConnectionLost() {
-    _currentCharacter = null;
-}
-
-function OnDisconnected() {
-    _currentCharacter = null;
-}
-
-function OnIncoming(incomingLine) {
-    var cleanLine = incomingLine.cleanString();
-
-    //Character Maintenance...
-    ParseForLogin(cleanLine);
-    ParseForInformation(cleanLine);
-    ParseForLevel(cleanLine);
-    ParseForScore(cleanLine);
-    ParseForStatistics(cleanLine);
-
-    //Group Management....
-    ParseForGroupMember(cleanLine);
-
-    //Mapping...
-    ParseForMap(cleanLine);
-
-    //Socials...
-    ParseForSocial(cleanLine);
-
-    //Navigation...
-    ParseForDoor(cleanLine);
-    ParseForRoomName(cleanLine);
-
-    //Skill Lists...
-    ParseForSkill(cleanLine);
-
-
-    //Character Skills....
-    ParseForBash(cleanLine);
-    ParseForChillRay(cleanLine);
-    ParseForCurse(cleanLine);
-    ParseForFlee(cleanLine);
-    ParseForRescue(cleanLine);
-    // ParseForPreparation(cleanLine);
-
-    //NOTE: This function changes the jmc.Event line, and could therefore interfere with other functions.  Keep this at the end.
-    ParseForHowMany(cleanLine);
-}
-
-function OnInput(playerInput) {
-    if (_afkTimerEnabled) {
-        jmc.SetTimer(TIMER_AFK, 600);
-    }
-    if (_statusTimerEnabled) {
-        jmc.SetTimer(TIMER_STATUS, 200);
-    }
-
-    //Perform login logic...
-    if (jmc.IsConnected && _currentCharacter === null) {
-        var potentialCharacterName = playerInput.split(";")[0];
-
-    }
-}
-
-function OnTimer(timerID) {
-
-    if (timerID !== TIMER_CHARACTER_STATISTICS && (!jmc.IsConnected || _currentCharacter === null)) {
-        return;
-    }
-
-    switch (timerID) {
-        case TIMER_STATUS:
-            OnStatusTimer();
-            break;
-        case TIMER_AFK:
-            OnAfkTimer();
-            break;
-        case TIMER_ARKEN_MOVE:
-            OnArkenMoveTimer();
-            break;
-        case TIMER_ARKEN_WAIT:
-            OnArkenWaitTimer();
-            break;
-        case TIMER_GROUP_STATISTICS:
-            OnGroupStatisticsTimer();
-            break;
-        case TIMER_CHARACTER_STATISTICS:
-            OnCharacterStatisticsTimer();
-            break;
-        default:
-            return;
-    }
-}
-
-//*********************************************************************************************************************
-//End Cascaded Event Handlers (From JMCEvents)
-//*********************************************************************************************************************
-
-function Login() {
-    try {
-        var shell = new ActiveXObject("WScript.Shell");
-        var wshShellExec = shell.Exec("wscript.exe //Nologo C:\\jmc\\3.7.1.1\\settings\\Controls\\CharacterNameInputBox.vbs");
-        var characterName = "";
-        while (!wshShellExec.StdOut.AtEndOfStream) {
-            characterName = wshShellExec.StdOut.ReadLine();
-        }
-        jmc.ShowMe("Registered Name: " + characterName);
-
-
-
-
-    } catch (caught) {
-        var message = "Failure Logging In: " + caught.message;
-        // JMCException.LogException(message);
-        JMCException.LogException(message);
-        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
-    }
-}
 
 
 //*********************************************************************************************************************
@@ -445,12 +530,8 @@ function RetrieveExit(roomName, zoneType) {
         // clean up  
         if (recordSet.State === 1) {
             recordSet.Close();
+            recordSet = null;
         }
-        // if (connection.State === 1) {
-        //     connection.Close();
-        // }
-        // connection = null;
-        recordSet = null;
     }
 }
 
@@ -622,8 +703,8 @@ function DisplayCharacterStatus() {
 
         var currentLevelPlusOne = parseInt(_currentCharacter.Level) + 1;
         var xpForLevel = (currentLevelPlusOne * currentLevelPlusOne * 1500) - (_currentCharacter.Level * _currentCharacter.Level * 1500)
-        var xpColor = CalculateColor(xpForLevel - _currentCharacter.XPNeeded, xpForLevel);
-        characterLine = "XP Needed To Level: " + xpColor + _currentCharacter.XPNeeded + AnsiColors.Default + ".";
+        var xpColor = CalculateColor(xpForLevel - _currentCharacter.XPNeededToLevel, xpForLevel);
+        characterLine = "XP Needed To Level: " + xpColor + _currentCharacter.XPNeededToLevel + AnsiColors.Default + ".";
         WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", true, false);
 
 
@@ -883,14 +964,14 @@ function ParseForLevel(incomingLine) {
             //...increment the characters level.
             _currentCharacter.Level++;
             //Store the XP remainder in a variable...
-            var xpRemainder = parseInt(_currentCharacter.XPNeeded);
+            var xpRemainder = parseInt(_currentCharacter.XPNeededToLevel);
             var currentLevelPlusOne = parseInt(_currentCharacter.Level) + 1;
             //...and calculate how much XP the character needs at the current level...
-            _currentCharacter.XPNeeded = (currentLevelPlusOne * currentLevelPlusOne * 1500) - (_currentCharacter.Level * _currentCharacter.Level * 1500);
+            _currentCharacter.XPNeededToLevel = (currentLevelPlusOne * currentLevelPlusOne * 1500) - (_currentCharacter.Level * _currentCharacter.Level * 1500);
             //...and if the remainder is a negative number...
             if (xpRemainder < 0) {
                 //...credit the player with the remainder.
-                _currentCharacter.XPNeeded += xpRemainder;
+                _currentCharacter.XPNeededToLevel += xpRemainder;
             }
             //...and return out of the function.
             return;
@@ -967,7 +1048,7 @@ function ParseForLevel(incomingLine) {
             //Increment the characters XP Gained counter...
             _currentCharacter.XPGained += parsedExperience;
             //and deduct the XP gained from the XP needed...
-            _currentCharacter.XPNeeded -= parsedExperience;
+            _currentCharacter.XPNeededToLevel -= parsedExperience;
             //Send a loot coin command to the mud...
             jmc.Send("get coin all.corpse");
             //...and return out of the function.
@@ -1323,16 +1404,16 @@ function ParseForScore(incomingLine) {
                 _currentCharacter.ParryBonus = parseInt(matches[3]);
                 _currentCharacter.AttackSpeed = parseInt(matches[4]);
 
-                //If score XP is a k less than _currentCharacter.XPNeeded, update. If doesn't end in K, update.
+                //If score XP is a k less than _currentCharacter.XPNeededToLevel, update. If doesn't end in K, update.
                 var tnl = matches[6];
                 if (!tnl.endsWith("K")) {
-                    _currentCharacter.XPNeeded = parseInt(tnl);
+                    _currentCharacter.XPNeededToLevel = parseInt(tnl);
                 } else {
 
                     //This is more of an approximation than a science...
                     var tnlAsInt = parseInt(tnl.substring(0, tnl.length - 1) + "999")
-                    if (tnlAsInt < _currentCharacter.XPNeeded) {
-                        _currentCharacter.XPNeeded = tnlAsInt;
+                    if (tnlAsInt < _currentCharacter.XPNeededToLevel) {
+                        _currentCharacter.XPNeededToLevel = tnlAsInt;
                     }
                 }
             }
@@ -1542,28 +1623,24 @@ function ParseForInformation(incomingLine) {
         var matches = incomingLine.match(/^You are ([A-Za-z]*) .*, an? (?:good|evil|neutral) \((-?\d+)\) (male|female) ([a-zA-Z- ]*)\.$/);
         if (matches !== null) {
             _isInfoFound = true;
+
             var playerName = matches[1];
-            if (_currentCharacter === null || _currentCharacter.CharacterName !== playerName) {
-                _currentCharacter = new Character(playerName, matches[2], matches[3], matches[4]);
+            _currentCharacter.CharacterName = playerName;
+            _currentCharacter.Alignment = matches[2];
+            _currentCharacter.Gender = matches[3];
+            _currentCharacter.Race = matches[4];
 
-                jmc.Parse("#spit {Commands/Profiles/" + playerName + ".set} {%0} {ns}");
-                jmc.SetVar("me", playerName);
+            jmc.Parse("#spit {Commands/Profiles/" + playerName + ".set} {%0} {ns}");
+            jmc.SetVar("me", playerName);
 
-                switch (_currentCharacter.Race) {
-                    case RaceTypes.Beorning:
-                    case RaceTypes.Dwarf:
-                    case RaceTypes.Hobbit:
-                    case RaceTypes.Human:
-                    case RaceTypes.WoodElf:
-                        jmc.Send("blow eye");
-                        break;
-                }
-
-            } else {
-                _currentCharacter.CharacterName = playerName;
-                _currentCharacter.Alignment = matches[2];
-                _currentCharacter.Gender = matches[3];
-                _currentCharacter.Race = matches[4];
+            switch (_currentCharacter.Race) {
+                case RaceTypes.Beorning:
+                case RaceTypes.Dwarf:
+                case RaceTypes.Hobbit:
+                case RaceTypes.Human:
+                case RaceTypes.WoodElf:
+                    jmc.Send("blow eye");
+                    break;
             }
 
             if (_isListeningForInfo) {
@@ -1649,7 +1726,7 @@ function ParseForInformation(incomingLine) {
 
             matches = incomingLine.match(/^You have scored (\d+) experience points, and need (\d+) more to advance\.$/);
             if (matches !== null) {
-                _currentCharacter.XPNeeded = parseInt(matches[2]);
+                _currentCharacter.XPNeededToLevel = parseInt(matches[2]);
 
                 if (_isListeningForInfo) {
                     jmc.DropEvent();

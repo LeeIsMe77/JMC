@@ -18,16 +18,16 @@ USE [RotS];
 GO
 
 --=Creat login and user to access the database=--
-IF SUSER_ID(N'jmcMudClient') IS NULL BEGIN
-	CREATE LOGIN [jmcMudClient] WITH PASSWORD = N'P@ssw0rd', CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF;
+IF SUSER_ID(N'JMCMudClient') IS NULL BEGIN
+	CREATE LOGIN [JMCMudClient] WITH PASSWORD = N'P@ssw0rd', CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF;
 END;
 GO
 
-IF USER_ID(N'jmcMudClient') IS NULL BEGIN
-	CREATE USER [jmcMudClient] FOR LOGIN [jmcMudClient] WITH DEFAULT_SCHEMA = dbo;
+IF USER_ID(N'JMCMudClient') IS NULL BEGIN
+	CREATE USER [JMCMudClient] FOR LOGIN [JMCMudClient] WITH DEFAULT_SCHEMA = dbo;
 END; 
 ELSE BEGIN
-	ALTER USER [jmcMudClient] WITH LOGIN = [jmcMudClient], DEFAULT_SCHEMA = dbo;
+	ALTER USER [JMCMudClient] WITH LOGIN = [JMCMudClient], DEFAULT_SCHEMA = dbo;
 END;
 GO
 
@@ -38,14 +38,22 @@ Create Table Definitions
 IF OBJECT_ID(N'dbo.Character') IS NULL BEGIN
 	CREATE TABLE dbo.[Character] (
 		CharacterID int NOT NULL IDENTITY(1,1),
-		CharacterName nvarchar(128) NOT NULL,
-		Password varbinary NULL,
-		Race nvarchar(20) NOT NULL,
-		[Level] tinyint NOT NULL CONSTRAINT dvCharacter_Level DEFAULT (1),
-		WarriorLevel tinyint NOT NULL CONSTRAINT dvCharacter_WarriorLevel DEFAULT (0),
-		RangerLevel tinyint NOT NULL CONSTRAINT dvCharacter_RangerLevel DEFAULT (0),
-		MageLevel tinyint NOT NULL CONSTRAINT dvCharacter_MageLevel DEFAULT (0),
-		MysticLevel tinyint NOT NULL CONSTRAINT dvCharacter_MysticLevel DEFAULT (0),
+		CharacterName varchar(128) NOT NULL,
+		[Password] varbinary(max) NULL,
+		Race varchar(50) NULL,
+		[Level] int NOT NULL CONSTRAINT dvCharacter_Level DEFAULT (1),
+		WarriorLevel int NOT NULL CONSTRAINT dvCharacter_WarriorLevel DEFAULT (0),
+		RangerLevel int NOT NULL CONSTRAINT dvCharacter_RangerLevel DEFAULT (0),
+		MageLevel int NOT NULL CONSTRAINT dvCharacter_MageLevel DEFAULT (0),
+		MysticLevel int NOT NULL CONSTRAINT dvCharacter_MysticLevel DEFAULT (0),
+		Strength int NOT NULL CONSTRAINT dvCharacter_Strength DEFAULT (0),
+		Intelligence int NOT NULL CONSTRAINT dvCharacter_Intelligence DEFAULT (0),
+		Will int NOT NULL CONSTRAINT dvCharacter_Will DEFAULT (0),
+		Dexterity int NOT NULL CONSTRAINT dvCharacter_Dexterity DEFAULT (0),
+		Constitution int NOT NULL CONSTRAINT dvCharacter_Constitution DEFAULT (0),
+		LearningAbility int NOT NULL CONSTRAINT dvCharacter_LearningAbility DEFAULT (0),
+		Specialization varchar(128) NULL,
+		XPNeededToLevel int NOT NULL CONSTRAINT dvCharacter_XPNeededToLevel DEFAULT(0),
 		DateCreated datetime NOT NULL CONSTRAINT dvCharacter_DateCreated DEFAULT CURRENT_TIMESTAMP,
 		DateUpdated datetime NOT NULL CONSTRAINT dvCharacter_DateUpdated DEFAULT CURRENT_TIMESTAMP,
 		CONSTRAINT pkCharacter PRIMARY KEY CLUSTERED (CharacterID),
@@ -57,7 +65,7 @@ GO
 IF OBJECT_ID(N'dbo.Exception') IS NULL BEGIN
 	CREATE TABLE dbo.[Exception] (
 		ExceptionID int NOT NULL IDENTITY(1,1),
-		ExceptionMessage nvarchar(max) NULL,
+		ExceptionMessage varchar(max) NULL,
 		DateCreated datetime NOT NULL CONSTRAINT dvException_DateCreated DEFAULT CURRENT_TIMESTAMP,
 		CONSTRAINT pkException PRIMARY KEY CLUSTERED (ExceptionID),
 	);
@@ -67,41 +75,90 @@ GO
 IF OBJECT_ID(N'dbo.Room') IS NULL BEGIN
 	CREATE TABLE dbo.[Room] (
 		RoomID int NOT NULL IDENTITY(1,1),
-		RoomName nvarchar(100) NOT NULL,
-		ZoneType nvarchar(20) NOT NULL,
-		RoomExits nvarchar(20) NULL,
-		Exit1 nvarchar(50) NULL,
-		Exit2 nvarchar(50) NULL,
-		Exit3 nvarchar(50) NULL,
+		RoomName varchar(100) NOT NULL,
+		ZoneType varchar(20) NOT NULL,
+		RoomExits varchar(20) NULL,
+		Exit1 varchar(50) NULL,
+		Exit2 varchar(50) NULL,
+		Exit3 varchar(50) NULL,
 		CONSTRAINT pkRoom PRIMARY KEY CLUSTERED (RoomID),
 		CONSTRAINT ukRoom_RoomName_RoomExits_ZoneType UNIQUE (RoomName, RoomExits, ZoneType)
 	);
 END;
 GO
 
+
+/**********************************************************************************************************\
+Create Functions
+\**********************************************************************************************************/
+
+DECLARE @FunctionName sysname = N'dbo.DecryptPassword';
+IF OBJECT_ID(@FunctionName) IS NULL BEGIN
+	EXECUTE(N'CREATE FUNCTION ' + @FunctionName + N'() RETURNS sysname AS BEGIN RETURN NULL; END;');
+END;
+GO
+
+ALTER FUNCTION dbo.[DecryptPassword](
+	@Passphrase nvarchar(max),
+	@Value varbinary(max)
+) RETURNS varchar(max) AS BEGIN
+	RETURN DECRYPTBYPASSPHRASE(dbo.GetPassphrase() + @Passphrase, @Value);
+	END;
+GO
+
+DECLARE @FunctionName sysname = N'dbo.EncryptPassword';
+IF OBJECT_ID(@FunctionName) IS NULL BEGIN
+	EXECUTE(N'CREATE FUNCTION ' + @FunctionName + N'() RETURNS sysname AS BEGIN RETURN NULL; END;');
+END;
+GO
+
+ALTER FUNCTION dbo.[EncryptPassword](
+	@Passphrase nvarchar(max),
+	@Value varchar(max)
+) RETURNS varbinary(max) AS BEGIN
+	RETURN ENCRYPTBYPASSPHRASE(dbo.GetPassphrase() + @Passphrase, @Value);
+	END;
+GO
+
+DECLARE @FunctionName sysname = N'dbo.GetPassphrase';
+IF OBJECT_ID(@FunctionName) IS NULL BEGIN
+	EXECUTE(N'CREATE FUNCTION ' + @FunctionName + N'() RETURNS sysname AS BEGIN RETURN NULL; END;');
+END;
+GO
+
+ALTER FUNCTION dbo.[GetPassphrase]() RETURNS varchar(max) AS BEGIN
+	RETURN N'EnterACustomPassphraseHereToAppendToACharacterNameToGenerateAnEncryptedPassword';
+	END;
+GO
+
 /**********************************************************************************************************\
 Create Stored Procedures
 \**********************************************************************************************************/
 
-DECLARE @ProcedureName sysname SET @ProcedureName = N'dbo.[Character.Create]';
+DECLARE @ProcedureName sysname SET @ProcedureName = N'dbo.[CharacterCollection.Add]';
 IF OBJECT_ID(@ProcedureName) IS NULL BEGIN
 	EXECUTE(N'CREATE PROCEDURE ' + @ProcedureName + N' AS PRINT @@VERSION;');
-	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO jmcMudClient;');
+	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO JMCMudClient;');
 END;
 GO
 
-ALTER PROCEDURE dbo.[Character.Create] (
-	@CharacterName nvarchar(128) NULL,
+ALTER PROCEDURE dbo.[CharacterCollection.Add] (
+	@CharacterName varchar(128),
 	@CharacterID int = NULL OUTPUT
 ) AS BEGIN
 	SET NOCOUNT ON;
 	DECLARE @InsertedIDs TABLE (InsertedID int NOT NULL);
 		
+	IF NULLIF(@CharacterName, N'') IS NULL BEGIN
+		RAISERROR(N'A character name must be provided.', 16, 1);
+		RETURN @@ERROR;
+	END
+
 	IF EXISTS (
 		SELECT 1
 			FROM dbo.[Character] C
 			WHERE 1=1
-				AND C.CharacterName = @CharacterName
+				AND C.CharacterName LIKE @CharacterName
 	) BEGIN
 		RAISERROR(N'The character name ''%s'' already exists.', 16, 1, @CharacterName);
 		RETURN @@ERROR;
@@ -118,26 +175,91 @@ ALTER PROCEDURE dbo.[Character.Create] (
 END;
 GO
 
+DECLARE @ProcedureName sysname SET @ProcedureName = N'dbo.[CharacterCollection.Enumerate]';
+IF OBJECT_ID(@ProcedureName) IS NULL BEGIN
+	EXECUTE(N'CREATE PROCEDURE ' + @ProcedureName + N' AS PRINT @@VERSION;');
+	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO JMCMudClient;');
+END;
+GO
+
+ALTER PROCEDURE dbo.[CharacterCollection.Enumerate] AS BEGIN
+	SET NOCOUNT ON;
+	SELECT
+			C.CharacterID AS CharacterID,
+			C.CharacterName AS CharacterName,
+			C.Race AS Race,
+			C.[Level] AS [Level],
+			C.XPNeededToLevel AS XPNeededToLevel,
+			C.DateUpdated AS [LastLogon]
+		FROM dbo.[Character] C
+	RETURN @@ERROR
+END;
+GO
+
 DECLARE @ProcedureName sysname SET @ProcedureName = N'dbo.[Character.Initialize]';
 IF OBJECT_ID(@ProcedureName) IS NULL BEGIN
 	EXECUTE(N'CREATE PROCEDURE ' + @ProcedureName + N' AS PRINT @@VERSION;');
-	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO jmcMudClient;');
+	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO JMCMudClient;');
 END;
 GO
 
 ALTER PROCEDURE dbo.[Character.Initialize] (
-	@CharacterID int,
-	@CharacterName nvarchar(128) = NULL OUTPUT,
+	@CharacterID int = NULL,
+	@CharacterName varchar(128) = NULL OUTPUT,
+	@Password varchar(max) = NULL OUTPUT,
+	@Race varchar(50) = NULL OUTPUT,
 	@Level int = NULL OUTPUT,
-	@Password varbinary = NULL OUTPUT
+	@WarriorLevel int = NULL OUTPUT,
+	@RangerLevel int = NULL OUTPUT,
+	@MysticLevel int = NULL OUTPUT,
+	@MageLevel int = NULL OUTPUT,
+	@Strength int = NULL OUTPUT,
+	@Intelligence int = NULL OUTPUT,
+	@Will int = NULL OUTPUT,
+	@Dexterity int = NULL OUTPUT,
+	@Constitution int = NULL OUTPUT,
+	@LearningAbility int = NULL OUTPUT,
+	@Specialization varchar(128) = NULL OUTPUT,
+	@XPNeededToLevel int = NULL OUTPUT
 ) AS BEGIN
 	SET NOCOUNT ON;
-	UPDATE dbo.Character
-		SET
-			@CharacterName = CharacterName,
-			@Level = [Level],
-			@Password = [Password]
-		WHERE CharacterID = @CharacterID
+	
+	IF NULLIF(@CharacterID, N'') IS NULL BEGIN
+		RAISERROR(N'The character ID must be provided.', 16, 1);
+		RETURN @@ERROR;
+	END
+
+	IF NOT EXISTS (
+		SELECT *
+			FROM dbo.[Character] C
+			WHERE 1=1
+				AND C.CharacterID = @CharacterID
+	) BEGIN
+		RAISERROR(N'No character exists with the ID ''%i''.', 16, 1, @CharacterID);
+		RETURN @@ERROR;
+	END
+
+	SELECT
+			@CharacterName = C.CharacterName,
+			@Password = dbo.[DecryptPassword](C.CharacterName, C.[Password]),
+			@Race = C.Race,
+			@Level = C.[Level],
+			@WarriorLevel = C.WarriorLevel,
+			@RangerLevel = C.RangerLevel,
+			@MysticLevel = C.MysticLevel,
+			@MageLevel = C.MageLevel,
+			@Strength = C.Strength,
+			@Intelligence = C.Intelligence,
+			@Will = C.Will,
+			@Dexterity = C.Dexterity,
+			@Constitution = C.Constitution,
+			@LearningAbility = C.LearningAbility,
+			@Specialization = C.Specialization,
+			@XPNeededToLevel = C.XPNeededToLevel
+		FROM dbo.[Character] C
+		WHERE 1=1
+			AND C.CharacterID = @CharacterID
+
 	RETURN @@ERROR
 END;
 GO
@@ -145,21 +267,58 @@ GO
 DECLARE @ProcedureName sysname SET @ProcedureName = N'dbo.[Character.Update]';
 IF OBJECT_ID(@ProcedureName) IS NULL BEGIN
 	EXECUTE(N'CREATE PROCEDURE ' + @ProcedureName + N' AS PRINT @@VERSION;');
-	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO jmcMudClient;');
+	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO JMCMudClient;');
 END;
 GO
 
 ALTER PROCEDURE dbo.[Character.Update] (
 	@CharacterID int,
-	@CharacterName nvarchar(128) NULL,
-	@Level int NULL--Not currently used.
+	@CharacterName varchar(128) NULL,
+	@Password varchar(max) NULL,
+	@Race varchar(50) NULL,
+	@Level int NULL,
+	@WarriorLevel int NULL,
+	@RangerLevel int NULL,
+	@MysticLevel int NULL,
+	@MageLevel int NULL,
+	@Strength int NULL,
+	@Intelligence int NULL,
+	@Will int NULL,
+	@Dexterity int NULL,
+	@Constitution int NULL,
+	@LearningAbility int NULL,
+	@Specialization varchar(128) NULL,
+	@XPNeededToLevel int NULL
 ) AS BEGIN
 	SET NOCOUNT ON;
-	UPDATE dbo.Character
+	DECLARE @UpdatedPassword varbinary(max) = NULL;
+
+	IF NULLIF(@Password, N'') IS NOT NULL BEGIN
+	--TODO: Actually encrypt password. >.>
+		SET @UpdatedPassword = CONVERT(varbinary(max), @Password)
+	END
+	
+	UPDATE dbo.[Character]
 		SET
-			CharacterName = ISNULL(NULLIF(@CharacterName, N''), @CharacterName),
-			[Level] = @Level
+			CharacterName = ISNULL(NULLIF(@CharacterName, N''), CharacterName),
+			[Password] = ISNULL(dbo.[EncryptPassword](@CharacterName, @UpdatedPassword), [Password]),
+			Race = ISNULL(NULLIF(@Race, N''), Race),
+			[Level] = ISNULL(@Level, [Level]),
+			WarriorLevel = ISNULL(@WarriorLevel, WarriorLevel),
+			RangerLevel = ISNULL(@RangerLevel, RangerLevel),
+			MysticLevel = ISNULL(@MysticLevel, MysticLevel),
+			MageLevel = ISNULL(@MageLevel, MageLevel),
+			Strength = ISNULL(@Strength, Strength),
+			Intelligence = ISNULL(@Intelligence, Intelligence),
+			Will = ISNULL(@Will, Will),
+			Dexterity = ISNULL(@Dexterity, Dexterity),
+			Constitution = ISNULL(@Constitution, Constitution),
+			LearningAbility = ISNULL(@LearningAbility, LearningAbility),
+			Specialization = ISNULL(NULLIF(@Specialization, N''), Specialization),
+			XPNeededToLevel = ISNULL(NULLIF(@XPNeededToLevel, N''), XPNeededToLevel),
+			DateUpdated = CURRENT_TIMESTAMP
 		WHERE CharacterID = @CharacterID
+
 	RETURN @@ERROR
 END;
 GO
@@ -167,12 +326,12 @@ GO
 DECLARE @ProcedureName sysname SET @ProcedureName = N'dbo.[Exception.LogException]';
 IF OBJECT_ID(@ProcedureName) IS NULL BEGIN
 	EXECUTE(N'CREATE PROCEDURE ' + @ProcedureName + N' AS PRINT @@VERSION;');
-	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO jmcMudClient;');
+	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO JMCMudClient;');
 END;
 GO
 
 ALTER PROCEDURE dbo.[Exception.LogException] (
-	@ExceptionMessage nvarchar(max) NULL
+	@ExceptionMessage varchar(max) NULL
 ) AS BEGIN
 	SET NOCOUNT ON;
 	
@@ -190,14 +349,14 @@ GO
 DECLARE @ProcedureName sysname SET @ProcedureName = N'dbo.[Room.Initialize]';
 IF OBJECT_ID(@ProcedureName) IS NULL BEGIN
 	EXECUTE(N'CREATE PROCEDURE ' + @ProcedureName + N' AS PRINT @@VERSION;');
-	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO jmcMudClient;');
+	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO JMCMudClient;');
 END;
 GO
 
 ALTER PROCEDURE dbo.[Room.Initialize] (
-	@RoomName nvarchar(100),
-	@ZoneType nvarchar(20),
-	@RoomExits nvarchar(20) = NULL --Not currently used.
+	@RoomName varchar(100),
+	@ZoneType varchar(20),
+	@RoomExits varchar(20) = NULL --Not currently used.
 ) AS BEGIN
 	SET NOCOUNT ON;
 	
@@ -627,3 +786,6 @@ IF NOT EXISTS (SELECT 1 FROM dbo.Room) BEGIN
 		(N'Withered Branches', NULL,N'neee',N'www',NULL, N'Faroth')
 END
 
+
+USE [master]
+GO
