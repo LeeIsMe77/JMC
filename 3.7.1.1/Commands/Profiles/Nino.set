@@ -1,11 +1,11 @@
-#hot {Ctrl+Q} {cast confuse} {default}
-#hot {Ctrl+I} {cast poison $target} {default}
-#hot {Ctrl+O} {cast insight $target} {default}
-#hot {Ctrl+P} {cast hallucinate $target} {default}
-#hot {Ctrl+F} {cast curse $target} {default}
-#hot {Ctrl+J} {cast curse $target} {default}
-#hot {Ctrl+L} {cast fear $target} {default}
-#hot {Ctrl+H} {cast dispel $target} {default}
+#hotkey {Ctrl+Q} {cast confuse} {default}
+#hotkey {Ctrl+I} {cast poison $target} {default}
+#hotkey {Ctrl+O} {cast insight $target} {default}
+#hotkey {Ctrl+P} {cast hallucinate $target} {default}
+#hotkey {Ctrl+F} {cast curse $target} {default}
+#hotkey {Ctrl+J} {cast curse $target} {default}
+#hotkey {Ctrl+L} {cast fear $target} {default}
+#hotkey {Ctrl+H} {cast dispel $target} {default}
 #hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
 #var {isWearingArmor}{0}
 #var {watersource}{waterskin}

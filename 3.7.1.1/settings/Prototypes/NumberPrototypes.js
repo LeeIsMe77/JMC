@@ -12,7 +12,7 @@ if (!Number.prototype.padLeft) {
         }
         return returnString;
     };
-}
+};
 
 if (!Number.prototype.padRight) {
     Number.prototype.padRight = function(paddingChar, length) {
@@ -28,4 +28,4 @@ if (!Number.prototype.padRight) {
         }
         return returnString;
     };
-}
+};

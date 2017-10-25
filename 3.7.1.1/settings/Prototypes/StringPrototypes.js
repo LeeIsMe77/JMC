@@ -1,8 +1,8 @@
 if (!String.prototype.capitalizeFirstLetter) {
     String.prototype.capitalizeFirstLetter = function() {
-        return this.charAt(0).toUpperCase() + this.slice(1);
-    }
-}
+        return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
+    };
+};
 
 if (!String.prototype.cleanString) {
     String.prototype.cleanString = function() {
@@ -11,7 +11,7 @@ if (!String.prototype.cleanString) {
             .replace(/[\u001b]\[\d+m/g, '')
             //...and finally, strip off health status and right angle bracket at beginning of line, if it exists...
             .replace(/^R? ?(?:(?:Mind|Mount|HP|MV|S):[a-zA-Z ]+ ?)*(?:, [a-zA-Z,' ]+:[a-zA-Z ]+)*?>/, '')
-    }
+    };
 };
 
 if (!String.prototype.endsWith) {
@@ -53,7 +53,7 @@ if (!String.prototype.padLeft) {
         }
         return returnString;
     };
-}
+};
 
 if (!String.prototype.padRight) {
     String.prototype.padRight = function(paddingChar, length) {
@@ -69,7 +69,7 @@ if (!String.prototype.padRight) {
         }
         return returnString;
     };
-}
+};
 
 if (!String.prototype.startsWith) {
     String.prototype.startsWith = function(searchString, position) {
@@ -85,13 +85,13 @@ if (!String.prototype.toTitleCase) {
                 return text.charAt(0).toUpperCase() + text.substring(1).toLowerCase();
             }
         );
-    }
+    };
 };
 
 if (!String.prototype.trim) {
     String.prototype.trim = function() {
         return this.replace(/^\s+|\s+$/g, '');
-    }
+    };
 };
 
 if (!String.prototype.toFriendlyDateString) {
@@ -102,7 +102,7 @@ if (!String.prototype.toFriendlyDateString) {
         if (month.length < 2) month = '0' + month;
         if (day.length < 2) day = '0' + day;
         return [year, month, day].join('-');
-    }
+    };
 };
 
 if (!String.prototype.splice) {

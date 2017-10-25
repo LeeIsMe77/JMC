@@ -2,26 +2,33 @@ function CharacterCollection() {
 
     this.Characters = new Array();
 
+    this.Add = function(characterName) {
+        var newCharacter = CharacterCollection.Add(characterName);
+        this.Characters.push(newCharacter);
+        return newCharacter;
+    };
+
     //Retrieve a character from the collection by name.
     this.GetCharacter = function(characterName) {
+        characterName = characterName.toUpperCase();
         for (var index = 0; index < this.Characters.length; index++) {
             var currentCharacter = this.Characters[index];
-            jmc.ShowMe("Current character name: " + currentCharacter.CharacterName);
-            if (currentCharacter.CharacterName === characterName) {
+            if (currentCharacter.CharacterName.toUpperCase() === characterName) {
                 return currentCharacter;
             }
         }
         return null;
-    }
-
-}
+    };
+};
 
 CharacterCollection.Add = function(characterName) {
+    characterName = characterName.capitalizeFirstLetter();
     var databaseConnection = new ActiveXObject("ADODB.Connection");
     var command = new ActiveXObject("ADODB.Command");
     try {
 
         databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
+        // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
         databaseConnection.Open();
 
         command.ActiveConnection = databaseConnection;
@@ -56,6 +63,7 @@ CharacterCollection.Enumerate = function() {
     try {
 
         databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
+        // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
         databaseConnection.Open();
 
         command.ActiveConnection = databaseConnection;

@@ -7,4 +7,4 @@
 #alias {mail-cotton} {rem all.mail;rem all.elven;wea all.cotton;wea horns;wea shiny;wea sandals}
 #alias {cotton-mail} {rem all.cotton;rem shiny;rem sandals;rem horns;wea all.mail;wea all.elven} {default}
 
-#hot {ctrl+,}{,attacks}
+#hotkey {ctrl+,}{,attacks}

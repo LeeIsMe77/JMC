@@ -9,7 +9,8 @@ function Room(roomName) {
             }
         }
         return null;
-    }
+    };
+
     this.GetExitString = function() {
         var exits = []
         for (var index = 0; index < this.Exits.length; index++) {
@@ -17,5 +18,6 @@ function Room(roomName) {
             exits.push(exit.ExitType + ":" + exit.ExitDirections);
         }
         return exits.join(" | ");
-    }
+    };
+
 };

@@ -1,23 +1,29 @@
-#var {isWieldingDagger}{1}
-#hotkey {F10}{ #if {$isWieldingDagger==0}{ #var {isWieldingDagger}{1};rem dagger;wield claw}{ #var {isWieldingDagger}{0};rem claw;wield dagger } }
+#var {isWearingFur}{0}
+#hotkey {F7}{ #if {$isWearingFur==0}{ #var {isWearingFur}{1};rem disgusting;wear fur}{ #var {isWearingFur}{0};rem fur;wear disgusting } }
 
 #var {isWearingArmor}{0}
-#hotkey {F11}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
+#hotkey {F9}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
+
+#var {isWieldingDagger}{0}
+#hotkey {F10}{ #if {$isWieldingDagger==0}{ #var {isWieldingDagger}{1};rem dagger;wield claw}{ #var {isWieldingDagger}{0};rem claw;wield dagger } }
+
+#alias {pracreset}{tell angel pracreset;#36 prac weapon;#5 prac two;#8 { prac ride;prac calm; };#10 { prac search;prac hide; };#11 prac resist poison;#12 { prac dodge;prac sneak;prac track;prac pick; };#13 { prac cure self;prac ambush; };#14 { prac parry;prac berserk;prac bash;prac kick; };#15 { prac stealth;prac fast;prac tame;prac awareness; };#16 { prac animals;prac travelling; };#17 prac riposte;#1 prac swim;#18 prac find;#5 prac rescue; }
 
 #var {watersource}{flask}
 #var {foodsource}{waybread}
 
-#action {%0 turns to fight a large grizzly bear!}{rescue grizzly}
-#action {%0 turns to fight a large black bear!}{rescue black}
+#action {/.* turns to fight a large ([a-z]*) bear!}{rescue %0}
+#action {turns to fight a large, husky mastiff!}{rescue mastiff}
+
 
 #alias {mail-cotton} {rem all.mail;rem all.elven;wea all.cotton;wea horns;wea shiny;wea sandals}
 #alias {cotton-mail} {rem all.cotton;rem shiny;rem sandals;rem horns;wea all.mail;wea all.elven} {default}
 
-#hot {ctrl+p}{of assist Baiken}
-#hot {ctrl+q}{rescue black}
+#hotkey {ctrl+p}{of assist Baiken}
+#hotkey {ctrl+q}{rescue black}
 
+#alias {q}{of calm 1.warg}
 #alias {p}{of calm 2.warg}
 #alias {o}{of calm 3.warg}
-#alias {q}{of calm 1.warg}
 
-#hot {ctrl+,}{,attacks}
+#hotkey {ctrl+,}{,attacks}

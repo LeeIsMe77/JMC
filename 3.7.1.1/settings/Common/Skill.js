@@ -16,7 +16,7 @@ function SkillCollection() {
         var skill = new Skill(skillName, skillLevel, time, cost);
         this.Skills.push(skill);
         return skill;
-    }
+    };
 
     //Resets the skills collection.
     this.Clear = function() {
@@ -25,7 +25,7 @@ function SkillCollection() {
 
     this.Count = function() {
         return this.Skills.length;
-    }
+    };
 
     //Retrieve the skill from the skills collection by the specified skill name.
     this.GetSkill = function(skillName) {
@@ -36,7 +36,7 @@ function SkillCollection() {
             }
         }
         return null;
-    }
+    };
 
     //Retrieve the ordinal index of a skill name in the skills collection.
     this.IndexOf = function(skillName) {
@@ -47,7 +47,7 @@ function SkillCollection() {
             }
         }
         return -1;
-    }
+    };
 
     //Remove a skill from the skill collection.
     this.Remove = function(skillName) {

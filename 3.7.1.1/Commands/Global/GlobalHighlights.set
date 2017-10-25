@@ -4,3 +4,4 @@
 #highlight {light magenta, b gray} {%0 has recovered from a bash!} {default}
 #highlight {light blue}{You hear a sound of a lock snapping shut.}
 #highlight {light blue}{You hear a sound of a key turning..}
+#highlight {light cyan}{%0 attacks %1!}

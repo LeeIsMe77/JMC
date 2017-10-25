@@ -11,14 +11,14 @@ var {isInPragGear}{0}
 #var {foodsource}{flesh}
 #var {watersource}{flask}
 
-#hot {Ctrl+Q} {cast confuse} {default}
-#hot {Ctrl+I} {cast poison $target} {default}
-#hot {Ctrl+O} {cast insight $target} {default}
-#hot {Ctrl+P} {cast hallucinate $target} {default}
-#hot {Ctrl+F} {cast curse $target} {default}
-#hot {Ctrl+J} {cast curse $target} {default}
-#hot {Ctrl+L} {cast fear $target} {default}
-#hot {ctrl+,}{,attacks}
+#hotkey {Ctrl+Q} {cast confuse} {default}
+#hotkey {Ctrl+I} {cast poison $target} {default}
+#hotkey {Ctrl+O} {cast insight $target} {default}
+#hotkey {Ctrl+P} {cast hallucinate $target} {default}
+#hotkey {Ctrl+F} {cast curse $target} {default}
+#hotkey {Ctrl+J} {cast curse $target} {default}
+#hotkey {Ctrl+L} {cast fear $target} {default}
+#hotkey {ctrl+,}{,attacks}
 
 #alias {pracForGuardian}{#5 {prac mind;prac guardian;prac curing;prac curse;prac dispel;prac poison;prac div;prac fear;prac hallucinate;prac haze;prac insight;prac prag;prac regen;prac remove;prac rest;prac revive;prac slow;prac terror;prac vit};#14 prac bash;#7 prac concussion;prac death;#12 prac ride;#3 prac pick;#18 prac two;prac swim;#14 prac parry;prac search;#6 prac slashing}
 #alias {pracForConfuse}{#5 {prac mind;prac confuse;prac curing;prac curse;prac dispel;prac poison;prac div;prac fear;prac hallucinate;prac haze;prac insight;prac prag;prac regen;prac remove;prac rest;prac revive;prac slow;prac terror;prac vit};#14 prac bash;#7 prac concussion;prac death;#12 prac ride;#3 prac pick;#18 prac two;prac swim;#14 prac parry;prac search;#6 prac slashing}

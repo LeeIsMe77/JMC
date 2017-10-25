@@ -1,3 +1,4 @@
+#spit {settings/Main.set}
 #spit {Commands/Global/GlobalAliases.set} {%0} {ns}
 #spit {Commands/Global/GlobalFood.set} {%0} {ns}
 #spit {Commands/Global/GlobalHighlights.set} {%0} {ns}

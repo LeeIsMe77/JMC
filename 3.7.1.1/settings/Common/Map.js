@@ -15,7 +15,7 @@ function MapCollection() {
         var map = new Map(mapName, variableName);
         this.Maps.push(map);
         return map;
-    }
+    };
 
     //Resets the maps collection.
     this.Clear = function() {
@@ -24,7 +24,7 @@ function MapCollection() {
 
     this.Count = function() {
         return this.Maps.length;
-    }
+    };
 
     //Retrieve the map from the maps collection by the specified map name.
     this.GetMap = function(mapName) {
@@ -35,13 +35,13 @@ function MapCollection() {
             }
         }
         return null;
-    }
+    };
 
     this.GetMapByIndex = function(index) {
         if (index <= -1) throw "Index must be greater than or equal to 0.";
         if (index >= this.Maps.length) throw "Index is outside the bounds of the map collection."
         return this.Maps[index];
-    }
+    };
 
     //Retrieve the ordinal index of a map name in the maps collection.
     this.IndexOf = function(mapName) {
@@ -52,7 +52,7 @@ function MapCollection() {
             }
         }
         return -1;
-    }
+    };
 
     //Remove a map from the map collection.
     this.Remove = function(mapName) {

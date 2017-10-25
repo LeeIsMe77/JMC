@@ -12,7 +12,7 @@ if (!Date.prototype.padLeft) {
         }
         return returnString;
     };
-}
+};
 
 if (!Date.prototype.padRight) {
     Date.prototype.padRight = function(paddingChar, length) {
@@ -28,4 +28,16 @@ if (!Date.prototype.padRight) {
         }
         return returnString;
     };
-}
+};
+
+if (!Date.prototype.toFriendlyDate) {
+    Date.prototype.toFriendlyDate = function() {
+        var year = String(this.getFullYear());
+        var month = String(this.getMonth() + 1).padLeft("0", 2);
+        var day = String(this.getDate()).padLeft("0", 2);
+        var hour = String(this.getHours()).padLeft("0", 2);
+        var minute = String(this.getMinutes()).padLeft("0", 2);
+        var second = String(this.getSeconds()).padLeft("0", 2);
+        return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+    };
+};

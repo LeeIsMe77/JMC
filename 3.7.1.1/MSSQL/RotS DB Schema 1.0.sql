@@ -87,6 +87,16 @@ IF OBJECT_ID(N'dbo.Room') IS NULL BEGIN
 END;
 GO
 
+/**********************************************************************************************************\
+Create indexes to optimize specific query scenarios
+\**********************************************************************************************************/
+
+IF INDEXPROPERTY(OBJECT_ID(N'dbo.Character'), N'ixCharacter_CharacterName', N'IndexID') IS NULL BEGIN
+	CREATE NONCLUSTERED INDEX ixCharacter_CharacterName
+		ON dbo.[Character] (CharacterID)
+		INCLUDE (CharacterName);
+END;
+GO
 
 /**********************************************************************************************************\
 Create Functions
@@ -192,6 +202,7 @@ ALTER PROCEDURE dbo.[CharacterCollection.Enumerate] AS BEGIN
 			C.XPNeededToLevel AS XPNeededToLevel,
 			C.DateUpdated AS [LastLogon]
 		FROM dbo.[Character] C
+		ORDER BY C.DateUpdated DESC
 	RETURN @@ERROR
 END;
 GO

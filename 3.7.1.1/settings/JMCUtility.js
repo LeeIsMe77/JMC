@@ -1,6 +1,35 @@
 //*********************************************************************************************************************
 //Helper Functions
 //*********************************************************************************************************************
+function stringToBinary(string, spaceSeparatedOctets) {
+    if (string === null) return null;
+
+    function zeroPad(num) {
+        return "00000000".slice(String(num).length) + num;
+    }
+
+    return string.replace(/[\s\S]/g, function(string) {
+        string = zeroPad(string.charCodeAt().toString(2));
+        return !1 == spaceSeparatedOctets ? string : string + " "
+    });
+};
+
+function binaryToString(string) {
+    if (string === null) return "";
+    // Removes the spaces from the binary string
+    string = string.replace(/\s+/g, '');
+    // Pretty (correct) print binary (add a space every 8 characters)
+    string = string.match(/.{1,8}/g).join(" ");
+
+    var newBinary = string.split(" ");
+    var binaryCode = [];
+
+    for (i = 0; i < newBinary.length; i++) {
+        binaryCode.push(String.fromCharCode(parseInt(newBinary[i], 2)));
+    }
+
+    return binaryCode.join("");
+};
 
 function CalculateColor(currentValue, maximumValue) {
     var percentage = (parseFloat(currentValue) / parseFloat(maximumValue)) * 100.00;
@@ -11,13 +40,13 @@ function CalculateColor(currentValue, maximumValue) {
     } else {
         return AnsiColors.ForegroundRed;
     }
-}
+};
 
 function SendTextMessage(description, message) {
     var MY_PHONE_NUMBER_EMAIL_ADDRESS = "4436225407@vtext.com";
     var wScriptShell = new ActiveXObject("WScript.Shell");
     wScriptShell.Run("C:\\jmc\\3.7.1.1\\emailMessage.bat " + MY_PHONE_NUMBER_EMAIL_ADDRESS + " \"" + description + "\" \"" + message + "\" }", 0, false);
-}
+};
 
 //*********************************************************************************************************************
 //Helper Functions
@@ -31,11 +60,11 @@ function SendTextMessage(description, message) {
 
 function ClearWindow(windowNumber) {
     jmc.Parse("#wclear " + windowNumber);
-}
+};
 
 function WriteEmptyLineToWindow(windowNumber) {
     jmc.Parse("#woutput {" + windowNumber + "}{normal}{  }");
-}
+};
 
 function WriteToWindow(windowNumber, message, color, newLine, includeTimestamp) {
     message = includeTimestamp ?
@@ -45,7 +74,7 @@ function WriteToWindow(windowNumber, message, color, newLine, includeTimestamp) 
     if (newLine) {
         WriteEmptyLineToWindow(windowNumber);
     }
-}
+};
 
 // function WriteSocialToStream(social) {
 //     var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
@@ -56,7 +85,7 @@ function WriteToWindow(windowNumber, message, color, newLine, includeTimestamp) 
 
 function GetTimestamp() {
     return new Date().toTimeString().substring(0, 8);
-}
+};
 
 //*********************************************************************************************************************
 //Writing to Windows and Status Bars
@@ -1037,7 +1066,7 @@ function CreateValeExits() {
     exit = new Exit(ExitTypes.Exit, "");
     room.Exits.push(exit);
     zone.Rooms.push(room);
-
+    //Pale Mists - ew
     room = new Room("Pale Mist");
     exit = new Exit(ExitTypes.Entrance, "ew");
     room.Exits.push(exit);
@@ -1452,7 +1481,7 @@ function CreateValeExits() {
     zone.Rooms.push(room);
 
     return zone;
-}
+};
 //*********************************************************************************************************************
 //End Create Vale Exits
 //*********************************************************************************************************************
@@ -1463,94 +1492,133 @@ function CreateValeExits() {
 //Create Faroth Exits
 //*********************************************************************************************************************
 function CreateFarothExits() {
-
     var zone = new Zone(ZoneTypes.Faroth);
+
     var room = new Room("A Bleached Skeleton");
-    var exit = new Exit(ExitTypes.Entrance, "wsnnsnnnswsen");
+    var exit = new Exit(ExitTypes.Entrance, "swneee");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("A Broad Depression");
+    exit = new Exit(ExitTypes.Entrance, "esnewwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("A Clear Spring");
-    exit = new Exit(ExitTypes.Entrance, "weswsen");
+    exit = new Exit(ExitTypes.Entrance, "wwwwe");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("A Deep Ditch");
+    exit = new Exit(ExitTypes.Entrance, "wwsese");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "wes");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("A Frightening Warning");
-    exit = new Exit(ExitTypes.Entrance, "wsnssen");
+    exit = new Exit(ExitTypes.Entrance, "wnnsse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("A Gushing Spring");
-    exit = new Exit(ExitTypes.Entrance, "nssssen");
+    exit = new Exit(ExitTypes.Entrance, "nssssse");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("A Kill Site");
+    exit = new Exit(ExitTypes.Entrance, "nnsese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("A Lazy Waterfall");
-    exit = new Exit(ExitTypes.Entrance, "seswsen");
+    exit = new Exit(ExitTypes.Entrance, "ewsese");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "ees");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("A Lone Tree");
+    exit = new Exit(ExitTypes.Entrance, "nswneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("A Low Riverbank");
-    exit = new Exit(ExitTypes.Entrance, "eewen");
+    exit = new Exit(ExitTypes.Entrance, "eewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("A Shallow Bog");
-    exit = new Exit(ExitTypes.Entrance, "nwwen");
+    exit = new Exit(ExitTypes.Entrance, "nwwe");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "wsnwesnsn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("A Stone Quarry");
-    exit = new Exit(ExitTypes.Entrance, "swnwwsen");
+    exit = new Exit(ExitTypes.Entrance, "wwwsese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Abused Woods");
-    exit = new Exit(ExitTypes.Entrance, "ennnswsen");
+    exit = new Exit(ExitTypes.Entrance, "ennsese");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "sn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
-    room = new Room("Alter of Bones");
-    exit = new Exit(ExitTypes.Entrance, "snnnsnnnswsen");
+    room = new Room("Altar of Bones");
+    exit = new Exit(ExitTypes.Entrance, "swnnwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Ancient Trees");
-    exit = new Exit(ExitTypes.Entrance, "nswsen");
+    exit = new Exit(ExitTypes.Entrance, "nnnee");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Barren Forest Floor");
+    exit = new Exit(ExitTypes.Entrance, "sese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Bed of Stones");
-    exit = new Exit(ExitTypes.Entrance, "ewen");
+    exit = new Exit(ExitTypes.Entrance, "ewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Before a Cave");
-    exit = new Exit(ExitTypes.Entrance, "wneen");
+    exit = new Exit(ExitTypes.Entrance, "wnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Bending River");
-    exit = new Exit(ExitTypes.Entrance, "ewnsnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "wseewe");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Berry Bushes");
+    exit = new Exit(ExitTypes.Entrance, "nssee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Between Cliffs");
-    exit = new Exit(ExitTypes.Entrance, "ewnssen");
+    exit = new Exit(ExitTypes.Entrance, "nnnsse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Blackened Rocks");
-    exit = new Exit(ExitTypes.Entrance, "wnwwsen");
+    exit = new Exit(ExitTypes.Entrance, "wnwwse");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Bloody Waters");
+    exit = new Exit(ExitTypes.Entrance, "wwseewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Break in the Trees");
-    exit = new Exit(ExitTypes.Entrance, "n");
+    exit = new Exit(ExitTypes.Entrance, "");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "wswwnnwnw");
     room.Exits.push(exit);
@@ -1566,384 +1634,421 @@ function CreateFarothExits() {
     zone.Rooms.push(room);
 
     room = new Room("Broad Forest Trail");
-    exit = new Exit(ExitTypes.Entrance, "nswsen");
+    exit = new Exit(ExitTypes.Entrance, "sese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Broadening River");
-    exit = new Exit(ExitTypes.Entrance, "neewen");
+    exit = new Exit(ExitTypes.Entrance, "neewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Broken Earth");
-    exit = new Exit(ExitTypes.Entrance, "esnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "eeswneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Bundles of Trees");
-    exit = new Exit(ExitTypes.Entrance, "wesesneewen");
+    exit = new Exit(ExitTypes.Entrance, "essee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Burnt Trees");
-    exit = new Exit(ExitTypes.Entrance, "essnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "essewnee");
     room.Exits.push(exit);
-    zone.Rooms.push(room);
-
-    room = new Room("Burrowing Trails");
-    exit = new Exit(ExitTypes.Entrance, "nwsewnssen");
+    exit = new Exit(ExitTypes.Mumak, "sww");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Buzzing Woods");
-    exit = new Exit(ExitTypes.Entrance, "swewwen");
+    exit = new Exit(ExitTypes.Entrance, "swewwe");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Burrowing Trails");
+    exit = new Exit(ExitTypes.Entrance, "wsneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Calm River");
-    exit = new Exit(ExitTypes.Entrance, "wneewen");
+    exit = new Exit(ExitTypes.Entrance, "wneewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Circle of Maples");
-    exit = new Exit(ExitTypes.Entrance, "snewwen");
+    exit = new Exit(ExitTypes.Entrance, "snewwe");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "wwwnwnnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Circle of Rocks");
-    exit = new Exit(ExitTypes.Entrance, "wennswewwen");
-    room.Exits.push(exit);
-    zone.Rooms.push(room);
-
-    room = new Room("Clear River");
-    exit = new Exit(ExitTypes.Entrance, "esneewen");
+    exit = new Exit(ExitTypes.Entrance, "snnnwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Clearing in the Woods");
-    exit = new Exit(ExitTypes.Entrance, "nssssswsen");
+    exit = new Exit(ExitTypes.Entrance, "newsneee");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Clear River");
+    exit = new Exit(ExitTypes.Entrance, "esneewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Confined Feeling");
-    exit = new Exit(ExitTypes.Entrance, "nnswsen");
+    exit = new Exit(ExitTypes.Entrance, "nsese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Coniferous Trees");
-    exit = new Exit(ExitTypes.Entrance, "newsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "nssse");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Cracked Earth");
+    exit = new Exit(ExitTypes.Entrance, "wneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Crowded Foliage");
-    exit = new Exit(ExitTypes.Entrance, "ennswewwen");
+    exit = new Exit(ExitTypes.Entrance, "sswneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Crumbling Woods");
-    exit = new Exit(ExitTypes.Entrance, "enssssswsen");
+    exit = new Exit(ExitTypes.Entrance, "ssenewse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Crushed Trees");
-    exit = new Exit(ExitTypes.Entrance, "eewsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "snwewwe");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Cryptic Stones");
+    exit = new Exit(ExitTypes.Entrance, "nnnwwe");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "ene");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Cursed Woods");
-    exit = new Exit(ExitTypes.Entrance, "snnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "eswneee");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "www");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Damp Forest Floor");
-    exit = new Exit(ExitTypes.Entrance, "esen");
-    room.Exits.push(exit);
-    exit = new Exit(ExitTypes.Mumak, "wwnnwnw");
+    exit = new Exit(ExitTypes.Entrance, "ese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Dancing Eyes");
-    exit = new Exit(ExitTypes.Entrance, "wwnsswsen");
-    room.Exits.push(exit);
-    zone.Rooms.push(room);
-
-    room = new Room("Dark Dreary Forest");
-    exit = new Exit(ExitTypes.Entrance, "sssen");
-    room.Exits.push(exit);
-    zone.Rooms.push(room);
-
-    room = new Room("Dark Forest Path");
-    exit = new Exit(ExitTypes.Entrance, "nssen");
-    room.Exits.push(exit);
-    zone.Rooms.push(room);
-
-    room = new Room("Dark River Waters");
-    exit = new Exit(ExitTypes.Entrance, "nnweewen");
+    exit = new Exit(ExitTypes.Entrance, "wsnwnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Dark and Dreadful Forest");
-    exit = new Exit(ExitTypes.Entrance, "wesen");
+    exit = new Exit(ExitTypes.Entrance, "wese");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Dark Dreary Forest");
+    exit = new Exit(ExitTypes.Entrance, "sssse");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Dark Forest Path");
+    exit = new Exit(ExitTypes.Entrance, "nsse");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Dark River Waters");
+    exit = new Exit(ExitTypes.Entrance, "eseewe");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Dark and Dreadful Forest");
+    exit = new Exit(ExitTypes.Entrance, "wese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Dead Trees");
-    exit = new Exit(ExitTypes.Entrance, "nwwsen");
+    exit = new Exit(ExitTypes.Entrance, "nwwse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Deafening Current");
-    exit = new Exit(ExitTypes.Entrance, "weewen");
+    exit = new Exit(ExitTypes.Entrance, "weewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Decorative Skeletons");
-    exit = new Exit(ExitTypes.Entrance, "esnnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "eswnnwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Decrepit Shack");
-    exit = new Exit(ExitTypes.Entrance, "nsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "wwnnsse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Deep Dark Pond");
-    exit = new Exit(ExitTypes.Entrance, "eneen");
+    exit = new Exit(ExitTypes.Entrance, "enee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Deepening River");
-    exit = new Exit(ExitTypes.Entrance, "seewen");
+    exit = new Exit(ExitTypes.Entrance, "seewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Deepening Waters");
-    exit = new Exit(ExitTypes.Entrance, "esneewen");
+    exit = new Exit(ExitTypes.Entrance, "swewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Dense Canopy");
-    exit = new Exit(ExitTypes.Entrance, "enwewwen");
+    exit = new Exit(ExitTypes.Entrance, "enwewwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Dimly-lit Woods");
-    exit = new Exit(ExitTypes.Entrance, "ewewen");
+    exit = new Exit(ExitTypes.Entrance, "ewewe");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "se");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Disappearing Trail");
-    exit = new Exit(ExitTypes.Entrance, "sssswsen");
+    exit = new Exit(ExitTypes.Entrance, "sssnnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Dry Forest");
-    exit = new Exit(ExitTypes.Entrance, "ssssen");
+    exit = new Exit(ExitTypes.Entrance, "ssssse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Echo of Silence");
-    exit = new Exit(ExitTypes.Entrance, "eensewnssen");
+    exit = new Exit(ExitTypes.Entrance, "wsese");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "es");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Eerie Vapors");
-    exit = new Exit(ExitTypes.Entrance, "nnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "newnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Endless Trees");
-    exit = new Exit(ExitTypes.Entrance, "ewwen");
+    exit = new Exit(ExitTypes.Entrance, "ewwe");
     room.Exits.push(exit);
-    zone.Rooms.push(room);
-
-    room = new Room("Entrance to the Hidden Vale");
-    exit = new Exit(ExitTypes.Entrance, "enneeseeneenesene");
+    exit = new Exit(ExitTypes.Mumak, "nse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Eryn Lasgalien");
-    exit = new Exit(ExitTypes.Entrance, "ensewnssen");
+    exit = new Exit(ExitTypes.Entrance, "nwwwse");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "s");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Eryn Vorn");
-    exit = new Exit(ExitTypes.Entrance, "wsnwnnswewwen");
+    exit = new Exit(ExitTypes.Entrance, "ewese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Eternal Darkness");
-    exit = new Exit(ExitTypes.Entrance, "wewewen");
+    exit = new Exit(ExitTypes.Entrance, "wewewe");
     room.Exits.push(exit);
-    exit = new Exit(ExitTypes.Mumak, "snsn");
+    exit = new Exit(ExitTypes.Mumak, "wse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Faint Forest Trail");
-    exit = new Exit(ExitTypes.Entrance, "ewsen");
+    exit = new Exit(ExitTypes.Entrance, "ewse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Fallen Logs");
-    exit = new Exit(ExitTypes.Entrance, "ewsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "eewwewwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Fields of Death");
-    exit = new Exit(ExitTypes.Entrance, "nenwsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "newsneee");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "eww");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Fiery Forest");
-    exit = new Exit(ExitTypes.Entrance, "nwwewwen");
+    exit = new Exit(ExitTypes.Entrance, "enewnee");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "nwesnsn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Flowerless Fields");
-    exit = new Exit(ExitTypes.Entrance, "swsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "neewse");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "w");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Foggy Woods");
-    exit = new Exit(ExitTypes.Entrance, "nsnwnnswewwen");
+    exit = new Exit(ExitTypes.Entrance, "nwewse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Forest Loops");
-    exit = new Exit(ExitTypes.Entrance, "ssnssen");
+    exit = new Exit(ExitTypes.Entrance, "ssnsse");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "nsn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Forest of Dawn");
-    exit = new Exit(ExitTypes.Entrance, "wwewwen");
+    exit = new Exit(ExitTypes.Entrance, "wwewwe");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "wesnsn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Forest of Despair");
-    exit = new Exit(ExitTypes.Entrance, "wnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "ewnnsse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Forest of Shadows");
-    exit = new Exit(ExitTypes.Entrance, "snsswsen");
+    exit = new Exit(ExitTypes.Entrance, "sewnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Forest of Thorns");
-    exit = new Exit(ExitTypes.Entrance, "nwnnwsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "wenewse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Forest of Twilight");
-    exit = new Exit(ExitTypes.Entrance, "sesneewen");
+    exit = new Exit(ExitTypes.Entrance, "wessee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Forested Valley");
-    exit = new Exit(ExitTypes.Entrance, "nnewwen");
+    exit = new Exit(ExitTypes.Entrance, "nnewwe");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Forgotten Forest");
+    exit = new Exit(ExitTypes.Entrance, "ssewnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Forsaken Forest");
-    exit = new Exit(ExitTypes.Entrance, "nsssnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "weewse");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "wsnes");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Cave, "nnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Fresh Droppings");
-    exit = new Exit(ExitTypes.Entrance, "nwewwen");
+    exit = new Exit(ExitTypes.Entrance, "nwewwe");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "ne");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Cave, "neennnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Furry Trees");
-    exit = new Exit(ExitTypes.Entrance, "wnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "snwnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Game Trail");
-    exit = new Exit(ExitTypes.Entrance, "wwsen");
+    exit = new Exit(ExitTypes.Entrance, "wwse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Gloomy Woods");
-    exit = new Exit(ExitTypes.Entrance, "snssen");
+    exit = new Exit(ExitTypes.Entrance, "nnsse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Glowing Eyes");
-    exit = new Exit(ExitTypes.Entrance, "wnnwsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "senewse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Golden Leaves");
-    exit = new Exit(ExitTypes.Entrance, "wnwewwen");
+    exit = new Exit(ExitTypes.Entrance, "wnwewwe");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "wne");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Grassy Knoll");
-    exit = new Exit(ExitTypes.Entrance, "nnenwsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "sssnsse");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Groves of Oaks");
+    exit = new Exit(ExitTypes.Entrance, "eee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Heart of Darkness");
-    exit = new Exit(ExitTypes.Entrance, "ssnssen");
-    room.Exits.push(exit);
-    exit = new Exit(ExitTypes.Mumak, "wnw");
+    exit = new Exit(ExitTypes.Entrance, "ewwse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Holly Bushes");
-    exit = new Exit(ExitTypes.Entrance, "ennnswsen");
+    exit = new Exit(ExitTypes.Entrance, "newnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Hot Geysers");
-    exit = new Exit(ExitTypes.Entrance, "wssswsen");
+    exit = new Exit(ExitTypes.Entrance, "wssnnee");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "es");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Imprinted Tracks");
-    exit = new Exit(ExitTypes.Entrance, "ewnwewen");
+    exit = new Exit(ExitTypes.Entrance, "sene");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Intersecting Trails");
-    exit = new Exit(ExitTypes.Entrance, "nnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "eesnwnee");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "nsnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Intimidating Trees");
-    exit = new Exit(ExitTypes.Entrance, "snssssswsen");
+    exit = new Exit(ExitTypes.Entrance, "essewnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Jagged Rocks");
-    exit = new Exit(ExitTypes.Entrance, "wessnssen");
+    exit = new Exit(ExitTypes.Entrance, "nsnewwe");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "nwwwnwnnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
-    room = new Room("Kill Site");
-    exit = new Exit(ExitTypes.Entrance, "nnnswsen");
-    room.Exits.push(exit);
-    zone.Rooms.push(room);
-
     room = new Room("Layers of Leaves");
-    exit = new Exit(ExitTypes.Entrance, "nnssssswsen");
+    exit = new Exit(ExitTypes.Entrance, "snnwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
@@ -1957,182 +2062,199 @@ function CreateFarothExits() {
     zone.Rooms.push(room);
 
     room = new Room("Leaving the River");
-    exit = new Exit(ExitTypes.Entrance, "wewen");
+    exit = new Exit(ExitTypes.Entrance, "wewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Looming Trees");
-    exit = new Exit(ExitTypes.Entrance, "een");
-    room.Exits.push(exit);
-    zone.Rooms.push(room);
-
-    room = new Room("Lost Woods");
-    exit = new Exit(ExitTypes.Entrance, "wssssen");
+    exit = new Exit(ExitTypes.Entrance, "ee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Lost in the Forest");
-    exit = new Exit(ExitTypes.Entrance, "ewsen");
+    exit = new Exit(ExitTypes.Entrance, "newse");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Lost Woods");
+    exit = new Exit(ExitTypes.Entrance, "wssssse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Luminous Forest");
-    exit = new Exit(ExitTypes.Entrance, "snssen");
+    exit = new Exit(ExitTypes.Entrance, "snsse");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "nnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Marked Grave");
-    exit = new Exit(ExitTypes.Entrance, "eewsen");
+    exit = new Exit(ExitTypes.Entrance, "eewse");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "snes");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Massive Cold Campfire");
-    exit = new Exit(ExitTypes.Entrance, "esnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "esnsnnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Massive Hives");
-    exit = new Exit(ExitTypes.Entrance, "wnnssssswsen");
+    exit = new Exit(ExitTypes.Entrance, "snwewse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Massive Nests");
-    exit = new Exit(ExitTypes.Entrance, "ewnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "esnwnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Massive Paw Prints");
-    exit = new Exit(ExitTypes.Entrance, "sen");
+    exit = new Exit(ExitTypes.Entrance, "se");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "nnwnw");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Massive Pines");
-    exit = new Exit(ExitTypes.Entrance, "ewsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "nweewse");
     room.Exits.push(exit);
-    exit = new Exit(ExitTypes.Mumak, "snwesnsn");
+    exit = new Exit(ExitTypes.Mumak, "nwsnes");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Cave, "nnnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Menacing Trees");
-    exit = new Exit(ExitTypes.Entrance, "wewwen");
+    exit = new Exit(ExitTypes.Entrance, "wewwe");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "esnsn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Misplaced Boulder");
-    exit = new Exit(ExitTypes.Entrance, "newwen");
+    exit = new Exit(ExitTypes.Entrance, "newwe");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "snwwwnwnnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Moldy Mushrooms");
-    exit = new Exit(ExitTypes.Entrance, "sswsen");
+    exit = new Exit(ExitTypes.Entrance, "ssnnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Monument Hill");
-    exit = new Exit(ExitTypes.Entrance, "nsssen");
+    exit = new Exit(ExitTypes.Entrance, "nsssse");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Moss-covered Trees");
+    exit = new Exit(ExitTypes.Entrance, "ne");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Motionless Trees");
-    exit = new Exit(ExitTypes.Entrance, "nwnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "snwwse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Mounds of Sand");
-    exit = new Exit(ExitTypes.Entrance, "ssesneewen");
+    exit = new Exit(ExitTypes.Entrance, "nneewse");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "nw");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Muddy Forest Trail");
-    exit = new Exit(ExitTypes.Entrance, "nwewen");
+    exit = new Exit(ExitTypes.Entrance, "nwewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Muddy Riverway");
-    exit = new Exit(ExitTypes.Entrance, "sesneewen");
+    exit = new Exit(ExitTypes.Entrance, "ewneewe");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Old Willow");
+    exit = new Exit(ExitTypes.Entrance, "esene");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Overgrown Forest Path");
-    exit = new Exit(ExitTypes.Entrance, "nsswsen");
+    exit = new Exit(ExitTypes.Entrance, "ewnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Overgrown Graveyard");
-    exit = new Exit(ExitTypes.Entrance, "wen");
+    exit = new Exit(ExitTypes.Entrance, "we");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Pale Mist");
-    exit = new Exit(ExitTypes.Entrance, "nsnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "nsewnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Parched Forest");
-    exit = new Exit(ExitTypes.Entrance, "swewwen");
+    exit = new Exit(ExitTypes.Entrance, "eewese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Patches of Mushrooms");
-    exit = new Exit(ExitTypes.Entrance, "nnwsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "nwsneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Piles of Acorns");
-    exit = new Exit(ExitTypes.Entrance, "nsnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "enweewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Placid Creek");
-    exit = new Exit(ExitTypes.Entrance, "nwsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "ene");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Poisonous Thorns");
-    exit = new Exit(ExitTypes.Entrance, "wnweewen");
+    exit = new Exit(ExitTypes.Entrance, "wnweewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Pools of Blood");
-    exit = new Exit(ExitTypes.Entrance, "wsnssssswsen");
+    exit = new Exit(ExitTypes.Entrance, "nwwwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Puddles of Mud");
-    exit = new Exit(ExitTypes.Entrance, "ewnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "nsnewwse");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "nn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
-    room = new Room("Rabbit Holes");
-    exit = new Exit(ExitTypes.Entrance, "nnnsnnnswsen");
+    room = new Room("Quickening River");
+    exit = new Exit(ExitTypes.Entrance, "nsneee");
     room.Exits.push(exit);
-    exit = new Exit(ExitTypes.Mumak, "wnwsnwesnsn");
+    zone.Rooms.push(room);
+
+    room = new Room("Rabbit Holes");
+    exit = new Exit(ExitTypes.Entrance, "wnnwwe");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "nnsnn");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Cave, "wnwnnnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Raging River");
-    exit = new Exit(ExitTypes.Entrance, "wnsnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "sweewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Rainbow Woods");
-    exit = new Exit(ExitTypes.Entrance, "ssnnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "nnwwe");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "nwsnwesnsn");
     room.Exits.push(exit);
@@ -2141,7 +2263,7 @@ function CreateFarothExits() {
     zone.Rooms.push(room);
 
     room = new Room("Rent Oaks");
-    exit = new Exit(ExitTypes.Entrance, "nwneen");
+    exit = new Exit(ExitTypes.Entrance, "nwnee");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "wnnn");
     room.Exits.push(exit);
@@ -2150,296 +2272,314 @@ function CreateFarothExits() {
     zone.Rooms.push(room);
 
     room = new Room("Rocky Forest Pathway");
-    exit = new Exit(ExitTypes.Entrance, "snwnnswewwen");
+    exit = new Exit(ExitTypes.Entrance, "wewse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Rotting Carcass");
-    exit = new Exit(ExitTypes.Entrance, "wnwewen");
+    exit = new Exit(ExitTypes.Entrance, "wnwewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Rows of Stumps");
-    exit = new Exit(ExitTypes.Entrance, "sseen");
+    exit = new Exit(ExitTypes.Entrance, "ssee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Rustling Leaves");
-    exit = new Exit(ExitTypes.Entrance, "esesneewen");
+    exit = new Exit(ExitTypes.Entrance, "nwnwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Sand Dunes");
-    exit = new Exit(ExitTypes.Entrance, "ewsnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "wneewse");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "ww");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Sandy Fields");
-    exit = new Exit(ExitTypes.Entrance, "sesewnssen");
+    exit = new Exit(ExitTypes.Entrance, "sneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Sandy Knoll");
-    exit = new Exit(ExitTypes.Entrance, "nsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "wnsneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Scattered Bones");
-    exit = new Exit(ExitTypes.Entrance, "nennnswsen");
+    exit = new Exit(ExitTypes.Entrance, "swese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Scene of Struggle");
-    exit = new Exit(ExitTypes.Entrance, "swnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "ewwwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Shadowed Gully");
-    exit = new Exit(ExitTypes.Entrance, "sewnssen");
+    exit = new Exit(ExitTypes.Entrance, "wnssse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Shallow Riverway");
-    exit = new Exit(ExitTypes.Entrance, "sneesen");
+    exit = new Exit(ExitTypes.Entrance, "sneewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Sharp Thorns");
-    exit = new Exit(ExitTypes.Entrance, "nsswsen");
+    exit = new Exit(ExitTypes.Entrance, "nsnnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Shifting Sands");
-    exit = new Exit(ExitTypes.Entrance, "wsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "nsneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Shining Waters");
-    exit = new Exit(ExitTypes.Entrance, "nsneewen");
+    exit = new Exit(ExitTypes.Entrance, "seseewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Silent Path");
-    exit = new Exit(ExitTypes.Entrance, "nnsnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "wnwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Skeletal Trees");
-    exit = new Exit(ExitTypes.Entrance, "snsswsen");
+    exit = new Exit(ExitTypes.Entrance, "snsnnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Sleepy Forest");
-    exit = new Exit(ExitTypes.Entrance, "wewwen");
+    exit = new Exit(ExitTypes.Entrance, "wewwe");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "e");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Smell of Rot");
-    exit = new Exit(ExitTypes.Entrance, "wnssssswsen");
+    exit = new Exit(ExitTypes.Entrance, "nnwwse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Soft Dirt");
-    exit = new Exit(ExitTypes.Entrance, "sewnssen");
+    exit = new Exit(ExitTypes.Entrance, "swneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Sparkling River");
-    exit = new Exit(ExitTypes.Entrance, "sewnsnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "swseewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Splintered Trees");
-    exit = new Exit(ExitTypes.Entrance, "neen");
+    exit = new Exit(ExitTypes.Entrance, "nee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Steep Clifface");
-    exit = new Exit(ExitTypes.Entrance, "nsnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "nsewnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Stench of Blood");
-    exit = new Exit(ExitTypes.Entrance, "ssssswsen");
+    exit = new Exit(ExitTypes.Entrance, "ewsneee");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "nes");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Streams of Wildflowers");
-    exit = new Exit(ExitTypes.Entrance, "nsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "esnewwe");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "snn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Stuffy Woods");
-    exit = new Exit(ExitTypes.Entrance, "ewwen");
+    exit = new Exit(ExitTypes.Entrance, "ewwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Swaying Treetops");
-    exit = new Exit(ExitTypes.Entrance, "ssnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "ssewnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Swirling Breezes");
-    exit = new Exit(ExitTypes.Entrance, "nennswewwen");
+    exit = new Exit(ExitTypes.Entrance, "nwsneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Swirling Waters");
-    exit = new Exit(ExitTypes.Entrance, "nweewen");
+    exit = new Exit(ExitTypes.Entrance, "nweewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Tangled Roots");
-    exit = new Exit(ExitTypes.Entrance, "essnssen");
+    exit = new Exit(ExitTypes.Entrance, "eewwse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Tangled Underbrush");
-    exit = new Exit(ExitTypes.Entrance, "nsnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "wewwwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Taur-en-Faroth");
-    exit = new Exit(ExitTypes.Entrance, "en");
+    exit = new Exit(ExitTypes.Entrance, "e");
     room.Exits.push(exit);
-    exit = new Exit(ExitTypes.Mumak, "swwnnwnw");
+    exit = new Exit(ExitTypes.Mumak, "nnnsnn");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Cave, "nwnwnnnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Taur-im-Duinath");
-    exit = new Exit(ExitTypes.Entrance, "ssswsen");
+    exit = new Exit(ExitTypes.Entrance, "ssnnee");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "wsn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Thick Brushcover");
-    exit = new Exit(ExitTypes.Entrance, "swsen");
+    exit = new Exit(ExitTypes.Entrance, "nnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Thick Gnarled Trees");
-    exit = new Exit(ExitTypes.Entrance, "swssssen");
+    exit = new Exit(ExitTypes.Entrance, "weswneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Thin Birches");
-    exit = new Exit(ExitTypes.Entrance, "nnnsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "ensewnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Thinning Forest");
-    exit = new Exit(ExitTypes.Entrance, "ssen");
+    exit = new Exit(ExitTypes.Entrance, "sse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Thorned Vines");
-    exit = new Exit(ExitTypes.Entrance, "seen");
+    exit = new Exit(ExitTypes.Entrance, "see");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Towering Elms");
-    exit = new Exit(ExitTypes.Entrance, "nswewwen");
+    exit = new Exit(ExitTypes.Entrance, "neewese");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Tracks in the Sand");
-    exit = new Exit(ExitTypes.Entrance, "nwsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "weewwse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Trail of Blood");
-    exit = new Exit(ExitTypes.Entrance, "wsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "ewwewwe");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "wwnwnnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Trail of Drool");
-    exit = new Exit(ExitTypes.Entrance, "sswsen");
+    exit = new Exit(ExitTypes.Entrance, "snnee");
+    room.Exits.push(exit);
+    exit = new Exit(ExitTypes.Mumak, "ees");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Twisted Branches");
-    exit = new Exit(ExitTypes.Entrance, "neewsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "snewwse");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "n");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Twisted Roots");
-    exit = new Exit(ExitTypes.Entrance, "snsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "enwwwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Twisting Forest Trail");
-    exit = new Exit(ExitTypes.Entrance, "esnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "seewnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Undisturbed Forest");
-    exit = new Exit(ExitTypes.Entrance, "eswsen");
+    exit = new Exit(ExitTypes.Entrance, "wwwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Uneven Forest Floor");
-    exit = new Exit(ExitTypes.Entrance, "wwwsen");
+    exit = new Exit(ExitTypes.Entrance, "wwwse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Vacant Treetops");
-    exit = new Exit(ExitTypes.Entrance, "ewsnnnswsen");
+    exit = new Exit(ExitTypes.Entrance, "ssse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Vanishing Forest Trail");
-    exit = new Exit(ExitTypes.Entrance, "wsen");
+    exit = new Exit(ExitTypes.Entrance, "wse");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "wnnwnw");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Vine-covered River");
-    exit = new Exit(ExitTypes.Entrance, "nseen");
+    exit = new Exit(ExitTypes.Entrance, "nsee");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Walls of Cones");
+    exit = new Exit(ExitTypes.Entrance, "nesene");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Wall of Rock");
-    exit = new Exit(ExitTypes.Entrance, "wewnssen");
-    room.Exits.push(exit);
-    exit = new Exit(ExitTypes.Mumak, "nwnw");
+    exit = new Exit(ExitTypes.Entrance, "newwse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Wall of Vines");
-    exit = new Exit(ExitTypes.Entrance, "wwen");
+    exit = new Exit(ExitTypes.Entrance, "wwe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Warm Breeze");
-    exit = new Exit(ExitTypes.Entrance, "eewsen");
+    exit = new Exit(ExitTypes.Entrance, "enewse");
+    room.Exits.push(exit);
+    zone.Rooms.push(room);
+
+    room = new Room("Waves of Sand");
+    exit = new Exit(ExitTypes.Entrance, "ewsneee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Webbed Trees");
-    exit = new Exit(ExitTypes.Entrance, "nwnnswewwen");
+    exit = new Exit(ExitTypes.Entrance, "ewewewe");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Weedy Path");
-    exit = new Exit(ExitTypes.Entrance, "ensswsen");
+    exit = new Exit(ExitTypes.Entrance, "eewnee");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Wet Forest");
-    exit = new Exit(ExitTypes.Entrance, "nnnenwsewnssen");
+    exit = new Exit(ExitTypes.Entrance, "nsssnsse");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Whispering Trees");
-    exit = new Exit(ExitTypes.Entrance, "sssnsswsen");
+    exit = new Exit(ExitTypes.Entrance, "nnwnee");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "nwnnn");
     room.Exits.push(exit);
@@ -2448,25 +2588,22 @@ function CreateFarothExits() {
     zone.Rooms.push(room);
 
     room = new Room("Wild Brush");
-    exit = new Exit(ExitTypes.Entrance, "nnswewwen");
+    exit = new Exit(ExitTypes.Entrance, "wnewwe");
     room.Exits.push(exit);
     exit = new Exit(ExitTypes.Mumak, "wsnwwwnwnnn");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     room = new Room("Withered Branches");
-    exit = new Exit(ExitTypes.Entrance, "esewnssen");
+    exit = new Exit(ExitTypes.Entrance, "neee");
     room.Exits.push(exit);
-    zone.Rooms.push(room);
-
-    room = new Room("Withered Branchs");
-    exit = new Exit(ExitTypes.Entrance, "neeen");
+    exit = new Exit(ExitTypes.Mumak, "www");
     room.Exits.push(exit);
     zone.Rooms.push(room);
 
     return zone;
 
-}
+};
 //*********************************************************************************************************************
 //End Create Faroth Exits
 //*********************************************************************************************************************

@@ -1,0 +1,35 @@
+#var {isWieldingDagger}{1}
+#hotkey {F10}{ #if {$isWieldingDagger==0}{ #var {isWieldingDagger}{1};rem sword;wield claw}{ #var {isWieldingDagger}{0};rem claw;wield sword } }
+
+#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea soft}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem soft;wea all.mail} {default}
+
+#var {isWearingArmor}{0}
+#hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
+
+#var {watersource}{waterskin}
+#var {foodsource}{waybread}
+
+#hotkey {Ctrl+P}{cast light}
+#hotkey {Ctrl+O}{cast chill}
+#hotkey {Ctrl+Q}{cast fire}
+#hotkey {Ctrl+I}{cast 'lightning strike'}
+#hotkey {Ctrl+H}{cast flash}
+#hotkey {Ctrl+J}{cast cone}
+
+
+#alias {p}{cast 'chill ray'}
+#hotkey {Ctrl+P}{prep 'chill ray'}
+
+#alias {o}{cast 'cone of cold'}
+#hotkey {Ctrl+O}{prep 'cone of cold'}
+
+#alias {q}{cast 'lightning bolt'}
+#hotkey {Ctrl+Q}{prep 'lightning bolt'}
+
+#alias {z}{cast 'lightning strike'}
+#hotkey {Ctrl+Z}{prep 'lightning strike'}
+
+#hotkey {Ctrl+I}{cast 'firebolt'}
+#hotkey {Ctrl+J}{cast 'flash'}
+#hotkey {Ctrl+S}{cast 'shield'}

@@ -1,53 +1,59 @@
 function Character(characterID, characterName) {
-    this.LogonTime = new Date();
-    this.LastLogon = null;
+
     this.CharacterID = characterID;
     this.CharacterName = characterName;
+
     this.Password = null;
+
     this.Alignment = 0;
-    this.Gender = "Unknown";
-    this.Race = "Unknown";
-    this.Level = 0;
-    this.WarriorLevel = 0;
-    this.RangerLevel = 0;
-    this.MysticLevel = 0;
-    this.MageLevel = 0;
-    this.Specialization = "None";
-    this.XPNeededToLevel = 0;
-    this.XPGained = 0;
-    this.Height = 0;
-    this.Weight = 0;
-    this.CarriedWeight = 0;
-    this.CurrentHitPoints = 0;
-    this.CurrentStamina = 0;
-    this.CurrentMoves = 0;
-    this.MaxHitPoints = 0;
-    this.MaxStamina = 0;
-    this.MaxMoves = 0;
-    this.Spirit = 0;
-    this.CurrentStrength = 0;
-    this.CurrentIntelligence = 0;
-    this.CurrentWill = 0;
-    this.CurrentDexterity = 0;
-    this.CurrentConstitution = 0;
-    this.CurrentLearningAbility = 0;
-    this.MaxStrength = 0;
-    this.MaxIntelligence = 0;
-    this.MaxWill = 0;
-    this.MaxDexterity = 0;
-    this.MaxConstitution = 0;
-    this.MaxLearningAbility = 0;
-    this.OffensiveBonus = 0;
-    this.DodgeBonus = 0;
-    this.ParryBonus = 0;
     this.AttackSpeed = 0;
+    this.CarriedWeight = 0;
+    this.CurrentConstitution = 0;
+    this.CurrentDexterity = 0;
+    this.CurrentHitPoints = 0;
+    this.CurrentIntelligence = 0;
+    this.CurrentLearningAbility = 0;
+    this.CurrentMoves = 0;
+    this.CurrentStamina = 0;
+    this.CurrentStrength = 0;
+    this.CurrentWill = 0;
+    this.DodgeBonus = 0;
+    this.Gender = "Unknown";
+    this.Height = 0;
+    this.LastLogon = null;
+    this.Level = 0;
+    this.LogonTime = new Date();
+    this.MageLevel = 0;
+    this.MaxConstitution = 0;
+    this.MaxDexterity = 0;
+    this.MaxHitPoints = 0;
+    this.MaxIntelligence = 0;
+    this.MaxLearningAbility = 0;
+    this.MaxMoves = 0;
+    this.MaxStamina = 0;
+    this.MaxStrength = 0;
+    this.MaxWill = 0;
+    this.MysticLevel = 0;
+    this.OffensiveBonus = 0;
+    this.ParryBonus = 0;
+    this.Race = "Unknown";
+    this.RangerLevel = 0;
+    this.Specialization = "None";
+    this.Spirit = 0;
+    this.WarriorLevel = 0;
+    this.Weight = 0;
+    this.XPGained = 0;
+    this.XPNeededToLevel = 0;
+
     this.DefenseSum = function() {
         return parseInt(this.ParryBonus) + parseInt(this.DodgeBonus);
     };
+
     this.StatSum = function() {
         return parseInt(this.MaxStrength) + parseInt(this.MaxIntelligence) + parseInt(this.MaxWill) +
             parseInt(this.MaxDexterity) + parseInt(this.MaxConstitution) + parseInt(this.MaxLearningAbility);
     };
+
     this.Update = function() {
         var databaseConnection = new ActiveXObject("ADODB.Connection");
         var command = new ActiveXObject("ADODB.Command");
@@ -55,6 +61,8 @@ function Character(characterID, characterName) {
         try {
 
             databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
+            // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
+            // databaseConnection.ConnectionString = "Provider=MSDASQL.1;Persist Security Info=True;Dsn=RotS;UserName=JMCMudClient;Password=P@ssw0rd";
             databaseConnection.Open();
 
             command.ActiveConnection = databaseConnection;
@@ -104,13 +112,13 @@ Character.Initialize = function(characterID) {
     try {
 
         databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
+        // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
+        // databaseConnection.ConnectionString = "Provider=MSDASQL.1;Persist Security Info=True;Dsn=RotS;UserName=JMCMudClient;Password=P@ssw0rd";
         databaseConnection.Open();
 
         command.ActiveConnection = databaseConnection;
         command.CommandType = 4;
         command.CommandText = "dbo.[Character.Initialize]";
-
-        jmc.ShowMe("Pre execute");
 
         var parameter = command.CreateParameter("@CharacterID", ADODBParameterType.Int, ADODBParameterDirection.Input);
         parameter.Value = parseInt(characterID);
@@ -134,8 +142,6 @@ Character.Initialize = function(characterID) {
 
         command.Execute();
 
-        jmc.ShowMe("Command executed.");
-
         var character = new Character(characterID, command.Parameters("@CharacterName").Value);
         character.Password = command.Parameters("@Password").Value;
         character.Race = command.Parameters("@Race").Value;
@@ -153,8 +159,6 @@ Character.Initialize = function(characterID) {
         return character;
 
     } catch (caught) {
-
-        jmc.ShowMe(caught.message);
         throw new JMCException("Failure Initializing Character: " + caught.message);
     } finally {
         // clean up   

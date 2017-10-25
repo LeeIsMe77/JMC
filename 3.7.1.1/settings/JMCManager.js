@@ -1,232 +1,12 @@
 //*********************************************************************************************************************
-//SQL Connection
-//*********************************************************************************************************************
-var connection = null;
-//*********************************************************************************************************************
-//End SQL Connection
-//*********************************************************************************************************************
-
-
-
-//*********************************************************************************************************************
-//Login
-//*********************************************************************************************************************
-function Login() {
-    try {
-        //Only allow login if the player is currently not signed in.
-        if (_currentCharacter !== null) return;
-
-        var shell = new ActiveXObject("WScript.Shell");
-        var wshShellExec = shell.Exec("wscript.exe //Nologo C:\\jmc\\3.7.1.1\\settings\\Controls\\CharacterNameInputBox.vbs");
-        var characterName = "";
-        while (!wshShellExec.StdOut.AtEndOfStream) {
-            characterName = wshShellExec.StdOut.ReadLine();
-        }
-
-        if (characterName === null || characterName === "") return;
-        var targetCharacter = CharacterCollection.Enumerate().GetCharacter(characterName);
-
-        if (targetCharacter === null) {
-            //A new character must be created.
-            _currentCharacter = CharacterCollection.Add(characterName);
-        } else {
-            _currentCharacter = Character.Initialize(targetCharacter.CharacterID);
-        }
-        jmc.Send(_currentCharacter.CharacterName);
-        if (_currentCharacter.Password !== null && _currentCharacter.Password !== "") {
-            jmc.Parse("#daa " + _currentCharacter.Password + ";1");
-        }
-
-    } catch (caught) {
-        var message = "Failure Logging In: " + caught.message;
-        // JMCException.LogException(message);
-        JMCException.LogException(message);
-        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
-    }
-}
-//*********************************************************************************************************************
-//End Login
-//*********************************************************************************************************************
-
-
-
-//*********************************************************************************************************************
-//Cascaded Event Handlers (From JMCEvents)
-//*********************************************************************************************************************
-function DisplayCharacters() {
-    try {
-        var characterCollection = CharacterCollection.Enumerate();
-        if (characterCollection.Characters.length > 0) {
-            jmc.ShowMe("+" + "-".padRight("-", 149) + "+")
-            jmc.ShowMe("| Character Name".padRight(" ", 30) + "| Race".padRight(" ", 30) + "| Level".padRight(" ", 30) + "| XP Needed To Level".padRight(" ", 30) + "| Last Logon".padRight(" ", 30) + "|");
-            jmc.ShowMe("+" + "-".padRight("-", 149) + "+")
-            for (var index = 0; index < characterCollection.Characters.length; index++) {
-                var character = characterCollection.Characters[index];
-                var dateString = new Date(character.LastLogon).toDateString();
-                jmc.ShowMe("| " + character.CharacterName.padRight(" ", 28) + "| " + character.Race.padRight(" ", 28) + "| " + character.Level.padRight(" ", 28) + "| " + character.XPNeededToLevel.padRight(" ", 28) + "| " + dateString.padRight(" ", 28) + "|");
-            }
-            jmc.ShowMe("+" + "-".padRight("-", 149) + "+")
-        }
-    } catch (caught) {
-        throw new JMCException("Failure Displaying Characters: " + caught.message);
-    }
-}
-
-function OnConnected() {
-    try {
-        //TODO: this object is actually not currently being used as I don't like the idea of maintaining an open connection.
-        //This may be useful for handling maze-like zones for room exits, or if I ever make this aware to every room.
-        if (connection === null) {
-            // connection = new ActiveXObject("ADODB.Connection");
-            // connection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
-            // connection.Open();
-        }
-        DisplayCharacters();
-
-    } catch (caught) {
-        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
-        JMCException.LogException(caught.message);
-    }
-}
-
-function OnConnectionLost() {
-    try {
-        if (_currentCharacter !== null) {
-            _currentCharacter.Update();
-            _currentCharacter = null;
-        }
-    } catch (caught) {
-        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
-        JMCException.LogException(caught.message);
-    } finally {
-        try {
-            if (connection !== null) {
-                connection.Close();
-                connection = null;
-            }
-        } catch (caught) {
-            WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
-        }
-    }
-}
-
-function OnDisconnected() {
-    try {
-        if (_currentCharacter !== null) {
-            _currentCharacter.Update();
-            _currentCharacter = null;
-        }
-    } catch (caught) {
-        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
-        JMCException.LogException(caught.message);
-    } finally {
-        try {
-            if (connection !== null) {
-                connection.Close();
-                connection = null;
-            }
-        } catch (caught) {
-            WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
-        }
-    }
-}
-
-function OnIncoming(incomingLine) {
-    try {
-        var cleanLine = incomingLine.cleanString();
-
-        //Character Maintenance...
-        ParseForLogin(cleanLine);
-        ParseForInformation(cleanLine);
-        ParseForLevel(cleanLine);
-        ParseForScore(cleanLine);
-        ParseForStatistics(cleanLine);
-
-        //Group Management....
-        ParseForGroupMember(cleanLine);
-
-        //Mapping...
-        ParseForMap(cleanLine);
-
-        //Socials...
-        ParseForSocial(cleanLine);
-
-        //Navigation...
-        ParseForDoor(cleanLine);
-        ParseForRoomName(cleanLine);
-
-        //Skill Lists...
-        ParseForSkill(cleanLine);
-
-
-        //Character Skills....
-        ParseForBash(cleanLine);
-        ParseForChillRay(cleanLine);
-        ParseForCurse(cleanLine);
-        ParseForFlee(cleanLine);
-        ParseForRescue(cleanLine);
-        // ParseForPreparation(cleanLine);
-
-        //NOTE: This function changes the jmc.Event line, and could therefore interfere with other functions.  Keep this at the end.
-        ParseForHowMany(cleanLine);
-    } catch (caught) {
-        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
-    }
-}
-
-function OnInput(playerInput) {
-    if (_afkTimerEnabled) {
-        jmc.SetTimer(TIMER_AFK, 600);
-    }
-    if (_statusTimerEnabled) {
-        jmc.SetTimer(TIMER_STATUS, 200);
-    }
-}
-
-function OnTimer(timerID) {
-
-    if (timerID !== TIMER_CHARACTER_STATISTICS && (!jmc.IsConnected || _currentCharacter === null)) {
-        return;
-    }
-
-    switch (timerID) {
-        case TIMER_STATUS:
-            OnStatusTimer();
-            break;
-        case TIMER_AFK:
-            OnAfkTimer();
-            break;
-        case TIMER_ARKEN_MOVE:
-            OnArkenMoveTimer();
-            break;
-        case TIMER_ARKEN_WAIT:
-            OnArkenWaitTimer();
-            break;
-        case TIMER_GROUP_STATISTICS:
-            OnGroupStatisticsTimer();
-            break;
-        case TIMER_CHARACTER_STATISTICS:
-            OnCharacterStatisticsTimer();
-            break;
-        default:
-            return;
-    }
-}
-//*********************************************************************************************************************
-//End Cascaded Event Handlers (From JMCEvents)
-//*********************************************************************************************************************
-
-
-
-//*********************************************************************************************************************
 //Fields
 //*********************************************************************************************************************
 
 //Timers
-var TIMER_STATUS = 0
-var TIMER_AFK = 1
-var TIMER_ARKEN_MOVE = 2
-var TIMER_ARKEN_WAIT = 3
+var TIMER_STATUS = 0;
+var TIMER_AFK = 1;
+var TIMER_ARKEN_MOVE = 2;
+var TIMER_ARKEN_WAIT = 3;
 var TIMER_GROUP_STATISTICS = 4;
 var TIMER_CHARACTER_STATISTICS = 5;
 
@@ -265,6 +45,7 @@ var _isListeningForHowMany = false;
 var _statusTimerEnabled = false;
 
 //Cache
+var _characterCollection = CharacterCollection.Enumerate();
 var _groupMembers = new GroupMemberCollection();
 var _skills = new SkillCollection(0);
 var _maps = new MapCollection();
@@ -284,6 +65,232 @@ var _currentZone = ZoneTypes.None;
 
 
 //*********************************************************************************************************************
+//Login
+//*********************************************************************************************************************
+function Login() {
+    try {
+        if (!jmc.IsConnected) {
+            jmc.ShwoMe("Please connect to a server before attempting to login.");
+            return;
+        }
+
+        //Only allow login if the player is currently not signed in.
+        if (_currentCharacter !== null) return;
+
+        var shell = new ActiveXObject("WScript.Shell");
+        var wshShellExec = shell.Exec("wscript.exe //Nologo C:\\jmc\\3.7.1.1\\settings\\Controls\\CharacterNameInputBox.vbs");
+        var characterName = "";
+        while (!wshShellExec.StdOut.AtEndOfStream) {
+            characterName = wshShellExec.StdOut.ReadLine();
+        }
+
+        if (characterName === null || characterName === "") return;
+        var targetCharacter = CharacterCollection.Enumerate().GetCharacter(characterName);
+        if (targetCharacter === null) {
+            jmc.ShowMe("Character " + characterName + " does not exist.  Please login manually.");
+            return;
+        }
+        _currentCharacter = Character.Initialize(targetCharacter.CharacterID);
+
+        jmc.Send(_currentCharacter.CharacterName);
+        if (_currentCharacter.Password !== null && _currentCharacter.Password !== "") {
+            jmc.Parse("#daa " + _currentCharacter.Password + ";1");
+        }
+        //...and load the characters profile and set the variable "me" to the character name.
+        jmc.Parse("#spit {Commands/Profiles/" + targetCharacter.CharacterName + ".set} {%0} {ns}");
+        jmc.SetVar("me", targetCharacter.CharacterName);
+
+        //If the character is of the light races, blow out a dragons eye (if one is had). NOTE: Broken, and executes every single time information is typed.
+        switch (_currentCharacter.Race) {
+            case RaceTypes.Beorning:
+            case RaceTypes.Dwarf:
+            case RaceTypes.Hobbit:
+            case RaceTypes.Human:
+            case RaceTypes.WoodElf:
+                jmc.Send("blow eye");
+                break;
+        }
+
+    } catch (caught) {
+        var message = "Failure Logging In: " + caught.message;
+        JMCException.LogException(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+    }
+};
+//*********************************************************************************************************************
+//End Login
+//*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
+//Cascaded Event Handlers (From JMCEvents)
+//*********************************************************************************************************************
+function DisplayCharacters(sampleOnly) {
+    try {
+        var characters = CharacterCollection.Enumerate().Characters;
+        if (characters.length > 0) {
+            jmc.ShowMe("+" + "-".padRight("-", 109) + "+")
+            var columnHeaderColor = AnsiColors.BackgroundBrightWhite;
+            var bracketPlusSpace = AnsiColors.Default + "| ";
+            var endBracket = AnsiColors.Default + "|";
+            var columnCharacterName = columnHeaderColor + "Character Name".padRight(" ", 28);
+            var columnCharacterRace = columnHeaderColor + "Race".padRight(" ", 18);
+            var columnCharacterLevel = columnHeaderColor + "Level".padRight(" ", 6);
+            var columnCharacterXPNeededToLevel = columnHeaderColor + "XP Needed To Level".padRight(" ", 20);
+            var columnCharacterLastLogon = columnHeaderColor + "Last Logon".padRight(" ", 28);
+
+            jmc.ShowMe(bracketPlusSpace + columnCharacterName + bracketPlusSpace + columnCharacterRace + bracketPlusSpace + columnCharacterLevel + bracketPlusSpace + columnCharacterXPNeededToLevel + bracketPlusSpace + columnCharacterLastLogon + endBracket);
+            jmc.ShowMe("+" + "-".padRight("-", 109) + "+")
+            for (var index = 0; index < characters.length; index++) {
+
+                if (sampleOnly && index >= 15) continue;
+
+                var characterColor = AnsiColors.ForegroundBlue;
+                if (index % 2 == 0) {
+                    characterColor = AnsiColors.ForegroundCyan;
+                }
+                var character = characters[index];
+                var characterName = characterColor + character.CharacterName.padRight(" ", 28);
+                var characterRace = characterColor + character.Race.padRight(" ", 18);
+                var characterLevel = characterColor + character.Level.padRight(" ", 6);
+                var characterXPNeededToLevel = characterColor + character.XPNeededToLevel.padRight(" ", 20);
+                var characterLastLogon = characterColor + String(new Date(character.LastLogon).toFriendlyDate()).padRight(" ", 28);
+                jmc.ShowMe(bracketPlusSpace + characterName + bracketPlusSpace + characterRace + bracketPlusSpace + characterLevel + bracketPlusSpace + characterXPNeededToLevel + bracketPlusSpace + characterLastLogon + endBracket);
+            }
+            jmc.ShowMe("+" + "-".padRight("-", 109) + "+")
+        }
+    } catch (caught) {
+        var message = "Failure Displaying Characters: " + caught.message;
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+        JMCException.LogException(message);
+    }
+};
+
+function OnConnected() {
+    try {
+        DisplayCharacters(true);
+
+    } catch (caught) {
+        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
+        JMCException.LogException(caught.message);
+    }
+};
+
+function OnConnectionLost() {
+    try {
+        if (_currentCharacter !== null) {
+            _currentCharacter.Update();
+            _currentCharacter = null;
+        }
+        jmc.Parse("#killall;#spit {Commands/Main.set} {%0};");
+    } catch (caught) {
+        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
+        JMCException.LogException(caught.message);
+    }
+};
+
+function OnDisconnected() {
+    try {
+        if (_currentCharacter !== null) {
+            _currentCharacter.Update();
+            _currentCharacter = null;
+        }
+        jmc.Parse("#killall;#spit {Commands/Main.set} {%0};");
+    } catch (caught) {
+        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
+        JMCException.LogException(caught.message);
+    }
+};
+
+function OnIncoming(incomingLine) {
+    try {
+        var cleanLine = incomingLine.cleanString();
+
+        //Character Maintenance...
+        ParseForLogin(cleanLine);
+        ParseForInformation(cleanLine);
+        ParseForLevel(cleanLine);
+        ParseForScore(cleanLine);
+        ParseForStatistics(cleanLine);
+
+        //Group Management....
+        ParseForGroupMember(cleanLine);
+
+        //Mapping...
+        ParseForMap(cleanLine);
+
+        //Socials...
+        ParseForSocial(cleanLine);
+
+        //Navigation...
+        ParseForDoor(cleanLine);
+        ParseForRoomName(cleanLine);
+
+        //Skill Lists...
+        ParseForSkill(cleanLine);
+
+        //Character Skills....
+        ParseForBash(cleanLine);
+        ParseForChillRay(cleanLine);
+        ParseForCurse(cleanLine);
+        ParseForFlee(cleanLine);
+        ParseForRescue(cleanLine);
+        // ParseForPreparation(cleanLine);
+
+        //NOTE: This function changes the jmc.Event line, and could therefore interfere with other functions.  Keep this at the end.
+        ParseForHowMany(cleanLine);
+
+    } catch (caught) {
+        WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
+    }
+};
+
+function OnInput(playerInput) {
+    if (_afkTimerEnabled) {
+        jmc.SetTimer(TIMER_AFK, 600);
+    }
+    if (_statusTimerEnabled) {
+        jmc.SetTimer(TIMER_STATUS, 200);
+    }
+};
+
+function OnTimer(timerID) {
+
+    if (timerID !== TIMER_CHARACTER_STATISTICS && (!jmc.IsConnected || _currentCharacter === null)) {
+        return;
+    }
+
+    switch (timerID) {
+        case TIMER_STATUS:
+            OnStatusTimer();
+            break;
+        case TIMER_AFK:
+            OnAfkTimer();
+            break;
+        case TIMER_ARKEN_MOVE:
+            OnArkenMoveTimer();
+            break;
+        case TIMER_ARKEN_WAIT:
+            OnArkenWaitTimer();
+            break;
+        case TIMER_GROUP_STATISTICS:
+            OnGroupStatisticsTimer();
+            break;
+        case TIMER_CHARACTER_STATISTICS:
+            OnCharacterStatisticsTimer();
+            break;
+        default:
+            return;
+    }
+};
+//*********************************************************************************************************************
+//End Cascaded Event Handlers (From JMCEvents)
+//*********************************************************************************************************************
+
+
+
+//*********************************************************************************************************************
 //Toggles
 //*********************************************************************************************************************
 
@@ -296,7 +303,7 @@ function AutoAfk(isEnabled) {
         jmc.KillTimer(TIMER_AFK);
         jmc.ShowMe("Auto AFK is disabled.", "red");
     }
-}
+};
 
 function AutoArkenMoveTimer(isEnabled) {
     if (isEnabled) {
@@ -306,7 +313,7 @@ function AutoArkenMoveTimer(isEnabled) {
         jmc.KillTimer(TIMER_ARKEN_MOVE);
         //jmc.ShowMe("Auto Arken Move Timer is disabled.", "red");
     }
-}
+};
 
 function AutoArkenWaitTimer(isEnabled) {
     if (isEnabled) {
@@ -315,7 +322,7 @@ function AutoArkenWaitTimer(isEnabled) {
     } else {
         jmc.KillTimer(TIMER_ARKEN_WAIT);
     }
-}
+};
 
 function AutoBash(isEnabled) {
     _isListeningForBash = isEnabled;
@@ -324,7 +331,7 @@ function AutoBash(isEnabled) {
     } else {
         jmc.ShowMe("Auto Bash is disabled.", "red");
     }
-}
+};
 
 function AutoCharacterStatus(isEnabled) {
     if (isEnabled) {
@@ -334,7 +341,7 @@ function AutoCharacterStatus(isEnabled) {
         jmc.KillTimer(TIMER_CHARACTER_STATISTICS);
         jmc.ShowMe("Auto Character Statistics is disabled.", "red");
     }
-}
+};
 
 function AutoChill(isEnabled) {
     _isListeningForChillRay = isEnabled;
@@ -343,7 +350,7 @@ function AutoChill(isEnabled) {
     } else {
         jmc.ShowMe("Auto Chill Ray is disabled.", "red");
     }
-}
+};
 
 function AutoCurse(isEnabled) {
     _isListeningForCurse = isEnabled;
@@ -352,7 +359,7 @@ function AutoCurse(isEnabled) {
     } else {
         jmc.ShowMe("Auto Curse is disabled.", "red");
     }
-}
+};
 
 function AutoExits(zoneType) {
     if (_currentZone === zoneType) return;
@@ -373,7 +380,7 @@ function AutoExits(zoneType) {
             break;
     }
     WriteEmptyLineToWindow(_exitOutputWindow);
-}
+};
 
 function AutoFlee(isEnabled) {
     _isListeningForFlee = isEnabled;
@@ -382,7 +389,7 @@ function AutoFlee(isEnabled) {
     } else {
         jmc.ShowMe("Auto Flee is disabled.", "red");
     }
-}
+};
 
 function AutoGroupStatistics(isEnabled) {
     if (isEnabled) {
@@ -392,7 +399,7 @@ function AutoGroupStatistics(isEnabled) {
         jmc.KillTimer(TIMER_GROUP_STATISTICS);
         jmc.ShowMe("Auto Group Statistics is disabled.", "red");
     }
-}
+};
 
 function AutoOpen(isEnabled) {
     _isListeningForDoors = isEnabled;
@@ -401,7 +408,7 @@ function AutoOpen(isEnabled) {
     } else {
         jmc.ShowMe("Auto Open Doors is disabled.", "red");
     }
-}
+};
 
 function AutoRescue(isEnabled) {
     _isListeningForRescue = isEnabled;
@@ -410,7 +417,7 @@ function AutoRescue(isEnabled) {
     } else {
         jmc.ShowMe("Rescue trigger is disabled.", "red");
     }
-}
+};
 
 function AutoStatus(isEnabled) {
     if (isEnabled) {
@@ -422,7 +429,7 @@ function AutoStatus(isEnabled) {
         jmc.KillTimer(TIMER_STATUS);
         jmc.ShowMe("Auto status is disabled.", "red");
     }
-}
+};
 //*********************************************************************************************************************
 //End Toggles
 //*********************************************************************************************************************
@@ -459,7 +466,7 @@ function ListExits() {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
     }
-}
+};
 
 function NavigateToExit(exitType) {
     try {
@@ -491,10 +498,10 @@ function NavigateToExit(exitType) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function RetrieveExit(roomName, zoneType) {
-
+    var databaseConnection = new ActiveXObject("ADODB.Connection");
     var command = new ActiveXObject("ADODB.Command");
     var recordSet = new ActiveXObject("ADODB.Recordset");
 
@@ -502,7 +509,12 @@ function RetrieveExit(roomName, zoneType) {
     try {
         jmc.ShowMe(AnsiColors.ForegroundBrightBlue + GetTimestamp() + ": Connection opened...");
 
-        command.ActiveConnection = connection;
+        databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
+        // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
+        databaseConnection.Open();
+
+
+        command.ActiveConnection = databaseConnection;
         command.CommandType = 4;
         command.CommandText = "dbo.[GetRoom]";
 
@@ -532,8 +544,12 @@ function RetrieveExit(roomName, zoneType) {
             recordSet.Close();
             recordSet = null;
         }
+        if (databaseConnection.State === 1) {
+            databaseConnection.Close();
+            databaseConnection = null;
+        }
     }
-}
+};
 
 function SayExit(exitName) {
     try {
@@ -561,7 +577,7 @@ function SayExit(exitName) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function SayExits() {
     try {
@@ -589,7 +605,7 @@ function SayExits() {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ShowExit(exitName) {
     try {
@@ -618,7 +634,7 @@ function ShowExit(exitName) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 //*********************************************************************************************************************
 //End Exit Commands
@@ -640,7 +656,7 @@ function DisplayCharacterStatus() {
         var characterLine = AnsiColors.ForegroundBrightBlue + _currentCharacter.CharacterName + AnsiColors.Default + " the level " + AnsiColors.ForegroundBrightBlue + _currentCharacter.Level + AnsiColors.Default + " " + _currentCharacter.Race + ".";
         WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", false, false);
 
-        characterLine = "Logon Time: " + _currentCharacter.LogonTime.toTimeString().substring(0, 8);
+        characterLine = "Logon Date: " + _currentCharacter.LogonTime.toFriendlyDate();
         WriteToWindow(_characterStatusOutputWindow, characterLine, "normal", true, false);
 
         characterLine = "Warrior: " + AnsiColors.ForegroundBrightBlue + _currentCharacter.WarriorLevel + AnsiColors.Default;
@@ -713,7 +729,7 @@ function DisplayCharacterStatus() {
         JMCException.LogException(message);
         WriteToWindow(_mapOutputWindow, message, "red", true, true);
     }
-}
+};
 //********************************************************************************************************************
 //End Character Status Commands
 //*********************************************************************************************************************
@@ -737,17 +753,17 @@ function HealGroup(healingSpells, leaderOnly) {
             jmc.Send("cast '" + healingSpells[spellIndex] + "' " + currentMember.MemberName);
         }
     }
-}
+};
 
 function ResetGroup() {
     _isListeningForGroup = true;
     _groupMembers.Clear();
     jmc.Send("group");
-}
+};
 
 function ListGroupMembers() {
     jmc.Send("gt Group Members: " + _groupMembers.ListMembers());
-}
+};
 
 //*********************************************************************************************************************
 //Mapping Commands
@@ -762,7 +778,7 @@ function AddMap(mapName, variableName) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ClearMaps() {
     try {
@@ -773,7 +789,7 @@ function ClearMaps() {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function DeleteMapByName(mapName) {
     try {
@@ -787,7 +803,7 @@ function DeleteMapByName(mapName) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function DeleteMapByIndex(mapIndex) {
     try {
@@ -801,7 +817,7 @@ function DeleteMapByIndex(mapIndex) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ShowMap(map) {
     ClearWindow(_mapOutputWindow);
@@ -810,7 +826,7 @@ function ShowMap(map) {
         WriteToWindow(_mapOutputWindow, map.Content[index], "normal", false, false);
     }
     WriteEmptyLineToWindow(_mapOutputWindow);
-}
+};
 
 function ShowMapByName(mapName) {
     try {
@@ -823,7 +839,7 @@ function ShowMapByName(mapName) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ShowMapByIndex(mapIndex) {
     try {
@@ -837,7 +853,7 @@ function ShowMapByIndex(mapIndex) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ShowMaps() {
     try {
@@ -852,7 +868,7 @@ function ShowMaps() {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 //*********************************************************************************************************************
 //End Mapping Commands
@@ -909,14 +925,14 @@ function DisplaySkills() {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function RegisterSkills() {
     WriteToWindow(_skillOutputWindow, "Resetting skills...", "green", true, true);
     _isListeningForSkills = true;
     _isSkillsFound = false;
     jmc.Send("prac");
-}
+};
 
 //*********************************************************************************************************************
 //End Skill Commands
@@ -944,7 +960,7 @@ function HowMany(searchPattern, container) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 //*********************************************************************************************************************
 //End HowMany
 //*********************************************************************************************************************
@@ -1071,7 +1087,7 @@ function ParseForLevel(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForBash(incomingLine) {
     if (!_isListeningForBash) return;
@@ -1085,7 +1101,7 @@ function ParseForBash(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForChillRay(incomingLine) {
     if (!_isListeningForChillRay) return;
@@ -1107,7 +1123,7 @@ function ParseForChillRay(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForCurse(incomingLine) {
     if (!_isListeningForCurse) return;
@@ -1135,7 +1151,7 @@ function ParseForCurse(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForDoor(incomingLine) {
     if (!_isListeningForDoors) return;
@@ -1150,7 +1166,7 @@ function ParseForDoor(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForFlee(incomingLine) {
     if (!_isListeningForFlee) return;
@@ -1163,7 +1179,7 @@ function ParseForFlee(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForGroupMember(incomingLine) {
     //If we're not listening for a group, abort this function...
@@ -1229,7 +1245,7 @@ function ParseForGroupMember(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForHowMany(incomingLine) {
     //^[a-z]+ \((?:here|carried)\) : $
@@ -1277,7 +1293,7 @@ function ParseForHowMany(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForMap(incomingLine) {
     try {
@@ -1323,31 +1339,22 @@ function ParseForMap(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForRescue(incomingLine) {
     if (!_isListeningForRescue) return;
     try {
-        var matches = incomingLine.match(/^(.*) turns to fight ([a-zA-Z]*)!$/);
+        //Don't rescue Fali: /(.*) turns to fight (?!Fali!)([a-zA-Z]+)!$/
+        var matches = incomingLine.match(/(.*) turns to fight ([a-zA-Z]+)!$/);
         if (matches !== null) {
-            var target = matches[1].toLowerCase();
-            var victim = matches[2].toLowerCase();
-            switch (victim) {
-                case 'fali':
-                    jmc.ShowMe(victim + " is not a rescuable target.", "red");
-                    break;
-                default:
-                    jmc.Send("rescue " + victim);
-                    break;
-            }
-            WriteToWindow(_rescueOutputWindow, matches[0], "green", true, true);
+            jmc.Send("rescue " + matches[2]);
         }
     } catch (caught) {
         var message = "Failure parsing for rescue: " + caught.message + "\nLine: " + jmc.Event;
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForRoomName(incomingLine) {
     if (_currentZone === ZoneTypes.None) return;
@@ -1374,7 +1381,7 @@ function ParseForRoomName(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForScore(incomingLine) {
     if (_currentCharacter === null) return;
@@ -1443,7 +1450,7 @@ function ParseForScore(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 //This function is used to process an incoming line from the MUD server for skills which are displayed from the "practice" command.
 //Processing only occurs if _isListeningForSkills is set to "true".
@@ -1513,7 +1520,7 @@ function ParseForSkill(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForSocial(incomingLine) {
     try {
@@ -1549,7 +1556,7 @@ function ParseForSocial(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 function ParseForStatistics(incomingLine) {
     if (_currentCharacter === null) return;
@@ -1585,7 +1592,7 @@ function ParseForStatistics(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 //This function will process an incoming line for the text "Here we go..." and run whatever login commands are desired.
 function ParseForLogin(incomingLine) {
@@ -1603,7 +1610,7 @@ function ParseForLogin(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 //This function will begin looking for an information return from the server, which consists of several lines which start with
 //You or Your, with the oddball being Strength and Constitution.
@@ -1624,31 +1631,47 @@ function ParseForInformation(incomingLine) {
         if (matches !== null) {
             _isInfoFound = true;
 
+
             var playerName = matches[1];
+            //If the current character is null...
+            if (_currentCharacter === null) {
+                var characterCollection = CharacterCollection.Enumerate();
+                //...attempt to retrieve the character from the cached character collection...
+                var character = characterCollection.GetCharacter(playerName);
+                //...If he is null, create a new character...
+                if (character === null) {
+                    _currentCharacter = CharacterCollection.Add(playerName);
+                } else {
+                    //...otherwise, set the found character to the current character.
+                    _currentCharacter = character;
+                }
+
+                //...and load the characters profile and set the variable "me" to the character name.
+                jmc.Parse("#spit {Commands/Profiles/" + playerName + ".set} {%0} {ns}");
+                jmc.SetVar("me", playerName);
+
+                //If the character is of the light races, blow out a dragons eye (if one is had). NOTE: Broken, and executes every single time information is typed.
+                switch (_currentCharacter.Race) {
+                    case RaceTypes.Beorning:
+                    case RaceTypes.Dwarf:
+                    case RaceTypes.Hobbit:
+                    case RaceTypes.Human:
+                    case RaceTypes.WoodElf:
+                        jmc.Send("blow eye");
+                        break;
+                }
+
+            }
+
+            //...adjust all properties for the current character as they have been obtained from the game...
             _currentCharacter.CharacterName = playerName;
             _currentCharacter.Alignment = matches[2];
             _currentCharacter.Gender = matches[3];
             _currentCharacter.Race = matches[4];
-
-            jmc.Parse("#spit {Commands/Profiles/" + playerName + ".set} {%0} {ns}");
-            jmc.SetVar("me", playerName);
-
-            switch (_currentCharacter.Race) {
-                case RaceTypes.Beorning:
-                case RaceTypes.Dwarf:
-                case RaceTypes.Hobbit:
-                case RaceTypes.Human:
-                case RaceTypes.WoodElf:
-                    jmc.Send("blow eye");
-                    break;
-            }
-
             if (_isListeningForInfo) {
                 jmc.DropEvent();
             }
-
             return;
-
         }
 
         if (_currentCharacter === null) return;
@@ -1780,7 +1803,7 @@ function ParseForInformation(incomingLine) {
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
-}
+};
 
 //*********************************************************************************************************************
 //End Line Parsing
@@ -1794,31 +1817,31 @@ function ParseForInformation(incomingLine) {
 
 function OnAfkTimer() {
     jmc.Send("afk");
-}
+};
 
 //Once this function is fired, send a command to the client indicating it is time to move.
 function OnArkenMoveTimer() {
     jmc.Parse("lookRoom");
-}
+};
 
 //Once this function is hit, turn itself off and re-engage the movement timer.
 function OnArkenWaitTimer() {
     AutoArkenWaitTimer(false);
     AutoArkenMoveTimer(true);
-}
+};
 
 function OnStatusTimer() {
     _isListeningForScore = true;
     jmc.Send("score");
-}
+};
 
 function OnGroupStatisticsTimer() {
     DamageReport();
-}
+};
 
 function OnCharacterStatisticsTimer() {
     DisplayCharacterStatus();
-}
+};
 
 //*********************************************************************************************************************
 //Cascaded Events

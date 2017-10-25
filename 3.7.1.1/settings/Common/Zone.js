@@ -1,6 +1,7 @@
 function Zone(zoneType) {
     this.ZoneType = zoneType;
     this.Rooms = new Array();
+
     this.GetRoom = function(roomName) {
         if (roomName === "") return null;
         for (var index = 0; index < this.Rooms.length; index++) {
@@ -10,5 +11,6 @@ function Zone(zoneType) {
             }
         }
         return null;
-    }
+    };
+
 };
