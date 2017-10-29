@@ -11,7 +11,7 @@ JMCException.LogException = function(message) {
     var databaseConnection = new ActiveXObject("ADODB.Connection");
     var command = new ActiveXObject("ADODB.Command");
 
-    databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
+    databaseConnection.ConnectionString = DATABASE_CHARACTER_CONNECTION_STRING;
     databaseConnection.Open();
 
     try {

@@ -1,8 +1,10 @@
 #var {isWieldingDagger}{1}
-#hotkey {F10}{ #if {$isWieldingDagger==0}{ #var {isWieldingDagger}{1};rem sword;wield claw}{ #var {isWieldingDagger}{0};rem claw;wield sword } }
+#hotkey {F10}{ #if {$isWieldingDagger==0}{ #var {isWieldingDagger}{1};remove sword;wield claw}{ #var {isWieldingDagger}{0};remove claw;wield sword } }
 
-#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea soft}
-#alias {cotton-mail} {rem all.cotton;rem shiny;rem soft;wea all.mail} {default}
+#alias {mail-cotton} {remove all.mail;wear vampire;wear all.cotton;wear shiny;wear soft}
+#alias {cotton-mail} {remove all.cotton;remove vampire;remove shiny;remove soft;wear all.mail} {default}
+
+#alias {pracreset}{tell angel pracreset;#5 { prac fireball;prac firebolt;prac lightning strike;prac lightning bolt;prac cone of cold;prac chill ray;prac flash;prac blink;prac vitalize self;prac cure self;prac summon;prac shield; };#8 { prac remove;prac insight;prac pragmatism;prac curing saturation;prac vitality; };#14 prac parry;#7 prac concussion;#10 prac ride;#4 { prac pick;prac search; };prac swim; }
 
 #var {isWearingArmor}{0}
 #hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }

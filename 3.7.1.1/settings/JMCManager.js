@@ -2,6 +2,15 @@
 //Fields
 //*********************************************************************************************************************
 
+//Constant Strings
+var ACTIVEX_WSCRIPT_SHELL = "WScript.Shell";
+var CHARACTER_PROFILE_LOCATION = "Commands/Profiles/";
+var COMMAND_RELOAD_PROFILE = "#killall;#spit {Commands/Main.set} {%0};";
+var DATABASE_CHARACTER_CONNECTION_STRING = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
+//var DATABASE_CHARACTER_CONNECTION_STRING = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
+//var DATABASE_CHARACTER_CONNECTION_STRING = "Provider=MSDASQL.1;Persist Security Info=True;Dsn=RotS;UserName=JMCMudClient;Password=P@ssw0rd";
+var SCRIPT_VB_LOGON_PROMPT = "wscript.exe //Nologo C:\\jmc\\3.7.1.1\\settings\\Controls\\CharacterNameInputBox.vbs";
+
 //Timers
 var TIMER_STATUS = 0;
 var TIMER_AFK = 1;
@@ -77,8 +86,8 @@ function Login() {
         //Only allow login if the player is currently not signed in.
         if (_currentCharacter !== null) return;
 
-        var shell = new ActiveXObject("WScript.Shell");
-        var wshShellExec = shell.Exec("wscript.exe //Nologo C:\\jmc\\3.7.1.1\\settings\\Controls\\CharacterNameInputBox.vbs");
+        var shell = new ActiveXObject(ACTIVEX_WSCRIPT_SHELL);
+        var wshShellExec = shell.Exec(SCRIPT_VB_LOGON_PROMPT);
         var characterName = "";
         while (!wshShellExec.StdOut.AtEndOfStream) {
             characterName = wshShellExec.StdOut.ReadLine();
@@ -97,7 +106,7 @@ function Login() {
             jmc.Parse("#daa " + _currentCharacter.Password + ";1");
         }
         //...and load the characters profile and set the variable "me" to the character name.
-        jmc.Parse("#spit {Commands/Profiles/" + targetCharacter.CharacterName + ".set} {%0} {ns}");
+        jmc.Parse("#spit {" + CHARACTER_PROFILE_LOCATION + targetCharacter.CharacterName + ".set} {%0} {ns}");
         jmc.SetVar("me", targetCharacter.CharacterName);
 
         //If the character is of the light races, blow out a dragons eye (if one is had). NOTE: Broken, and executes every single time information is typed.
@@ -183,7 +192,7 @@ function OnConnectionLost() {
             _currentCharacter.Update();
             _currentCharacter = null;
         }
-        jmc.Parse("#killall;#spit {Commands/Main.set} {%0};");
+        jmc.Parse(COMMAND_RELOAD_PROFILE);
     } catch (caught) {
         WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
         JMCException.LogException(caught.message);
@@ -196,7 +205,7 @@ function OnDisconnected() {
             _currentCharacter.Update();
             _currentCharacter = null;
         }
-        jmc.Parse("#killall;#spit {Commands/Main.set} {%0};");
+        jmc.Parse(COMMAND_RELOAD_PROFILE);
     } catch (caught) {
         WriteToWindow(_exceptionOutputWindow, caught.message, "red", true, true);
         JMCException.LogException(caught.message);
@@ -509,10 +518,8 @@ function RetrieveExit(roomName, zoneType) {
     try {
         jmc.ShowMe(AnsiColors.ForegroundBrightBlue + GetTimestamp() + ": Connection opened...");
 
-        databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
-        // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
+        databaseConnection.ConnectionString = DATABASE_CHARACTER_CONNECTION_STRING;
         databaseConnection.Open();
-
 
         command.ActiveConnection = databaseConnection;
         command.CommandType = 4;
@@ -1345,7 +1352,8 @@ function ParseForRescue(incomingLine) {
     if (!_isListeningForRescue) return;
     try {
         //Don't rescue Fali: /(.*) turns to fight (?!Fali!)([a-zA-Z]+)!$/
-        var matches = incomingLine.match(/(.*) turns to fight ([a-zA-Z]+)!$/);
+        // /(.*) turns to fight ([a-zA-Z]+)!$/
+        var matches = incomingLine.match(/(.*) turns to fight (?!Fali!|Fimli!)([a-zA-Z]+)!$/);
         if (matches !== null) {
             jmc.Send("rescue " + matches[2]);
         }
@@ -1403,7 +1411,7 @@ function ParseForScore(incomingLine) {
         }
 
         if (!matchesFound && _isScoreLineFound) {
-            matches = incomingLine.match(/^OB: (-?[\d]+), DB: (-?[\d]+), PB: (-?[\d]+), Speed: ([\d]+), Gold: ([\d]+), XP Needed: ([\d]+K?)\.$/);
+            matches = incomingLine.match(/^OB: (-?[\d]+), DB: (-?[\d]+), PB: (-?[\d]+), Speed: ([\d]+), Gold: ([\d]+), XP Needed: ([\d]+)(K?)\.$/);
             if (matches !== null) {
                 matchesFound = true;
                 _currentCharacter.OffensiveBonus = parseInt(matches[1]);
@@ -1411,17 +1419,21 @@ function ParseForScore(incomingLine) {
                 _currentCharacter.ParryBonus = parseInt(matches[3]);
                 _currentCharacter.AttackSpeed = parseInt(matches[4]);
 
-                //If score XP is a k less than _currentCharacter.XPNeededToLevel, update. If doesn't end in K, update.
-                var tnl = matches[6];
-                if (!tnl.endsWith("K")) {
-                    _currentCharacter.XPNeededToLevel = parseInt(tnl);
-                } else {
+                //If score XP is a k less than _currentCharacter.XPNeededToLevel, update. If doesn't end in K, update.                
+                var estimatedXPNeeded = parseInt(_currentCharacter.XPNeededToLevel);
+                var actualXPNeeded = parseInt(matches[6]);
+                if (matches[7] === "K") {
+                    actualXPNeeded = (actualXPNeeded * 1000) + 750; //Add 750 as the middle ground.
+                    var difference = estimatedXPNeeded - actualXPNeeded;
 
-                    //This is more of an approximation than a science...
-                    var tnlAsInt = parseInt(tnl.substring(0, tnl.length - 1) + "999")
-                    if (tnlAsInt < _currentCharacter.XPNeededToLevel) {
-                        _currentCharacter.XPNeededToLevel = tnlAsInt;
+                    if (actualXPNeeded < estimatedXPNeeded) {
+                        _currentCharacter.XPNeededToLevel = actualXPNeeded;
+                        _currentCharacter.XPGained += difference;
                     }
+                } else {
+                    var difference = estimatedXPNeeded - actualXPNeeded;
+                    _currentCharacter.XPNeededToLevel = actualXPNeeded;
+                    _currentCharacter.XPGained += difference;
                 }
             }
         }
@@ -1749,7 +1761,15 @@ function ParseForInformation(incomingLine) {
 
             matches = incomingLine.match(/^You have scored (\d+) experience points, and need (\d+) more to advance\.$/);
             if (matches !== null) {
-                _currentCharacter.XPNeededToLevel = parseInt(matches[2]);
+
+                var actualXPNeeded = parseInt(matches[2]);
+                //Though this is poor logic and I need some sort of flag to track whether a character has been initialized, I will based this currently off of XP gained === 0;
+                var differenceInXP = _currentCharacter.XPNeededToLevel - actualXPNeeded;
+                _currentCharacter.XPNeededToLevel = actualXPNeeded;
+
+                if (_currentCharacter.XPGained !== 0) {
+                    _currentCharacter.XPGained += differenceInXP;
+                }
 
                 if (_isListeningForInfo) {
                     jmc.DropEvent();

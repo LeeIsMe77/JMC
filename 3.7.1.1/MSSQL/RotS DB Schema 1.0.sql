@@ -192,9 +192,17 @@ IF OBJECT_ID(@ProcedureName) IS NULL BEGIN
 END;
 GO
 
-ALTER PROCEDURE dbo.[CharacterCollection.Enumerate] AS BEGIN
+ALTER PROCEDURE dbo.[CharacterCollection.Enumerate] (
+	@Results int = NULL,
+	@CharacterOrderByType varchar(100) = NULL
+) AS BEGIN
 	SET NOCOUNT ON;
-	SELECT
+
+	IF @Results IS NULL BEGIN
+		SELECT @Results = COUNT(*) FROM dbo.[Character]
+	END
+
+	SELECT TOP (@Results)
 			C.CharacterID AS CharacterID,
 			C.CharacterName AS CharacterName,
 			C.Race AS Race,
@@ -202,7 +210,15 @@ ALTER PROCEDURE dbo.[CharacterCollection.Enumerate] AS BEGIN
 			C.XPNeededToLevel AS XPNeededToLevel,
 			C.DateUpdated AS [LastLogon]
 		FROM dbo.[Character] C
-		ORDER BY C.DateUpdated DESC
+		ORDER BY
+			CASE ISNULL(@CharacterOrderByType, N'') 
+				WHEN N'CharacterID' THEN C.CharacterID
+				WHEN N'CharacterName' THEN C.CharacterName 
+				WHEN N'Race' THEN C.Race
+				WHEN N'Level' THEN C.[Level]
+				WHEN N'XPNeededToLevel' THEN C.XPNeededToLevel
+				ELSE C.DateUpdated
+			END DESC
 	RETURN @@ERROR
 END;
 GO

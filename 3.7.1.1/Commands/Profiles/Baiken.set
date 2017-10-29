@@ -8,6 +8,7 @@
 #hotkey {F10}{ #if {$isWieldingDagger==0}{ #var {isWieldingDagger}{1};rem dagger;wield claw}{ #var {isWieldingDagger}{0};rem claw;wield dagger } }
 
 #alias {pracreset}{tell angel pracreset;#36 prac weapon;#5 prac two;#8 { prac ride;prac calm; };#10 { prac search;prac hide; };#11 prac resist poison;#12 { prac dodge;prac sneak;prac track;prac pick; };#13 { prac cure self;prac ambush; };#14 { prac parry;prac berserk;prac bash;prac kick; };#15 { prac stealth;prac fast;prac tame;prac awareness; };#16 { prac animals;prac travelling; };#17 prac riposte;#1 prac swim;#18 prac find;#5 prac rescue; }
+#alias {pracresetNoStealth}{tell angel pracreset;#36 prac weapon;#5 prac two;#8 { prac ride;prac calm; };#10 { prac search;prac hide; };#11 prac resist poison;#12 { prac dodge;prac sneak;prac track;prac pick; };#13 { prac cure self;prac ambush; };#14 { prac parry;prac berserk;prac bash;prac kick; };#15 { prac fast;prac tame;prac awareness; };#16 { prac animals;prac travelling; };#17 prac riposte;#1 prac swim;#18 prac find;#5 prac rescue; }
 
 #var {watersource}{flask}
 #var {foodsource}{waybread}
@@ -16,8 +17,8 @@
 #action {turns to fight a large, husky mastiff!}{rescue mastiff}
 
 
-#alias {mail-cotton} {rem all.mail;rem all.elven;wea all.cotton;wea horns;wea shiny;wea sandals}
-#alias {cotton-mail} {rem all.cotton;rem shiny;rem sandals;rem horns;wea all.mail;wea all.elven} {default}
+#alias {mail-cotton} {rem all.mail;wea all.cotton;wea horns;wea shiny;wea sandals}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem sandals;rem horns;wea all.mail;} {default}
 
 #hotkey {ctrl+p}{of assist Baiken}
 #hotkey {ctrl+q}{rescue black}

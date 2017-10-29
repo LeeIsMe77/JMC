@@ -60,7 +60,7 @@ function Character(characterID, characterName) {
         var recordSet = new ActiveXObject("ADODB.Recordset");
         try {
 
-            databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
+            databaseConnection.ConnectionString = DATABASE_CHARACTER_CONNECTION_STRING;
             // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
             // databaseConnection.ConnectionString = "Provider=MSDASQL.1;Persist Security Info=True;Dsn=RotS;UserName=JMCMudClient;Password=P@ssw0rd";
             databaseConnection.Open();
@@ -111,7 +111,7 @@ Character.Initialize = function(characterID) {
     var recordSet = new ActiveXObject("ADODB.Recordset");
     try {
 
-        databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
+        databaseConnection.ConnectionString = DATABASE_CHARACTER_CONNECTION_STRING;
         // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
         // databaseConnection.ConnectionString = "Provider=MSDASQL.1;Persist Security Info=True;Dsn=RotS;UserName=JMCMudClient;Password=P@ssw0rd";
         databaseConnection.Open();
