@@ -61,8 +61,6 @@ function Character(characterID, characterName) {
         try {
 
             databaseConnection.ConnectionString = DATABASE_CHARACTER_CONNECTION_STRING;
-            // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
-            // databaseConnection.ConnectionString = "Provider=MSDASQL.1;Persist Security Info=True;Dsn=RotS;UserName=JMCMudClient;Password=P@ssw0rd";
             databaseConnection.Open();
 
             command.ActiveConnection = databaseConnection;
@@ -112,8 +110,6 @@ Character.Initialize = function(characterID) {
     try {
 
         databaseConnection.ConnectionString = DATABASE_CHARACTER_CONNECTION_STRING;
-        // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
-        // databaseConnection.ConnectionString = "Provider=MSDASQL.1;Persist Security Info=True;Dsn=RotS;UserName=JMCMudClient;Password=P@ssw0rd";
         databaseConnection.Open();
 
         command.ActiveConnection = databaseConnection;

@@ -1,0 +1,24 @@
+#var {armorType}{mail};
+#var {weaponPrimary}{stick};
+#var {weaponSecondary}{sword};
+
+#var {isWearingArmor}{0};
+#var {isWieldingPrimaryWeapon}{1};
+
+#alias {o}{cast 'cone of cold'};
+#alias {p}{cast 'chill ray'};
+#alias {q}{cast 'lightning bolt'};
+#alias {z}{cast 'lightning strike'};
+
+#alias {pracreset}{#5 { prac lightning strike;prac beacon;prac relocate;prac blink;prac create;prac fireball;prac cone;prac chill ray;prac shield;prac summon;prac cure self;prac vitalize self;prac firebolt;prac locate;prac pick;prac search;prac flash;prac lightning bolt;prac reveal; }; #8 prac concussion;prac swim;#14 prac parry;#14 prac ride;}
+#alias {pracresetIdentify}{#5 { prac identify;prac lightning strike;prac beacon;prac relocate;prac blink;prac create;prac fireball;prac cone;prac chill ray;prac shield;prac summon;prac cure self;prac vitalize self;prac firebolt;prac locate;prac pick;prac search;prac flash;prac lightning bolt;prac reveal; }; #36 prac weapon; #4 prac two;prac swim;#14 prac parry;#14 prac ride;#18 prac remove;#12 {prac pragmatism;prac insight;prac curse;}; }
+
+#hotkey {F9}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-$armorType}{ #var {isWearingArmor}{0};$armorType-cotton } };
+#hotkey {F10}{ #if {$isWieldingPrimaryWeapon==0}{ #var {isWieldingPrimaryWeapon}{1};rem $weaponSecondary;wield $weaponPrimary}{ #var {isWieldingPrimaryWeapon}{0};rem $weaponPrimary;wield $weaponSecondary} }
+
+#hotkey {Ctrl+H}{cast 'flash'}
+#hotkey {Ctrl+I}{cast 'lightning strike'}
+#hotkey {Ctrl+J}{cast 'cone of cold'}
+#hotkey {Ctrl+O}{cast 'chill ray'}
+#hotkey {Ctrl+P}{cast 'lightning bolt'}
+#hotkey {Ctrl+Q}{cast 'firebolt'}

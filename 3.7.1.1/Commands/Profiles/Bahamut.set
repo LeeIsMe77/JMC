@@ -1,27 +1,21 @@
 #var {watersource}{flask}
 #var {foodsource}{meat}
-
 #var {isWearingArmor}{0}
-#hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-leather}{ #var {isWearingArmor}{0};leather-cotton } }
-
 #var {isWieldingStick}{1}
-#hotkey {F9}{ #if {$isWieldingStick==0}{ #var {isWieldingStick}{1};rem lancet;wield stick}{ #var {isWieldingStick}{0};rem stick;wield lancet} }
 
 #alias {leather-cotton} {rem all.etched;wea supple;wea all.cotton}
 #alias {cotton-leather} {rem all.cotton;rem supple;wea all.etched} {default}
-
-#alias {p}{cast 'black arrow'}
-#hotkey {Ctrl+P}{prep 'black arrow'}
-
 #alias {o}{cast 'spear of darkness'}
-#hotkey {Ctrl+O}{prep 'spear of darkness'}
-
+#alias {p}{cast 'black arrow'}
 #alias {q}{cast 'word of agony'}
-#hotkey {Ctrl+Q}{prep 'word of agony'}
-
 #alias {z}{cast 'dark bolt'}
-#hotkey {Ctrl+Z}{prep 'dark bolt'}
 
+#hotkey {F9}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-leather}{ #var {isWearingArmor}{0};leather-cotton } }
+#hotkey {F10}{ #if {$isWieldingStick==0}{ #var {isWieldingStick}{1};rem lancet;wield stick}{ #var {isWieldingStick}{0};rem stick;wield lancet} }
 #hotkey {Ctrl+I}{cast 'word of pain'}
 #hotkey {Ctrl+J}{cast 'word of shock'}
+#hotkey {Ctrl+O}{prep 'spear of darkness'}
+#hotkey {Ctrl+P}{prep 'black arrow'}
+#hotkey {Ctrl+Q}{prep 'word of agony'}
 #hotkey {Ctrl+S}{cast 'shield'}
+#hotkey {Ctrl+Z}{prep 'dark bolt'}

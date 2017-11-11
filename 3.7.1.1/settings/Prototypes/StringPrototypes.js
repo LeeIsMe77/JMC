@@ -10,7 +10,7 @@ if (!String.prototype.cleanString) {
             //First, remove all byte order marks and ANSI color codes matching [30m or [0m pattern.
             .replace(/[\u001b]\[\d+m/g, '')
             //...and finally, strip off health status and right angle bracket at beginning of line, if it exists...
-            .replace(/^R? ?(?:(?:Mind|Mount|HP|MV|S):[a-zA-Z ]+ ?)*(?:, [a-zA-Z,' ]+:[a-zA-Z ]+)*?>/, '')
+            .replace(/^R? ?(?:(?:Mind|Mount|HP|MV|S):[a-zA-Z ]+ ?)*(?:, [a-zA-Z,\-' ]+:[a-zA-Z ]+)*?>/, '')
     };
 };
 

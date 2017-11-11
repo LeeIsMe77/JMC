@@ -1,3 +1,5 @@
+#use {Common/Item.js}
+#use {Common/ItemCollection.js}
 #use {Common/Character.js}
 #use {Common/CharacterCollection.js}
 #use {Common/Exit.js}

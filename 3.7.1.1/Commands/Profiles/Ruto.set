@@ -5,7 +5,7 @@
 #hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
 
 #var {watersource}{waterskin}
-#var {foodsource}{waybread}
+#var {foodsource}{bread}
 
 #hotkey {Ctrl+P}{cast light}
 #hotkey {Ctrl+O}{cast chill}

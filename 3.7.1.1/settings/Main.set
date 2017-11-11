@@ -4,6 +4,7 @@
 
 #use {JMCException.js}
 #use {JMCUtility.js}
+#use {HelpBot.js}
 #use {JMCEvents.js}
 #use {JMCManager.js}
 

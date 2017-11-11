@@ -1,2 +1,8 @@
-#var {watersource}{flask}
+#var {watersource}{waterskin}
 #var {foodsource}{waybread}
+
+#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea padded;wea crown;}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem padded;rem crown;wea all.mail} {default}
+
+#var {isWearingArmor}{0}
+#hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }

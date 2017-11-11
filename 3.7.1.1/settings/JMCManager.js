@@ -16,7 +16,6 @@ var TIMER_STATUS = 0;
 var TIMER_AFK = 1;
 var TIMER_ARKEN_MOVE = 2;
 var TIMER_ARKEN_WAIT = 3;
-var TIMER_GROUP_STATISTICS = 4;
 var TIMER_CHARACTER_STATISTICS = 5;
 
 //Output windows
@@ -26,7 +25,7 @@ var _skillOutputWindow = 3;
 var _exitOutputWindow = 4;
 var _rescueOutputWindow = 5;
 var _characterStatusOutputWindow = 6;
-var _exceptionOutputWindow = 9;
+var _exceptionOutputWindow = 7;
 
 //Toggle variables
 var _isListeningForRescue = false;
@@ -76,6 +75,7 @@ var _currentZone = ZoneTypes.None;
 //*********************************************************************************************************************
 //Login
 //*********************************************************************************************************************
+
 function Login() {
     try {
         if (!jmc.IsConnected) {
@@ -126,6 +126,7 @@ function Login() {
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 };
+
 //*********************************************************************************************************************
 //End Login
 //*********************************************************************************************************************
@@ -135,6 +136,7 @@ function Login() {
 //*********************************************************************************************************************
 //Cascaded Event Handlers (From JMCEvents)
 //*********************************************************************************************************************
+
 function DisplayCharacters(sampleOnly) {
     try {
         var characters = CharacterCollection.Enumerate().Characters;
@@ -216,6 +218,8 @@ function OnIncoming(incomingLine) {
     try {
         var cleanLine = incomingLine.cleanString();
 
+        ParseForHelpBotLine(cleanLine);
+
         //Character Maintenance...
         ParseForLogin(cleanLine);
         ParseForInformation(cleanLine);
@@ -246,6 +250,7 @@ function OnIncoming(incomingLine) {
         ParseForFlee(cleanLine);
         ParseForRescue(cleanLine);
         // ParseForPreparation(cleanLine);
+        ParseForIdentify(cleanLine);
 
         //NOTE: This function changes the jmc.Event line, and could therefore interfere with other functions.  Keep this at the end.
         ParseForHowMany(cleanLine);
@@ -283,9 +288,6 @@ function OnTimer(timerID) {
         case TIMER_ARKEN_WAIT:
             OnArkenWaitTimer();
             break;
-        case TIMER_GROUP_STATISTICS:
-            OnGroupStatisticsTimer();
-            break;
         case TIMER_CHARACTER_STATISTICS:
             OnCharacterStatisticsTimer();
             break;
@@ -293,6 +295,7 @@ function OnTimer(timerID) {
             return;
     }
 };
+
 //*********************************************************************************************************************
 //End Cascaded Event Handlers (From JMCEvents)
 //*********************************************************************************************************************
@@ -439,6 +442,7 @@ function AutoStatus(isEnabled) {
         jmc.ShowMe("Auto status is disabled.", "red");
     }
 };
+
 //*********************************************************************************************************************
 //End Toggles
 //*********************************************************************************************************************
@@ -506,55 +510,6 @@ function NavigateToExit(exitType) {
         var message = "Failure Navigating: " + caught.message;
         JMCException.LogException(message);
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
-    }
-};
-
-function RetrieveExit(roomName, zoneType) {
-    var databaseConnection = new ActiveXObject("ADODB.Connection");
-    var command = new ActiveXObject("ADODB.Command");
-    var recordSet = new ActiveXObject("ADODB.Recordset");
-
-    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + GetTimestamp() + ": Opening Connection.");
-    try {
-        jmc.ShowMe(AnsiColors.ForegroundBrightBlue + GetTimestamp() + ": Connection opened...");
-
-        databaseConnection.ConnectionString = DATABASE_CHARACTER_CONNECTION_STRING;
-        databaseConnection.Open();
-
-        command.ActiveConnection = databaseConnection;
-        command.CommandType = 4;
-        command.CommandText = "dbo.[GetRoom]";
-
-        jmc.ShowMe("Creating parameters...");
-        command.Parameters.Append(command.CreateParameter("@RoomName", 200, 1, 100, roomName));
-        command.Parameters.Append(command.CreateParameter("@ZoneType", 200, 1, 20, zoneType));
-
-        jmc.ShowMe("Executing");
-        recordSet = command.Execute();
-
-        jmc.ShowMe(AnsiColors.ForegroundBrightBlue + GetTimestamp() + ": Data set retrieved... Showing...");
-
-        var message = "Room Name: " + recordSet.Fields("RoomName");
-        message = message + ", Front Entrance: " + recordSet.Fields("Exit1");
-        message = message + ", Back Entrance: " + recordSet.Fields("Exit2");
-        message = message + ", Swamp: " + recordSet.Fields("Exit3");
-
-        jmc.ShowMe(AnsiColors.ForegroundRed + GetTimestamp() + ": " + message);
-
-    } catch (caught) {
-        var message = "Failure Retrieving Exit: " + caught.message;
-        JMCException.LogException(message);
-        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
-    } finally {
-        // clean up  
-        if (recordSet.State === 1) {
-            recordSet.Close();
-            recordSet = null;
-        }
-        if (databaseConnection.State === 1) {
-            databaseConnection.Close();
-            databaseConnection = null;
-        }
     }
 };
 
@@ -652,6 +607,7 @@ function ShowExit(exitName) {
 //*********************************************************************************************************************
 //Character Status Commands
 //*********************************************************************************************************************
+
 function DisplayCharacterStatus() {
     try {
         ClearWindow(_characterStatusOutputWindow);
@@ -737,6 +693,7 @@ function DisplayCharacterStatus() {
         WriteToWindow(_mapOutputWindow, message, "red", true, true);
     }
 };
+
 //********************************************************************************************************************
 //End Character Status Commands
 //*********************************************************************************************************************
@@ -950,6 +907,7 @@ function RegisterSkills() {
 //*********************************************************************************************************************
 //HowMany
 //*********************************************************************************************************************
+
 function HowMany(searchPattern, container) {
     try {
         if (searchPattern === "") {
@@ -968,6 +926,7 @@ function HowMany(searchPattern, container) {
         WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
     }
 };
+
 //*********************************************************************************************************************
 //End HowMany
 //*********************************************************************************************************************
@@ -1825,6 +1784,205 @@ function ParseForInformation(incomingLine) {
     }
 };
 
+var _identifyPhase = IdentifyPhase.None;
+var _currentItem = null;
+
+function ParseForIdentify(incomingLine) {
+    try {
+
+        incomingLine = incomingLine.trim();
+
+        if (incomingLine === "You feel dizzy and tired from your mental exertion.") {
+            _identifyPhase = IdentifyPhase.None;
+        }
+
+        if (_identifyPhase === IdentifyPhase.None) {
+
+            if (_currentItem !== null) {
+                ItemCollection.Add(_currentItem);
+                _currentItem = null;
+            }
+
+            var matches = incomingLine.match(/^You feel certain the object you have is (?:a(?:n)? )?([a-zA-Z\- ',]+).$/);
+            if (matches !== null) {
+                jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Item Name: " + matches[1]);
+                _currentItem = new Item(matches[1]);
+                _identifyPhase = IdentifyPhase.Description;
+                return;
+            }
+        }
+
+        if (_currentItem === null) {
+            _identifyPhase = IdentifyPhase.None;
+            return;
+        }
+
+        if (incomingLine === "This item has no additional attributes." || incomingLine === "This item has the following attributes.") {
+            jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "ID Phase Attributes");
+            _identifyPhase = IdentifyPhase.Attributes;
+            return;
+        }
+
+        if (incomingLine === "This item has no addictional affections." || incomingLine === "This item has the following affections.") {
+            jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "ID Phase Affections");
+            _identifyPhase = IdentifyPhase.Affections;
+            return;
+        }
+
+        switch (_identifyPhase) {
+            case IdentifyPhase.Description:
+
+                if (incomingLine === "") {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Description: " + _currentItem.Description);
+                    _identifyPhase = IdentifyPhase.Statistics;
+                    return;
+                }
+
+                if (_currentItem.Description === "") {
+                    _currentItem.Description = incomingLine;
+                } else {
+                    _currentItem.Description = _currentItem.Description + " " + incomingLine;
+                }
+                break;
+            case IdentifyPhase.Statistics:
+
+                if (incomingLine === "") {
+                    return;
+                }
+
+                var matches = incomingLine.match(/^This ([a-zA-Z\- ]+) is made (?:of|from) ([a-zA-Z\- ]+), and weighs ([\d\.]+)lbs\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Item type: " + matches[1]);
+                    _currentItem.ItemType = matches[1];
+                    _currentItem.Material = matches[2];
+                    _currentItem.Weight = parseFloat(matches[3]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^This ([a-zA-Z\- ]+) can be taken and ([a-zA-Z ]+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Item Usage: " + matches[2]);
+                    _currentItem.ItemType = matches[1];
+                    _currentItem.Usage = matches[2];
+                    return;
+                }
+
+                matches = incomingLine.match(/^(?:This|The) weapon you hold is a(?:n)? ([a-zA-Z\- ]+) weapon\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Weapon type: " + matches[1]);
+                    _currentItem.ItemType = matches[1];
+                    return;
+                }
+
+                matches = incomingLine.match(/^Damage Rating +(\d+)\/(\d+)\.$/);
+                if (matches !== null) {
+                    var damageRating = parseFloat(String(matches[1]) + String(matches[2])) / 1000;
+
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Damage Rating: " + damageRating);
+                    _currentItem.DamageRating = parseFloat(damageRating);
+                    return;
+                }
+
+                matches = incomingLine.match(/^Offensive Bonus +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Offensive Bonus: " + matches[1]);
+                    _currentItem.OffensiveBonus = parseInt(matches[1]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^Absorbtion +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Absorbtion: " + matches[1]);
+                    _currentItem.Absorbtion = parseInt(matches[1]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^Min Absorbtion +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "MinAbsorbtion: " + matches[1]);
+                    _currentItem.MinimumAbsorbtion = parseInt(matches[1]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^Encumberance +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Encumberance: " + matches[1]);
+                    _currentItem.Encumberance = parseInt(matches[1]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^Dodge(?: Bonus)? +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Dodge: " + matches[1]);
+                    _currentItem.Dodge = parseInt(matches[1]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^Parry(?: Bonus)? +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Parry: " + matches[1]);
+                    _currentItem.Parry = parseInt(matches[1]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^Bulk +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Bulk: " + matches[1]);
+                    _currentItem.Bulk = parseInt(matches[1]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^To Hit +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "To Hit: " + matches[1]);
+                    _currentItem.ToHit = parseInt(matches[1]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^To Damage +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "To Damage: " + matches[1]);
+                    _currentItem.ToDamage = parseInt(matches[1]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^Break Percentage +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Break Percentage: " + matches[1]);
+                    _currentItem.BreakPercentage = parseInt(matches[1]);
+                    return;
+                }
+
+                matches = incomingLine.match(/^Capacity +(\-?\d+)\.$/);
+                if (matches !== null) {
+                    jmc.ShowMe(AnsiColors.ForegroundBrightBlue + "Capacity: " + matches[1]);
+                    _currentItem.Capacity = parseInt(matches[1]);
+                    return;
+                }
+
+                break;
+            case IdentifyPhase.Attributes:
+                if (incomingLine === "") {
+                    return;
+                }
+                _currentItem.Attributes.push(incomingLine);
+                break;
+            case IdentifyPhase.Affections:
+                if (incomingLine === "") {
+                    _identifyPhase = IdentifyPhase.None;
+                    return;
+                }
+                _currentItem.Affections.push(incomingLine);
+                break;
+        }
+    } catch (caught) {
+        _identifyPhase = IdentifyPhase.None;
+        _currentItem = null;
+        var message = "Failure parsing for identify: " + caught.message + "\nLine: " + jmc.Event;
+        JMCException.LogException(message);
+        WriteToWindow(_exceptionOutputWindow, message, "red", true, true);
+    }
+};
 //*********************************************************************************************************************
 //End Line Parsing
 //*********************************************************************************************************************
@@ -1855,10 +2013,6 @@ function OnStatusTimer() {
     jmc.Send("score");
 };
 
-function OnGroupStatisticsTimer() {
-    DamageReport();
-};
-
 function OnCharacterStatisticsTimer() {
     DisplayCharacterStatus();
 };
@@ -1872,10 +2026,12 @@ function OnCharacterStatisticsTimer() {
 //*********************************************************************************************************************
 //Initialize Settings
 //*********************************************************************************************************************
+
 AutoAfk(true);
 AutoCharacterStatus(true);
 AutoFlee(true);
 AutoOpen(true);
+
 //*********************************************************************************************************************
 //End Initialize Settings
 //*********************************************************************************************************************

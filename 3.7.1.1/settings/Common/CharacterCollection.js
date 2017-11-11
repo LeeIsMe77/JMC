@@ -27,8 +27,7 @@ CharacterCollection.Add = function(characterName) {
     var command = new ActiveXObject("ADODB.Command");
     try {
 
-        databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
-        // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
+        databaseConnection.ConnectionString = DATABASE_CHARACTER_CONNECTION_STRING;
         databaseConnection.Open();
 
         command.ActiveConnection = databaseConnection;
@@ -62,17 +61,13 @@ CharacterCollection.Enumerate = function() {
 
     try {
 
-        databaseConnection.ConnectionString = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
-        // databaseConnection.ConnectionString = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
+        databaseConnection.ConnectionString = DATABASE_CHARACTER_CONNECTION_STRING;
         databaseConnection.Open();
 
         command.ActiveConnection = databaseConnection;
         command.CommandType = 4;
         command.CommandText = "dbo.[CharacterCollection.Enumerate]";
         recordSet = command.Execute();
-
-        command.Parameters.Append(command.CreateParameter("@Race", ADODBParameterType.Int, ADODBParameterDirection.Output));
-        command.Parameters.Append(command.CreateParameter("@XPNeededToLevel", ADODBParameterType.Int, ADODBParameterDirection.Output));
 
         while (!recordSet.EOF) {
             var newCharacter = new Character(parseInt(recordSet("CharacterID")), String(recordSet("CharacterName")));

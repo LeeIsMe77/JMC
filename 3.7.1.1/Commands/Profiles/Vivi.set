@@ -1,15 +1,13 @@
-#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea soft}
-#alias {cotton-mail} {rem all.cotton;rem shiny;rem soft;wea all.mail} {default}
-
-#var {isWearingArmor}{0}
-#hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
+#spit {Commands\Profiles\Common\LightMage.set} {%0} {ns};
 
 #var {watersource}{waterskin}
 #var {foodsource}{waybread}
 
-#hotkey {Ctrl+P}{cast light}
-#hotkey {Ctrl+O}{cast chill}
-#hotkey {Ctrl+Q}{cast fire}
-#hotkey {Ctrl+I}{cast 'lightning strike'}
-#hotkey {Ctrl+H}{cast flash}
-#hotkey {Ctrl+J}{cast cone}
+#var {weaponPrimary}{staff};
+#var {weaponSecondary}{sword};
+
+#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea soft}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem soft;wea all.mail} {default}
+
+#alias {pracreset}{#5 { prac lightning strike;prac beacon;prac relocate;prac blink;prac create;prac fireball;prac cone;prac chill ray;prac shield;prac summon;prac cure self;prac vitalize self;prac firebolt;prac locate;prac pick;prac search;prac flash;prac lightning bolt;prac reveal; }; #8 prac concussion;prac swim;#14 prac parry;#14 prac ride;}
+#alias {pracresetIdentify}{#5 { prac identify;prac lightning strike;prac beacon;prac relocate;prac blink;prac create;prac fireball;prac cone;prac chill ray;prac shield;prac summon;prac cure self;prac vitalize self;prac firebolt;prac locate;prac pick;prac search;prac flash;prac lightning bolt;prac reveal; }; #36 prac weapon; #4 prac two;prac swim;#14 prac parry;#14 prac ride;#18 prac remove;#12 {prac pragmatism;prac insight;prac curse;}; }
