@@ -1,0 +1,10 @@
+#hotkey {F1} {#connect rotsmud.dyndns.org 3791} {default}
+#hotkey {F2}{#script {Login()}; }
+#hotkey {F12}{#killall;#spit {Commands/Main.set} {%0};info}
+#hotkey {Ctrl+F5}{#script {DisplayCharacters(false);}} {default}
+#hotkey {Ctrl+F11}{ #spit {Commands/Mystic/Triggers/SpiritTriggers.set} {%0} {ns};}
+#hotkey {Ctrl+F12}{ #spit {Commands/Mystic/Triggers/ArkenTriggers.set} {%0} {ns};}
+#hotkey {Ctrl+A} {assist $leader} {default}
+#hotkey {Ctrl+B} {bash} {default}
+#hotkey {Ctrl+D} {dismount} {default}
+#hotkey {Ctrl+R} {ride} {default}

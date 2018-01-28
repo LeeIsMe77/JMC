@@ -1,5 +1,0 @@
-#hotkey {Ctrl+F11}{ #spit {Commands/Mystic/Triggers/SpiritTriggers.set} {%0} {ns};}
-#hotkey {Ctrl+F12}{ #spit {Commands/Mystic/Triggers/ArkenTriggers.set} {%0} {ns};}
-#hotkey {F12}{#killall;#script {_currentPlayer = null};#spit {Commands/Main.set} {%0};info}
-
-#spit {Commands/Global/Main.set} {%0} {ns}

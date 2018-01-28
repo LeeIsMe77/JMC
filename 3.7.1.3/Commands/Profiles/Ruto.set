@@ -1,0 +1,15 @@
+#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea soft}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem soft;wea all.mail} {default}
+
+#var {isWearingArmor}{0}
+#hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
+
+#var {watersource}{waterskin}
+#var {foodsource}{bread}
+
+#hotkey {Ctrl+P}{cast light}
+#hotkey {Ctrl+O}{cast chill}
+#hotkey {Ctrl+Q}{cast fire}
+#hotkey {Ctrl+I}{cast 'lightning strike'}
+#hotkey {Ctrl+H}{cast flash}
+#hotkey {Ctrl+J}{cast cone}

@@ -1,0 +1,67 @@
+#comment #var {statSum}{0}
+#alias {ef} {enter ferry} {default}
+#alias {c} {cast} {default}
+#alias {of} {order followers} {default}
+#alias {cure} {cast 'cure self'} {default}
+#alias {vit} {cast 'vitalize self'} {default}
+#alias {setcolor} {colour say magenta;colour tell magenta;colour chat cyan;colour hit bright blue;colour damage bright red;colour char green;colour room blue;colour object blue;set spam off;} {default}
+#alias {howmany}{#script HowMany("%1", "%2");}
+#alias {mail-cotton} {rem all.mail;wea all.cotton;wea shiny;wea soft}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem boots;wea all.mail} {default}
+
+#comment MAPPING
+#alias {addMap}{#script {AddMap("%%1", "%%2")}}
+#alias {clearMaps}{#script {ClearMaps()}}
+#alias {showMaps}{#script {ShowMaps()}}
+#alias {showMap}{#script {ShowMapByName("%%1")}}
+#alias {showMapIndex}{#script {ShowMapByIndex("%%1")}}
+#alias {deleteMap}{#script {DeleteMapByName("%%1")}}
+#alias {deleteMapIndex}{#script {DeleteMapByIndex(%%1)}};
+
+#comment VALE/FAROTH EXITS
+#alias {valeOn}{#script {AutoExits(ZoneTypes.Vale)}}
+#alias {valeOff}{#script {AutoExits(ZoneTypes.None)}}
+#alias {farothOn}{#script {AutoExits(ZoneTypes.Faroth)}}
+#alias {farothOff}{#script {AutoExits(ZoneTypes.None)}}
+#alias {showExits}{#script {ListExits()}}
+#alias {ent}{#script {NavigateToExit(ExitTypes.Entrance)}}
+#alias {gotoCave}{#script {NavigateToExit(ExitTypes.Cave)}}
+#alias {gotoMumak}{#script {NavigateToExit(ExitTypes.Mumak)}}
+
+#comment SKILLS
+#alias {resetSkills}{#script {RegisterSkills();}}
+#alias {showSkills}{#script {DisplaySkills();}}
+
+#comment AFK TRIGGER
+#alias {afkOn}{#script {AutoAfk(true);}};
+#alias {afkOff}{#script {AutoAfk(false);}};
+
+#comment RESCUE TRIGGER
+#alias {rescueOn}{#script {AutoRescue(true);}}
+#alias {rescueOff}{#script {AutoRescue(false);}}
+
+#comment GROUP STATISTICS
+#alias {groupDamageOn} {#script {AutoGroupStatistics(true)}}
+#alias {groupDamageOff} {#script {AutoGroupStatistics(false)}}
+
+#COMMENT GROUP HEALING
+#alias {resetGroup} {#script {ResetGroup()} } {default}
+#alias {heal-group}{#script {HealGroup(["regen", "vitality", "insight", "curing"], false)}}
+#alias {regen-group}{#script {HealGroup(["regen"], false)}}
+#alias {vit-group}{#script {HealGroup(["vitality"], false)}}
+#alias {curing-group}{#script {HealGroup(["curing"], false)}}
+#alias {insight-group}{#script {HealGroup(["insight"], false)}}
+#alias {rest-group}{#script {HealGroup(["rest"], false)}}
+#alias {slow-group}{#script {HealGroup(["slow"], false)}}
+#alias {heal-leader}{#script {HealGroup(["regen", "vitality", "insight", "curing"], true)}};
+#alias {regen-leader}{#script {HealGroup(["regen"], true)}}
+#alias {vit-leader}{#script {HealGroup(["vitality"], true)}}
+#alias {curing-leader}{#script {HealGroup(["curing"], true)}}
+#alias {insight-leader}{#script {HealGroup(["insight"], true)}}
+#alias {rest-leader}{#script {HealGroup(["rest"], true)}}
+#alias {slow-leader}{#script {HealGroup(["slow"], true)}}
+
+#alias {heal-mounts} {#loop {1,8}{cast insight %0.mule;cast vit %0.mule;cast rest %0.mule;cast insight %0.horse;cast vit %0.horse;cast rest %0.horse}} {default}
+#alias {pray-all} {#action {[%0] %1 %2}{pray %1};#action {%0 %1 displayed.}{#unaction {%0 %1 displayed.};#unaction {[%0] %1 %2} };who} {default}
+#alias {group-report} {#action {You have %0 hit, %1 stamina, %2 moves, %3 spirit.}{gt Group Report: You have %0 hit, %1 stamina, %2 moves, %3 spirit.;#unaction {You have %0 hit, %1 stamina, %2 moves, %3 spirit.}};sc} {default}
+#alias {group-stat} {#action {Str: %0, Int: %1, Wil: %2, Dex: %3, Con: %4, Lea: %5.}{gt Group Stat: Str: %0, Int: %1, Wil: %2, Dex: %3, Con: %4, Lea: %5.;#unaction {Str: %0, Int: %1, Wil: %2, Dex: %3, Con: %4, Lea: %5.}};stat} {default}

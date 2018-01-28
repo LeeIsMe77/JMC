@@ -1,0 +1,18 @@
+#var {armorType}{mail};
+#var {weaponPrimary}{stick};
+#var {weaponSecondary}{sword};
+
+#var {isWearingArmor}{0};
+#var {isWieldingPrimaryWeapon}{1};
+
+#hotkey {F9}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-$armorType}{ #var {isWearingArmor}{0};$armorType-cotton } };
+#hotkey {F10}{ #if {$isWieldingPrimaryWeapon==0}{ #var {isWieldingPrimaryWeapon}{1};rem $weaponSecondary;wield $weaponPrimary}{ #var {isWieldingPrimaryWeapon}{0};rem $weaponPrimary;wield $weaponSecondary} }
+
+#hotkey {Ctrl+Q} {cast confuse} {default}
+#hotkey {Ctrl+I} {cast poison $target} {default}
+#hotkey {Ctrl+O} {cast insight $target} {default}
+#hotkey {Ctrl+P} {cast hallucinate $target} {default}
+#hotkey {Ctrl+F} {cast curse $target} {default}
+#hotkey {Ctrl+J} {cast curse $target} {default}
+#hotkey {Ctrl+L} {cast fear $target} {default}
+#hotkey {Ctrl+H} {cast dispel $target} {default}

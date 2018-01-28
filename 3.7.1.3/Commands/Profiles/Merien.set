@@ -1,0 +1,5 @@
+#var {isWieldingDagger}{1}
+#hotkey {F10}{ #if {$isWieldingDagger==0}{ #var {isWieldingDagger}{1};rem sword;wield dagger}{ #var {isWieldingDagger}{0};rem dagger;wield sword } }
+
+#var {watersource}{waterskin}
+#var {foodsource}{bread}

@@ -1,0 +1,15 @@
+#var {watersource}{flask}
+#var {foodsource}{flesh}
+#var {isWieldingDagger}{1}
+
+#alias {mail-cotton} {rem all.mail;rem all.elven;wea all.cotton;wea horns;wea shiny;wea sandals}
+#alias {cotton-mail} {rem all.cotton;rem shiny;rem sandals;rem horns;wea all.mail;wea all.elven} {default}
+#alias {p}{of calm 2.warg}
+#alias {o}{of calm 3.warg}
+#alias {q}{of calm 1.warg}
+
+#hotkey {ctrl+p}{of assist Agoron}
+#hotkey {ctrl+q}{rescue grizzly}
+#hotkey {F10}{ #if {$isWieldingDagger==0}{ #var {isWieldingDagger}{1};rem sword;wield dagger}{ #var {isWieldingDagger}{0};rem dagger;wield sword } }
+
+#action {%0 turns to fight a large grizzly bear!}{rescue grizzly}

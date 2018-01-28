@@ -1,7 +1,0 @@
-#highlight {light red,b gray} {%1 appears to be confused!} {default}
-#highlight {red} {A huge boulder looks as though it could fall at any moment.} {default}
-#highlight {light red,b gray} {A huge boulder leans dangerously close to the edge and will fall any second.}
-#highlight {light magenta, b gray} {%0 has recovered from a bash!} {default}
-#highlight {light blue}{You hear a sound of a lock snapping shut.}
-#highlight {light blue}{You hear a sound of a key turning..}
-#highlight {light cyan}{%0 attacks %1!}

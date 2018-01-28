@@ -1,0 +1,18 @@
+#alias {mail-cotton} {rem all.mail;wea circlet;wea shiny;wea soft;wea all.cotton}
+#alias {cotton-mail} {rem all.cotton;rem soft;rem shiny;rem circlet;wea all.mail} {default}
+
+#var {isWearingArmor}{0}
+#hotkey {F10}{ #if {$isWearingArmor==0}{ #var {isWearingArmor}{1};cotton-mail}{ #var {isWearingArmor}{0};mail-cotton } }
+
+#hotkey {Ctrl+Q} {cast confuse} {default}
+#hotkey {Ctrl+I} {cast poison $target} {default}
+#hotkey {Ctrl+O} {cast insight $target} {default}
+#hotkey {Ctrl+P} {cast hallucinate $target} {default}
+#hotkey {Ctrl+F} {cast curse $target} {default}
+#hotkey {Ctrl+J} {cast curse $target} {default}
+#hotkey {Ctrl+L} {cast fear $target} {default}
+#var {watersource}{waterskin}
+#var {foodsource}{waybread}
+#alias {p} {cast fear warg}
+#alias {q}{cast fire}
+#alias {o}{cast chill}

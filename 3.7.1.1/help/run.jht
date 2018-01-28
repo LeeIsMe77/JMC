@@ -1,3 +1,0 @@
-#run <command line>
-jmc->run(cmdline[, cmdopts])
-  launch windows-associated application for it (ShellExecute)

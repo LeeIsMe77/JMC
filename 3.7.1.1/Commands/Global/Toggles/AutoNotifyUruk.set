@@ -1,2 +1,0 @@
-#var {autoNotifyUruk}{0}};
-#alias {autonotifyuruk}{#if { $autoNotifyUruk==0} { #action {*an Uruk* %0}{ #systemexec {emailMessage.bat PHONENUMBERHERE@vtext.com "Uruk" "*an Uruk* %%0" } };#showme {green}{Auto-Notify-Uruk Enabled};#var {autoNotifyUruk}{1} }{#unaction {*an Uruk* %0}{ #systemexec {emailMessage.bat PHONENUMBERHERE@vtext.com "Uruk" "*an Uruk* %%0" } };#showme {red}{Auto-Notify-Uruk Disabled};#var {autoNotifyUruk}{0} }

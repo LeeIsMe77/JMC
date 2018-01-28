@@ -1,5 +1,0 @@
-#action {^$leader attacks}{assist $leader}
-#action {^$leader leaps at %0, and hits %1 extremely hard!}{assist $leader}
-
-#var {watersource}{waterskin}
-#var {foodsource}{waybread}

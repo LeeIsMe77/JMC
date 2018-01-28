@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName>"$/smc", CAAAAAAA</SccProjectName>
+    <SccLocalPath>.</SccLocalPath>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;UNICODE;HAVE_STDLIB_H;_DEBUG_LOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <UndefinePreprocessorDefinitions>HAVE_STRINGS_H;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Debug\smc.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader />
+      <ObjectFileName>.\Debug\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\smc.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0419</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\smc.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <OutputFile>./jmc.exe</OutputFile>
+      <AdditionalDependencies>wsock32.lib;ttcoreex\debug\ttcoreex.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Release\smc.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ObjectFileName>.\Release\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\smc.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0419</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release\smc.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>./jmc.exe</OutputFile>
+      <AdditionalDependencies>ttcoreex\Release\ttcoreex.lib;wsock32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AcceptKeyEdit.cpp" />
+    <ClCompile Include="AliasPage.cpp" />
+    <ClCompile Include="AnsiColorsDlg.cpp" />
+    <ClCompile Include="AnsiWnd.cpp" />
+    <ClCompile Include="CharSubstPage.cpp" />
+    <ClCompile Include="ColorButton.cpp" />
+    <ClCompile Include="ColorSettingsDlg.cpp" />
+    <ClCompile Include="CommonParamsPage.cpp" />
+    <ClCompile Include="CoolDialogBar.cpp" />
+    <ClCompile Include="EditBar.cpp" />
+    <ClCompile Include="GroupCombo.cpp" />
+    <ClCompile Include="HyperLink.cpp" />
+    <ClCompile Include="JMCActionsPage.cpp" />
+    <ClCompile Include="JmcGroupPage.cpp" />
+    <ClCompile Include="JmcHlightPage.cpp" />
+    <ClCompile Include="JmcHotkeyPage.cpp" />
+    <ClCompile Include="JmcObjectsDlg.cpp" />
+    <ClCompile Include="JmcScriptFilesPage.cpp" />
+    <ClCompile Include="JmcSubstPage.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="KeyWordsDlg.cpp" />
+    <ClCompile Include="LogParamsPage.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MudEmuDlg.cpp" />
+    <ClCompile Include="NewProfileDlg.cpp" />
+    <ClCompile Include="OneChar.cpp" />
+    <ClCompile Include="ProfileListDlg.cpp" />
+    <ClCompile Include="ProfilePage.cpp" />
+    <ClCompile Include="ScriptPage.cpp" />
+    <ClCompile Include="ScriptParseDlg.cpp" />
+    <ClCompile Include="ScrollOptionDlg.cpp" />
+    <ClCompile Include="smc.cpp" />
+    <ClCompile Include="smcDoc.cpp" />
+    <ClCompile Include="SmcPropertyDlg.cpp" />
+    <ClCompile Include="smcView.cpp" />
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Tray.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="smc.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AcceptKeyEdit.h" />
+    <ClInclude Include="AliasPage.h" />
+    <ClInclude Include="AnsiColorsDlg.h" />
+    <ClInclude Include="AnsiWnd.h" />
+    <ClInclude Include="CharSubstPage.h" />
+    <ClInclude Include="ColorSettingsDlg.h" />
+    <ClInclude Include="CommonParamsPage.h" />
+    <ClInclude Include="CoolDialogBar.h" />
+    <ClInclude Include="EditBar.h" />
+    <ClInclude Include="GroupCombo.h" />
+    <ClInclude Include="groupedpage.h" />
+    <ClInclude Include="HyperLink.h" />
+    <ClInclude Include="JMCActionsPage.h" />
+    <ClInclude Include="JmcGroupPage.h" />
+    <ClInclude Include="JmcHlightPage.h" />
+    <ClInclude Include="JmcHotkeyPage.h" />
+    <ClInclude Include="JmcObjectsDlg.h" />
+    <ClInclude Include="JmcScriptFilesPage.h" />
+    <ClInclude Include="JmcSubstPage.h" />
+    <ClInclude Include="KeyWordsDlg.h" />
+    <ClInclude Include="LogParamsPage.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MudEmuDlg.h" />
+    <ClInclude Include="NewProfileDlg.h" />
+    <ClInclude Include="OneChar.h" />
+    <ClInclude Include="ProfileListDlg.h" />
+    <ClInclude Include="ProfilePage.h" />
+    <ClInclude Include="ScriptPage.h" />
+    <ClInclude Include="ScriptParseDlg.h" />
+    <ClInclude Include="ScrollOptionDlg.h" />
+    <ClInclude Include="smc.h" />
+    <ClInclude Include="smcDoc.h" />
+    <ClInclude Include="SmcPropertyDlg.h" />
+    <ClInclude Include="smcView.h" />
+    <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="Tray.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bmp00001.bmp" />
+    <Image Include="res\bmp00002.bmp" />
+    <Image Include="res\connecte.bmp" />
+    <Image Include="res\connecte.ico" />
+    <Image Include="res\disconne.bmp" />
+    <Image Include="res\ico00001.ico" />
+    <Image Include="res\icon1.ico" />
+    <Image Include="res\jmc_main_icon.ico" />
+    <Image Include="res\logged.bmp" />
+    <Image Include="res\logged1.bmp" />
+    <Image Include="res\Toolbar.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="res\smc.rc2" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

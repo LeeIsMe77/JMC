@@ -3,23 +3,52 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "recore", "recore\recore.dsp", "{1649D3B9-7B8A-4339-9A1A-D50344655A53}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "recore", "recore\recore.vcxproj", "{1649D3B9-7B8A-4339-9A1A-D50344655A53}"
 EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "smc", "smc.dsp", "{E3BBA35C-2C01-4CAE-B333-09AA1E891821}"
+Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "smc", "smc.vcxproj", "{E3BBA35C-2C01-4CAE-B333-09AA1E891821}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1649D3B9-7B8A-4339-9A1A-D50344655A53} = {1649D3B9-7B8A-4339-9A1A-D50344655A53}
 		{48DB7532-E166-4D4E-A357-1EE1E94F091C} = {48DB7532-E166-4D4E-A357-1EE1E94F091C}
 		{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D} = {89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}
 	EndProjectSection
 EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "ttcoreex", "ttcoreex\ttcoreex.dsp", "{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{48DB7532-E166-4D4E-A357-1EE1E94F091C} = {48DB7532-E166-4D4E-A357-1EE1E94F091C}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ttcoreex", "ttcoreex\ttcoreex.vcxproj", "{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}"
 EndProject
-Project("{059D6162-CD51-11D0-AE1F-00A0C90FFFC3}") = "wolfssl", "wolfssl\wolfssl.dsp", "{48DB7532-E166-4D4E-A357-1EE1E94F091C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolfssl", "wolfssl\wolfssl.vcxproj", "{48DB7532-E166-4D4E-A357-1EE1E94F091C}"
 EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release MinDependency|x86 = Release MinDependency|x86
+		Release|x86 = Release|x86
+		Template|x86 = Template|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1649D3B9-7B8A-4339-9A1A-D50344655A53}.Debug|x86.ActiveCfg = Debug|Win32
+		{1649D3B9-7B8A-4339-9A1A-D50344655A53}.Debug|x86.Build.0 = Debug|Win32
+		{1649D3B9-7B8A-4339-9A1A-D50344655A53}.Release MinDependency|x86.ActiveCfg = Release|Win32
+		{1649D3B9-7B8A-4339-9A1A-D50344655A53}.Release MinDependency|x86.Build.0 = Release|Win32
+		{1649D3B9-7B8A-4339-9A1A-D50344655A53}.Release|x86.ActiveCfg = Release|Win32
+		{1649D3B9-7B8A-4339-9A1A-D50344655A53}.Release|x86.Build.0 = Release|Win32
+		{1649D3B9-7B8A-4339-9A1A-D50344655A53}.Template|x86.ActiveCfg = Release|Win32
+		{1649D3B9-7B8A-4339-9A1A-D50344655A53}.Template|x86.Build.0 = Release|Win32
+		{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}.Debug|x86.ActiveCfg = Debug|Win32
+		{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}.Debug|x86.Build.0 = Debug|Win32
+		{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}.Release MinDependency|x86.ActiveCfg = Release MinDependency|Win32
+		{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}.Release MinDependency|x86.Build.0 = Release MinDependency|Win32
+		{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}.Release|x86.ActiveCfg = Release|Win32
+		{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}.Release|x86.Build.0 = Release|Win32
+		{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}.Template|x86.ActiveCfg = Template|Win32
+		{89AAF096-24B6-4A8D-AEBA-DCC6E8FB8E6D}.Template|x86.Build.0 = Template|Win32
+		{48DB7532-E166-4D4E-A357-1EE1E94F091C}.Debug|x86.ActiveCfg = Debug|Win32
+		{48DB7532-E166-4D4E-A357-1EE1E94F091C}.Debug|x86.Build.0 = Debug|Win32
+		{48DB7532-E166-4D4E-A357-1EE1E94F091C}.Release MinDependency|x86.ActiveCfg = Release|Win32
+		{48DB7532-E166-4D4E-A357-1EE1E94F091C}.Release MinDependency|x86.Build.0 = Release|Win32
+		{48DB7532-E166-4D4E-A357-1EE1E94F091C}.Release|x86.ActiveCfg = Release|Win32
+		{48DB7532-E166-4D4E-A357-1EE1E94F091C}.Release|x86.Build.0 = Release|Win32
+		{48DB7532-E166-4D4E-A357-1EE1E94F091C}.Template|x86.ActiveCfg = Template|Win32
+		{48DB7532-E166-4D4E-A357-1EE1E94F091C}.Template|x86.Build.0 = Template|Win32
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection

@@ -1,7 +1,0 @@
-#spit {Commands/Global/GlobalAliases.set} {%0} {ns}
-#spit {Commands/Global/GlobalFood.set} {%0} {ns}
-#spit {Commands/Global/GlobalHighlights.set} {%0} {ns}
-#spit {Commands/Global/GlobalHotkeys.set} {%0} {ns}
-#spit {Commands/Global/GlobalLeader.set} {%0} {ns}
-#spit {Commands/Global/GlobalTargets.set} {%0} {ns}
-#spit {Commands/Global/Toggles/Main.set} {%0} {ns}

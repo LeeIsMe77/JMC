@@ -1,0 +1,2 @@
+#alias {HelpBotOn}{#script {_helpbotOn = true;}}
+#alias {HelpBotOff}{#script {_helpbotOn = false;}}

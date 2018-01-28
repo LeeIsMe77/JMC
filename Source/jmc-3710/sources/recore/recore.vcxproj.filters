@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7e1edc46-2fdd-4c31-9cf1-3046d8263a2a}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{33c643ca-4654-4f9d-a1c8-a320dfa94fe1}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{c80f42f8-5c02-4808-bb4c-35328f883635}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_byte_order.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_chartables.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_compile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_config.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_dfa_exec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_exec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_fullinfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_get.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_globals.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_jit_compile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_maketables.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_newline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_ord2utf16.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_refcount.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_string_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_study.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_tables.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_ucd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_utf16_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_valid_utf16.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_version.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre16_xclass.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_byte_order.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_chartables.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_compile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_config.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_dfa_exec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_exec.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_fullinfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_get.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_globals.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_jit_compile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_maketables.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_newline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_ord2utf8.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_refcount.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_string_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_study.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_tables.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_ucd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_valid_utf8.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_version.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre_xclass.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pcre.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pcre_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pcre_scanner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pcrecpp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pcrecpp_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pcreposix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ucp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="PCRE.DEF">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

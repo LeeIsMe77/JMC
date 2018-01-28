@@ -1,0 +1,11 @@
+#spit {settings/Prototypes/Main.set} {%0} {ns}
+#spit {settings/Types/Main.set} {%0} {ns}
+#spit {settings/Common/Main.set} {%0} {ns}
+
+#use {JMCException.js}
+#use {JMCUtility.js}
+#use {HelpBot.js}
+#use {JMCEvents.js}
+#use {JMCManager.js}
+
+#COMMENT #use {Breeders.js}
