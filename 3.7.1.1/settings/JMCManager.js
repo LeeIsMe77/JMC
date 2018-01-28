@@ -8,7 +8,6 @@ var CHARACTER_PROFILE_LOCATION = "Commands/Profiles/";
 var COMMAND_RELOAD_PROFILE = "#killall;#spit {Commands/Main.set} {%0};";
 var DATABASE_CHARACTER_CONNECTION_STRING = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
 //var DATABASE_CHARACTER_CONNECTION_STRING = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
-//var DATABASE_CHARACTER_CONNECTION_STRING = "Provider=MSDASQL.1;Persist Security Info=True;Dsn=RotS;UserName=JMCMudClient;Password=P@ssw0rd";
 var SCRIPT_VB_LOGON_PROMPT = "wscript.exe //Nologo C:\\jmc\\3.7.1.1\\settings\\Controls\\CharacterNameInputBox.vbs";
 
 //Timers
@@ -53,7 +52,6 @@ var _isListeningForHowMany = false;
 var _statusTimerEnabled = false;
 
 //Cache
-var _characterCollection = CharacterCollection.Enumerate();
 var _groupMembers = new GroupMemberCollection();
 var _skills = new SkillCollection(0);
 var _maps = new MapCollection();
