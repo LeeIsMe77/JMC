@@ -62,6 +62,38 @@ function ClearWindow(windowNumber) {
     jmc.Parse("#wclear " + windowNumber);
 };
 
+function InputBox(promptText /* : String */, title /* : String */, defaultText /* : String */) /* : String */ {
+    // JScript has no intrinsic InputBox method, therefore we have to steal VBs
+    var scriptControl = new ActiveXObject("ScriptControl");
+    scriptControl.language = "VBScript";
+    scriptControl.allowUI = true;
+
+    return scriptControl.eval(
+        String.format(
+            "InputBox(\"{0}\", \"{1}\", \"{2}\")",
+            promptText,
+            title,
+            defaultText
+        )
+    );
+};
+
+function MessageBox(promptText /* : String */, buttons /* : VBButtons */, title /* : String */ ) {
+    // Buttons: "OK,Cancel,Abort,Retry,Ignore,Yes,No,OKOnly,OKCancel,AbortRetryIgnore,YesNoCancel,YesNo,RetryCancel,Critical,Question,Exclamation,Information,DefaultButton1,DefaultButton2,DefaultButton3"    
+    var scriptControl = new ActiveXObject("ScriptControl");
+    scriptControl.language = "VBScript";
+    scriptControl.allowUI = true;
+
+    return scriptControl.eval(
+        String.format(
+            "MsgBox(\"{0}\", {1}, \"{2}\")",
+            promptText,
+            buttons,
+            title
+        )
+    );
+}
+
 function WriteEmptyLineToWindow(windowNumber) {
     jmc.Parse("#woutput {" + windowNumber + "}{normal}{  }");
 };

@@ -8,7 +8,6 @@ var CHARACTER_PROFILE_LOCATION = "Commands/Profiles/";
 var COMMAND_RELOAD_PROFILE = "#killall;#spit {Commands/Main.set} {%0};";
 var DATABASE_CHARACTER_CONNECTION_STRING = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
 //var DATABASE_CHARACTER_CONNECTION_STRING = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
-var SCRIPT_VB_LOGON_PROMPT = "wscript.exe //Nologo C:\\jmc\\3.7.1.3\\settings\\Controls\\CharacterNameInputBox.vbs";
 
 //Timers
 var TIMER_STATUS = 0;
@@ -65,7 +64,6 @@ var _currentRoomName = "";
 var _currentZone = ZoneTypes.None;
 var _farothExits = CreateFarothExits();
 var _valeExits = CreateValeExits();
-
 //*********************************************************************************************************************
 //End Fields
 //*********************************************************************************************************************
@@ -76,7 +74,7 @@ var _valeExits = CreateValeExits();
 //*********************************************************************************************************************
 
 function OnConnected() {
-    try {
+    try {    
         DisplayCharacters(true);
 
     } catch (caught) {
@@ -113,9 +111,12 @@ function OnDisconnected() {
 
 function OnIncoming(incomingLine) {
     try {
+
+        // jmc.ShowMe(lineParser.EchoLine(incomingLine));
+
         var cleanLine = incomingLine.cleanString();
 
-        ParseForHelpBotLine(cleanLine);
+        // ParseForHelpBotLine(cleanLine);
 
         //Character Maintenance...
         ParseForLogin(cleanLine);
@@ -299,16 +300,6 @@ function AutoFlee(isEnabled) {
     }
 };
 
-function AutoGroupStatistics(isEnabled) {
-    if (isEnabled) {
-        jmc.SetTimer(TIMER_GROUP_STATISTICS, 30);
-        jmc.ShowMe("Auto Group Statistics is enabled.", "green");
-    } else {
-        jmc.KillTimer(TIMER_GROUP_STATISTICS);
-        jmc.ShowMe("Auto Group Statistics is disabled.", "red");
-    }
-};
-
 function AutoOpen(isEnabled) {
     _isListeningForDoors = isEnabled;
     if (isEnabled) {
@@ -358,14 +349,9 @@ function Login() {
         //Only allow login if the player is currently not signed in.
         if (_currentCharacter !== null) return;
 
-        var shell = new ActiveXObject(ACTIVEX_WSCRIPT_SHELL);
-        var wshShellExec = shell.Exec(SCRIPT_VB_LOGON_PROMPT);
-        var characterName = "";
-        while (!wshShellExec.StdOut.AtEndOfStream) {
-            characterName = wshShellExec.StdOut.ReadLine();
-        }
+        var characterName = InputBox("Which character do you wish to log in as?", "Character Name...", "");
 
-        if (characterName === null || characterName === "") return;
+        if (characterName === undefined || characterName === null || characterName === "") return;
         var targetCharacter = CharacterCollection.Enumerate().GetCharacter(characterName);
         if (targetCharacter === null) {
             jmc.ShowMe("Character " + characterName + " does not exist.  Please login manually.");
@@ -1622,7 +1608,7 @@ function ParseForLevel(incomingLine) {
             //and deduct the XP gained from the XP needed...
             _currentCharacter.XPNeededToLevel -= parsedExperience;
             //Send a loot coin command to the mud...
-            jmc.Send("get coin all.corpse");
+            jmc.Send("get coin corpse");
             //...and return out of the function.
             return;
         }

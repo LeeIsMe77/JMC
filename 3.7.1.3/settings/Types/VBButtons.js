@@ -1,0 +1,22 @@
+VBButtons = {
+    OK: "vbOK",
+    Cancel: "vbCancel",
+    Abort: "vbAbort",
+    Retry: "vbRetry",
+    Ignore: "vbIgnore",
+    Yes: "vbYes",
+    No: "vbNo",
+    OKOnly: "vbOKOnly",
+    OKCancel: "vbOKCancel",
+    AbortRetryIgnore: "vbAbortRetryIgnore",
+    YesNoCancel: "vbYesNoCancel",
+    YesNo: "vbYesNo",
+    RetryCancel: "vbRetryCancel",
+    Critical: "vbCritical",
+    Question: "vbQuestion",
+    Exclamation: "vbExclamation",
+    Information: "vbInformation",
+    DefaultButton1: "vbDefaultButton1",
+    DefaultButton2: "vbDefaultButton2",
+    DefaultButton3: "vbDefaultButton3"
+};

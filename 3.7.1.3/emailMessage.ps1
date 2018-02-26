@@ -20,7 +20,7 @@ $SMTPPort = 587
 $UserName = "ENTERYOURUSERNAMEHERE"
 
 #Password
-$Password = "ENTERYOURPASSWORDHERE
+$Password = "ENTERYOURPASSWORDHERE"
 
 #EnableSsl
 $EnableSsl = true
