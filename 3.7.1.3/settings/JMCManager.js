@@ -7,7 +7,6 @@ var ACTIVEX_WSCRIPT_SHELL = "WScript.Shell";
 var CHARACTER_PROFILE_LOCATION = "Commands/Profiles/";
 var COMMAND_RELOAD_PROFILE = "#killall;#spit {Commands/Main.set} {%0};";
 var DATABASE_CHARACTER_CONNECTION_STRING = "Provider=MSDASQL.1;Password=P@ssw0rd;Persist Security Info=True;User ID=JMCMudClient;Data Source=RotS;Initial Catalog=RotS";
-//var DATABASE_CHARACTER_CONNECTION_STRING = "Provider=SQLNCLI11.1;Persist Security Info=False;User ID=JMCMudClient;Password=P@ssw0rd;Initial Catalog=RotS;Data Source=localhost;DataTypeCompatibility=80;";
 
 //Timers
 var TIMER_STATUS = 0;
@@ -74,7 +73,7 @@ var _valeExits = CreateValeExits();
 //*********************************************************************************************************************
 
 function OnConnected() {
-    try {    
+    try {
         DisplayCharacters(true);
 
     } catch (caught) {
@@ -833,7 +832,7 @@ function DisplaySkills() {
         var skills = _skills.Skills;
         //Sort all skills in the skill collection by skill name....
         skills.sort(
-            function(a, b) {
+            function (a, b) {
                 if (a.SkillName.toUpperCase() < b.SkillName.toUpperCase()) return -1;
                 if (a.SkillName.toUpperCase() > b.SkillName.toUpperCase()) return 1;
                 return 0;

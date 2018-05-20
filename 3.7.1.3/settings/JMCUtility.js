@@ -79,7 +79,8 @@ function InputBox(promptText /* : String */, title /* : String */, defaultText /
 };
 
 function MessageBox(promptText /* : String */, buttons /* : VBButtons */, title /* : String */ ) {
-    // Buttons: "OK,Cancel,Abort,Retry,Ignore,Yes,No,OKOnly,OKCancel,AbortRetryIgnore,YesNoCancel,YesNo,RetryCancel,Critical,Question,Exclamation,Information,DefaultButton1,DefaultButton2,DefaultButton3"    
+    // Buttons: "OK,Cancel,Abort,Retry,Ignore,Yes,No,OKOnly,OKCancel,AbortRetryIgnore,YesNoCancel,YesNo,RetryCancel,Critical,Question,Exclamation,Information,DefaultButton1,DefaultButton2,DefaultButton3"
+    // JScript has no intrinsic InputBox method, therefore we have to steal VBs
     var scriptControl = new ActiveXObject("ScriptControl");
     scriptControl.language = "VBScript";
     scriptControl.allowUI = true;
