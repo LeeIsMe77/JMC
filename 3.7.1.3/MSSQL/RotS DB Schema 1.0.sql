@@ -214,8 +214,8 @@ ALTER PROCEDURE dbo.[ItemCollection.Add] (
 	@ItemName varchar(128) = NULL,
 	@ItemType varchar(128) = NULL,
 	@Usage varchar(128) = NULL,
-	@Description varchar(1024) NULL,
-	@Material varchar(128) NULL,
+	@Description varchar(1024) = NULL,
+	@Material varchar(128) = NULL,
 	@DamageRating numeric(18,2) = NULL,
 	@Weight numeric(18,2) = NULL,
 	@Absorbtion int = NULL,
@@ -229,8 +229,8 @@ ALTER PROCEDURE dbo.[ItemCollection.Add] (
 	@ToDamage int = NULL,
 	@BreakPercentage int = NULL,
 	@Capacity int = NULL,
-	@Attributes varchar(1024) NULL,
-	@Affections varchar(1024) NULL,
+	@Attributes varchar(1024) = NULL,
+	@Affections varchar(1024) = NULL,
 	@ItemID int = NULL OUTPUT
 ) AS BEGIN
 	SET NOCOUNT ON;
@@ -452,22 +452,22 @@ GO
 
 ALTER PROCEDURE dbo.[Character.Update] (
 	@CharacterID int,
-	@CharacterName varchar(128) NULL,
-	@Password varchar(max) NULL,
-	@Race varchar(50) NULL,
-	@Level int NULL,
-	@WarriorLevel int NULL,
-	@RangerLevel int NULL,
-	@MysticLevel int NULL,
-	@MageLevel int NULL,
-	@Strength int NULL,
-	@Intelligence int NULL,
-	@Will int NULL,
-	@Dexterity int NULL,
-	@Constitution int NULL,
-	@LearningAbility int NULL,
-	@Specialization varchar(128) NULL,
-	@XPNeededToLevel int NULL
+	@CharacterName varchar(128) = NULL,
+	@Password varchar(max) = NULL,
+	@Race varchar(50) = NULL,
+	@Level int = NULL,
+	@WarriorLevel int = NULL,
+	@RangerLevel int = NULL,
+	@MysticLevel int = NULL,
+	@MageLevel int = NULL,
+	@Strength int = NULL,
+	@Intelligence int = NULL,
+	@Will int = NULL,
+	@Dexterity int = NULL,
+	@Constitution int = NULL,
+	@LearningAbility int = NULL,
+	@Specialization varchar(128) = NULL,
+	@XPNeededToLevel int = NULL
 ) AS BEGIN
 	SET NOCOUNT ON;
 	DECLARE @UpdatedPassword varbinary(max) = NULL;
@@ -510,7 +510,7 @@ END;
 GO
 
 ALTER PROCEDURE dbo.[Exception.LogException] (
-	@ExceptionMessage varchar(max) NULL
+	@ExceptionMessage varchar(max) = NULL
 ) AS BEGIN
 	SET NOCOUNT ON;
 	
@@ -534,7 +534,6 @@ GO
 
 ALTER PROCEDURE dbo.[ItemCollection.Enumerate] AS BEGIN
 	SET NOCOUNT ON;
-
 	SELECT
 			I.ItemID,
 			I.ItemName,
@@ -618,6 +617,13 @@ ALTER PROCEDURE dbo.[MobileCollection.Request] (
 			VALUES (@MobileName, @Requestor)
 	END	
 	RETURN @@ERROR;
+END;
+GO
+
+DECLARE @ProcedureName sysname SET @ProcedureName = N'dbo.[Room.Initialize]';
+IF OBJECT_ID(@ProcedureName) IS NULL BEGIN
+	EXECUTE(N'CREATE PROCEDURE ' + @ProcedureName + N' AS PRINT @@VERSION;');
+	EXECUTE(N'GRANT EXEC ON ' + @ProcedureName + N' TO JMCMudClient;');
 END;
 GO
 
